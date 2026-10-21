@@ -2,13 +2,54 @@
 import Default from '@astrojs/starlight/components/Sidebar.astro';
 import { Icon } from '@astrojs/starlight/components';
 import { toLocale } from '~/i18n/locales';
-import SidebarShortcuts from '~/components/favorites/SidebarShortcuts';
+import { STORE_CHANGE_EVENT } from '~/lib/storage';
+import { toolPath, tools, withBase } from '~/lib/tools/registry';
+import { favoritesStore } from '~/lib/user-data/favorites';
+import { recentStore, RECENT_LIMIT } from '~/lib/user-data/recent';
+import shortcutsSource from '~/lib/sidebar-shortcuts.inline.js?raw';
 
 const locale = toLocale(Astro.locals.starlightRoute.locale);
 const labels = {
-  en: { collapse: 'Collapse sidebar', expand: 'Expand sidebar' },
-  es: { collapse: 'Contraer barra lateral', expand: 'Expandir barra lateral' },
+  en: {
+    collapse: 'Collapse sidebar',
+    expand: 'Expand sidebar',
+    shortcuts: 'Favorites and recent tools',
+    favorites: 'Favorites',
+    recent: 'Recent',
+    clear: 'Clear',
+    clearRecent: 'Clear recent',
+  },
+  es: {
+    collapse: 'Contraer barra lateral',
+    expand: 'Expandir barra lateral',
+    shortcuts: 'Herramientas favoritas y recientes',
+    favorites: 'Favoritos',
+    recent: 'Recientes',
+    clear: 'Borrar',
+    clearRecent: 'Borrar recientes',
+  },
 }[locale];
+
+const base = import.meta.env.BASE_URL;
+const shortcutsConfig = {
+  index: Object.fromEntries(
+    tools.map((tool) => [
+      tool.slug,
+      { name: tool.name[locale], href: withBase(base, toolPath(tool, locale)) },
+    ]),
+  ),
+  labels: {
+    favorites: labels.favorites,
+    recent: labels.recent,
+    clear: labels.clear,
+    clearRecent: labels.clearRecent,
+  },
+  limit: RECENT_LIMIT,
+  favoritesKey: favoritesStore.key,
+  recentKey: recentStore.key,
+  event: STORE_CHANGE_EVENT,
+};
+const shortcutsScript = `(${shortcutsSource.replace(/^export\s+/m, '').trim()})(document.getElementById('tl-sidebar-shortcuts'), ${JSON.stringify(shortcutsConfig).replace(/</g, '\\u003c')});`;
 ---
 
 <button
@@ -23,12 +64,25 @@ const labels = {
 >
   <Icon name="left-caret" size="1.25rem" />
 </button>
-<div class="sidebar-shortcuts">
-  <SidebarShortcuts client:only="react" locale={locale} />
-</div>
+<nav id="tl-sidebar-shortcuts" class="sidebar-shortcuts" aria-label={labels.shortcuts} hidden></nav>
+<script is:inline set:html={shortcutsScript} />
 <Default>
   <slot />
 </Default>
+
+<script>
+  import { saveSidebarScroll } from '~/lib/sidebar-scroll';
+
+  const scroller = document.getElementById('starlight__sidebar');
+  scroller?.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('a[href]')) {
+      saveSidebarScroll(scroller);
+    }
+  });
+  window.addEventListener('pagehide', () => {
+    if (scroller) saveSidebarScroll(scroller);
+  });
+</script>
 
 <script>
   const STORAGE_KEY = 'sl-sidebar-collapsed';

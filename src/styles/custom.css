@@ -2,6 +2,75 @@
   margin-block: 1.5rem;
 }
 
+.sidebar-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-shortcuts[hidden] {
+  display: none;
+}
+
+.sidebar-shortcuts h2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0.2em var(--sl-sidebar-item-padding-inline, 0.5rem);
+  font-size: var(--sl-text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--sl-color-white);
+}
+
+.sidebar-shortcuts ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-shortcuts a {
+  display: block;
+  padding: 0.3em var(--sl-sidebar-item-padding-inline, 0.5rem);
+  border-radius: 0.25rem;
+  font-size: var(--sl-text-sm);
+  line-height: 1.4;
+  color: var(--sl-color-gray-2);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.sidebar-shortcuts a:hover,
+.sidebar-shortcuts a:focus-visible {
+  color: var(--sl-color-white);
+}
+
+.sidebar-shortcuts a[aria-current='page'] {
+  font-weight: 600;
+  color: var(--sl-color-text-invert);
+  background-color: var(--sl-color-text-accent);
+}
+
+.sidebar-shortcuts button {
+  padding: 0 0.25rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--sl-text-xs);
+  font-weight: 400;
+  color: var(--sl-color-gray-3);
+  cursor: pointer;
+}
+
+.sidebar-shortcuts button:hover,
+.sidebar-shortcuts button:focus-visible {
+  color: var(--sl-color-white);
+}
+
 .sidebar-toggle {
   display: none;
 }

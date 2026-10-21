@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react';
 
+export const STORE_CHANGE_EVENT = 'tl:store-change';
+
 export interface LocalStore<T> {
   key: string;
   initial: T;
@@ -72,6 +74,7 @@ export function createLocalStore<T>({ key, initial, parse }: LocalStoreOptions<T
       memoryOnly = !writeRaw(key, raw);
       cache = { raw, value };
       emit();
+      window.dispatchEvent(new CustomEvent(STORE_CHANGE_EVENT, { detail: key }));
     },
     subscribe(listener) {
       listeners.add(listener);
