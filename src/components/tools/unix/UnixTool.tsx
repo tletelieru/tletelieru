@@ -119,11 +119,11 @@ export default function UnixTool() {
         <OutputPanel
           value={output}
           actions={
-            lines.length ? (
+            lines.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {t.summary(validCount, lines.length)}
               </Typography>
-            ) : null
+            )
           }
         />
       }

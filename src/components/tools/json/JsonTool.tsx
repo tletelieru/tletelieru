@@ -89,7 +89,7 @@ export default function JsonTool() {
             <ToggleButton value="minify">{t.minify}</ToggleButton>
             <ToggleButton value="validate">{t.validate}</ToggleButton>
           </ToggleButtonGroup>
-          {mode === 'format' ? (
+          {mode === 'format' && (
             <ToggleButtonGroup
               exclusive
               size="small"
@@ -101,13 +101,13 @@ export default function JsonTool() {
               <ToggleButton value="4">{t.spaces(4)}</ToggleButton>
               <ToggleButton value="tab">{t.tab}</ToggleButton>
             </ToggleButtonGroup>
-          ) : null}
-          {mode !== 'validate' ? (
+          )}
+          {mode !== 'validate' && (
             <FormControlLabel
               control={<Switch checked={state.sortKeys} onChange={onSortKeysChange} />}
               label={t.sortKeys}
             />
-          ) : null}
+          )}
         </>
       }
       input={
@@ -127,11 +127,11 @@ export default function JsonTool() {
               : null
           }
           actions={
-            result?.ok ? (
+            result?.ok && (
               <Typography variant="body2" color="text.secondary">
                 {t.stats(describeSize(result.stats, mode), result.stats.depth, result.stats.keys)}
               </Typography>
-            ) : null
+            )
           }
         />
       }

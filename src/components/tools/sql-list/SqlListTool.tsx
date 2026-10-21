@@ -62,7 +62,7 @@ export default function SqlListTool() {
               </MenuItem>
             ))}
           </TextField>
-          {wrapper === 'any' ? (
+          {wrapper === 'any' && (
             <TextField
               label={t.columnOptional}
               placeholder="id"
@@ -71,7 +71,7 @@ export default function SqlListTool() {
               fullWidth={false}
               onChange={onColumnChange}
             />
-          ) : null}
+          )}
           <SqlOptions
             state={state}
             update={update}
@@ -89,9 +89,7 @@ export default function SqlListTool() {
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={
-        <OutputPanel value={result.output} error={result.error ? t.error(result.error) : null} />
-      }
+      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
     />
   );
 }
