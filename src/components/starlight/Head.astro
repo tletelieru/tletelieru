@@ -19,6 +19,18 @@ const locale = toLocale(Astro.locals.starlightRoute.locale);
   } catch {
     document.documentElement.removeAttribute('data-sidebar-collapsed');
   }
+  document.addEventListener(
+    'pointerdown',
+    () => (document.documentElement.dataset.input = 'pointer'),
+    true,
+  );
+  document.addEventListener(
+    'keydown',
+    (event) => {
+      if (event.key === 'Tab') document.documentElement.dataset.input = 'keyboard';
+    },
+    true,
+  );
 </script>
 <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
 <meta name="theme-color" content="#17181c" />

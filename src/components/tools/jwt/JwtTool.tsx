@@ -11,7 +11,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useLocale, useMessages } from '~/i18n/react';
-import { takeHandoff, HANDOFF_PARAM } from '~/lib/handoff';
+import { HANDOFF_PARAM } from '~/lib/handoff';
+import { useHydrated } from '~/lib/hydration';
 import {
   decodeJwt,
   describeClaimTimes,
@@ -21,7 +22,7 @@ import {
   type JwtWarning,
 } from '~/lib/tools/jwt';
 import { formatRelative } from '~/lib/tools/unix';
-import { useUrlState } from '~/lib/url-state';
+import { readHandoff, useUrlState } from '~/lib/url-state';
 import { CopyButton } from '../_shared/CopyButton';
 import { InputPanel } from '../_shared/InputPanel';
 import { OutputPanel } from '../_shared/OutputPanel';
@@ -49,13 +50,14 @@ const segmentOrder: JwtSegment[] = ['header', 'payload', 'signature'];
 
 const mono = { fontFamily: 'var(--sl-font-mono, ui-monospace, monospace)', fontSize: 14 };
 
+const NO_TOKEN: InitialToken = { token: '', source: null };
+
 let initialCache: { search: string; value: InitialToken } | null = null;
 
 function readInitialToken(): InitialToken {
-  if (typeof window === 'undefined') return { token: '', source: null };
   const search = window.location.search;
   if (!initialCache || initialCache.search !== search) {
-    const fromHandoff = takeHandoff(search)?.input;
+    const fromHandoff = readHandoff(search)?.input;
     const fromUrl = new URLSearchParams(search).get('input');
     let value: InitialToken = { token: '', source: null };
     if (fromHandoff) value = { token: fromHandoff, source: 'handoff' };
@@ -122,9 +124,12 @@ const statusColors = {
 export default function JwtTool() {
   const t = useMessages(jwtMessages);
   const locale = useLocale();
-  const [initial] = useState(readInitialToken);
-  const [token, setToken] = useState(initial.token);
-  const [source, setSource] = useState<TokenSource>(initial.source);
+  const hydrated = useHydrated();
+  const initial = useMemo(() => (hydrated ? readInitialToken() : NO_TOKEN), [hydrated]);
+  const [editedToken, setToken] = useState<string | null>(null);
+  const token = editedToken ?? initial.token;
+  const [sourceOverride, setSource] = useState<TokenSource | undefined>(undefined);
+  const source = sourceOverride === undefined ? initial.source : sourceOverride;
   const [now, setNow] = useState(() => Date.now());
   const [state, update] = useUrlState(defaults);
 

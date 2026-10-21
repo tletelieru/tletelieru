@@ -6,5 +6,5 @@ const locale = toLocale(Astro.locals.starlightRoute.locale);
 ---
 
 <div class="palette-slot">
-  <CommandPalette client:only="react" locale={locale} />
+  <CommandPalette client:load locale={locale} />
 </div>

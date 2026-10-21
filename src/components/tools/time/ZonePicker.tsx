@@ -1,8 +1,16 @@
-import { useCallback, useMemo, type SyntheticEvent } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  type HTMLAttributes,
+  type Key,
+  type SyntheticEvent,
+} from 'react';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useMessages } from '~/i18n/react';
-import { listTimeZones } from '~/lib/tools/time/zones';
+import { listTimeZones, zoneOffsetLabel } from '~/lib/tools/time/zones';
 import { zonePickerMessages } from './messages';
 
 const ZONES = listTimeZones();
@@ -12,6 +20,39 @@ function withValues(values: string[]): string[] {
   return missing.length ? [...missing, ...ZONES] : ZONES;
 }
 
+export function zoneSearchText(zone: string, epochMs: number): string {
+  return `${zone} ${zone.replace(/_/g, ' ')} ${zoneOffsetLabel(zone, epochMs)}`;
+}
+
+function useZoneOptions(epochMs: number) {
+  const filterOptions = useMemo(
+    () => createFilterOptions<string>({ stringify: (zone) => zoneSearchText(zone, epochMs) }),
+    [epochMs],
+  );
+  const renderOption = useCallback(
+    ({ key, ...props }: HTMLAttributes<HTMLLIElement> & { key: Key }, zone: string) => (
+      <Box component="li" key={key} {...props} sx={{ display: 'flex', gap: 2 }}>
+        <Box component="span" sx={{ flexGrow: 1 }}>
+          {zone}
+        </Box>
+        <Box
+          component="span"
+          aria-hidden
+          sx={{
+            color: 'text.secondary',
+            fontFamily: 'var(--sl-font-mono, monospace)',
+            fontSize: '0.85em',
+          }}
+        >
+          {zoneOffsetLabel(zone, epochMs)}
+        </Box>
+      </Box>
+    ),
+    [epochMs],
+  );
+  return { filterOptions, renderOption };
+}
+
 interface ZonePickerProps {
   label: string;
   value: string;
@@ -19,9 +60,11 @@ interface ZonePickerProps {
   width?: number;
 }
 
-export function ZonePicker({ label, value, onChange, width = 280 }: ZonePickerProps) {
+export function ZonePicker({ label, value, onChange, width = 320 }: ZonePickerProps) {
   const t = useMessages(zonePickerMessages);
+  const [now] = useState(() => Date.now());
   const options = useMemo(() => withValues([value]), [value]);
+  const { filterOptions, renderOption } = useZoneOptions(now);
   const handleChange = useCallback(
     (_: SyntheticEvent, zone: string | null) => {
       if (zone) onChange(zone);
@@ -35,6 +78,8 @@ export function ZonePicker({ label, value, onChange, width = 280 }: ZonePickerPr
       options={options}
       value={value}
       onChange={handleChange}
+      filterOptions={filterOptions}
+      renderOption={renderOption}
       openText={t.open}
       closeText={t.close}
       noOptionsText={t.noOptions}
@@ -52,7 +97,9 @@ interface ZoneMultiPickerProps {
 
 export function ZoneMultiPicker({ label, value, onChange }: ZoneMultiPickerProps) {
   const t = useMessages(zonePickerMessages);
+  const [now] = useState(() => Date.now());
   const options = useMemo(() => withValues(value), [value]);
+  const { filterOptions, renderOption } = useZoneOptions(now);
   const handleChange = useCallback(
     (_: SyntheticEvent, zones: string[]) => onChange(zones),
     [onChange],
@@ -65,6 +112,8 @@ export function ZoneMultiPicker({ label, value, onChange }: ZoneMultiPickerProps
       options={options}
       value={value}
       onChange={handleChange}
+      filterOptions={filterOptions}
+      renderOption={renderOption}
       openText={t.open}
       closeText={t.close}
       clearText={t.clear}
