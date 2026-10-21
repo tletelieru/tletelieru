@@ -1,0 +1,37 @@
+---
+title: Generador de UUID, ULID y Nano ID
+description: Genera UUID v4 y v7, ULIDs y Nano IDs, e inspecciona la versión, la variante y el timestamp de ids existentes.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Genera ids aleatorios u ordenados por tiempo en lote, o pega UUIDs y ULIDs existentes para ver qué contienen. Todo corre en tu navegador con `crypto.getRandomValues`.
+
+<ToolEmbed slug="uuid" />
+
+## Modos
+
+- **Generar**: crea de 1 a 1000 ids del tipo elegido. **Generar de nuevo** saca un lote nuevo.
+- **Inspeccionar**: un id por línea; muestra la versión y la variante del UUID, y el timestamp de UUID v1, v6, v7 y ULID como fecha ISO 8601. Se aceptan llaves, `urn:uuid:` e ids sin guiones.
+
+## Tipos
+
+- **UUID v4**: 122 bits aleatorios.
+- **UUID v7**: timestamp Unix de 48 bits en milisegundos seguido de bits aleatorios (RFC 9562), así los ids se ordenan por fecha de creación.
+- **ULID**: 48 bits de tiempo y 80 bits aleatorios en base32 de Crockford (26 caracteres). **Monótono** incrementa la parte aleatoria de los ids creados en el mismo milisegundo para mantener el orden.
+- **Nano ID**: id aleatorio apto para URLs. El **Largo** por defecto es 21 y el **Alfabeto** `A-Za-z0-9_-`; un alfabeto propio necesita de 2 a 256 caracteres distintos.
+
+## Opciones
+
+- **Mayúsculas y minúsculas**: **Por defecto** usa minúsculas para UUIDs y mayúsculas para ULIDs.
+- **Guiones**: UUIDs con o sin los guiones `8-4-4-4-12`.
+
+## Ejemplos
+
+| Entrada                                | Resultado                            |
+| -------------------------------------- | ------------------------------------ |
+| `018f4df7-3e00-7000-8000-000000000000` | UUID v7 · `2024-05-06T12:53:20.000Z` |
+| `b4cc8000-a838-11ee-8000-000000000000` | UUID v1 · `2024-01-01T00:00:00.000Z` |
+| `01ARYZ6S41TSV4RRFFQ69G5FAV`           | ULID · `2016-07-30T22:36:16.385Z`    |
+| `00000000-0000-0000-0000-000000000000` | UUID nulo                            |
+| `ffffffff-ffff-ffff-ffff-ffffffffffff` | UUID máximo                          |

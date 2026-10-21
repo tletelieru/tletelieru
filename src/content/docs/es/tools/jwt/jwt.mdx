@@ -1,0 +1,36 @@
+---
+title: Decodificador JWT
+description: 'Decodifica un JSON Web Token: header, payload, firma, exp / nbf / iat como fechas y advertencias sobre tokens riesgosos.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un token. Se ignoran el prefijo `Bearer ` (o `Authorization: Bearer `), los espacios y los
+saltos de línea. Todo se decodifica en tu navegador: el token nunca se envía a ningún lado y no se
+guarda en la URL, en el historial local ni en los snippets.
+
+<ToolEmbed slug="jwt" />
+
+## Qué muestra
+
+- **Vista del token** con header, payload y firma en colores distintos.
+- **Header** y **payload** como JSON formateado, más la **firma** tal cual (base64url) y el `alg`.
+- **Claims de tiempo**: `exp`, `nbf` e `iat` en UTC, en la zona elegida (por defecto
+  `America/Santiago`) y relativos a ahora ("expira dentro de 12 minutos", "hace 3 horas").
+- **Estado**: válido, expirado o aún no válido.
+
+## Advertencias
+
+- `alg: none` (token sin firma) o sin `alg`.
+- Sin `exp`, o con una vigencia de más de 30 días.
+- `exp` / `nbf` / `iat` que no son NumericDate (segundos desde 1970).
+- Claves del payload que parecen sensibles (`password`, `secret`, `ssn`, `card`, …): el payload
+  de un JWT solo está codificado, cualquiera que tenga el token puede leerlo.
+
+## Firma
+
+Esta herramienta **no verifica la firma**. Que un token se decodifique no significa que sea
+confiable; verifícalo con la clave del emisor en el servidor.
+
+Los tokens cifrados (JWE, cinco partes) no se pueden decodificar sin la clave y se informan como
+tales.
