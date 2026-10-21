@@ -2,7 +2,7 @@
 
 Source spec: Notion page "🐙 tletelieru (GitHub main repo)"
 (https://app.notion.com/p/3fe222f5472b81fc92a5dc5983a742ed). This file distills it so work can start
-from the repo. Status: **bare repo, nothing scaffolded yet.**
+from the repo. Status: **scaffolded (M0)** — Starlight + React/MUI islands, PWA, CI, first tool (RUT).
 
 ## Purpose
 
@@ -22,37 +22,57 @@ Every tool runs 100% in the browser — no backend, nothing sent anywhere.
 - **Tests**: Vitest + React Testing Library.
 - **CI**: GitHub Actions — lint, `astro check`, tests before deploy.
 - **Deploy**: `withastro/action` → GitHub Pages. Repo is not `tletelieru.github.io`, so set `site`
-  + `base: '/tletelieru'` in `astro.config.mjs`.
+  and `base: '/tletelieru'` in `astro.config.mjs`.
 - The repo's `README.md` doubles as the GitHub profile README.
 
 ## Structure
 
+Built on **Astro Starlight** (sidebar, Pagefind search with `Ctrl/⌘ + K`, TOC, dark mode).
+
 ```txt
 src/
-  pages/
-    index.astro          # about me + projects + stack
-    tools/
-      index.astro        # tool list / search
-      [tool].astro       # each tool (getStaticPaths from the registry)
-  content/projects/      # one .md per project
-  components/tools/      # React island per tool (MUI)
-  lib/tools/             # pure functions (formatters, validators, generators) + tests
-  lib/tools/registry.ts  # name, slug, category, component
+  content/docs/index.mdx                 # home (splash): about me, projects, stack, contact
+  content/docs/tools/index.mdx           # /tools index (ToolIndex, grouped by category)
+  content/docs/tools/<category>/<slug>.mdx  # one page per tool: description + <ToolEmbed> + examples
+  content/projects/*.md                  # projects collection (rendered by ProjectList.astro)
+  components/ToolEmbed.astro             # mounts ToolIsland client:only + keywords (indexed by Pagefind)
+  components/starlight/Head.astro        # Head override: PWA manifest + SW registration
+  components/tools/ToolIsland.tsx        # single island entry; lazy-loads the tool by slug
+  components/tools/components.ts         # slug → lazy React component
+  components/tools/_shared/              # ToolRoot (MUI theme synced with Starlight), ToolLayout,
+                                         # CodeField, OutputPanel, CopyButton
+  components/tools/<slug>/<Name>Tool.tsx # tool UI (+ .test.tsx)
+  lib/tools/<slug>.ts                    # pure functions (+ .test.ts)
+  lib/tools/_shared/                     # shared helpers (lines, clamp, …)
+  lib/tools/registry.ts                  # categories + tool metadata (no React; imported by config)
+  lib/url-state.ts                       # useUrlState: state ↔ URL params (sync: false for secrets)
 ```
 
 ## Conventions
 
-- Each tool = a **pure function** in `src/lib/tools/` with unit tests, plus a **React island** in
-  `src/components/tools/`.
-- Tool UI: input box → output box + copy button. Shareable via URL params (state in the URL).
-- `/tools` is docs-style: top search bar (fuzzy by name/category/keywords, `Ctrl/⌘ + K`), tools
-  grouped by category with linked titles, left sidebar on every tool page, "On this page" TOC on
-  long tools, breadcrumb Tools / Category / Tool. Astro **Starlight** is an option (sidebar,
-  Pagefind search, TOC, dark mode out of the box).
+- Adding a tool = pure function + tests in `src/lib/tools/`, island in
+  `src/components/tools/<slug>/`, entry in `registry.ts`, entry in `components.ts`, and
+  `src/content/docs/tools/<category>/<slug>.mdx`. `registry.test.ts` fails if any piece is missing.
+  The sidebar group for a category appears automatically once it has a tool.
+- Tool UI: input box → output box + copy button. State in URL params via `useUrlState`; tools that
+  handle secrets (JWT, keys, HMAC) must use `{ sync: false }`.
+- Markdown/MDX links and hero links are not base-prefixed by Starlight: write `/tletelieru/...` or
+  use `withBase(import.meta.env.BASE_URL, path)`.
+- Wrap MUI in `ToolRoot` (adds `.not-content` so Starlight prose styles don't leak in).
+
+## Tooling notes
+
+- Peer ranges lag behind: `overrides` in `package.json` relax `@vite-pwa/astro` (astro) and
+  `eslint-plugin-react` (eslint). Don't switch to `legacy-peer-deps` (it drops required peers).
+- `eslint-plugin-react` needs an explicit `settings.react.version` under ESLint 10 (`detect` crashes).
+- TypeScript stays on 6.x: `astro check` and typescript-eslint don't support TS 7 yet.
+- `.husky/pre-push` delegates to the global `core.hooksPath` pre-push (branch-name guard), with an
+  env guard to avoid the global hook's chain looping back.
 
 ## Roadmap
 
 **First batch — tools 1–14:**
+
 1. RUT (Chile) — generate valid / validate / format.
 2. CPF (Brazil) — generate / validate / mask.
 3. CNPJ (Brazil) — generate / validate / mask (incl. new alphanumeric).
