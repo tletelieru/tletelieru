@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { HANDOFF_PARAM, takeHandoff, type HandoffParams } from './handoff';
 
 export type UrlPrimitive = string | number | boolean;
 export type UrlStateShape = Record<string, UrlPrimitive>;
@@ -21,8 +22,26 @@ export function readParams<T extends UrlStateShape>(defaults: T, search: string)
   return result as T;
 }
 
+export function mergeHandoff(search: string, handoff: HandoffParams | null): string {
+  if (!handoff) return search;
+  const params = new URLSearchParams(search);
+  params.delete(HANDOFF_PARAM);
+  for (const [key, value] of Object.entries(handoff)) params.set(key, value);
+  return `?${params.toString()}`;
+}
+
+let handoffCache: { search: string; value: HandoffParams | null } | null = null;
+
+function readHandoff(search: string): HandoffParams | null {
+  if (!handoffCache || handoffCache.search !== search) {
+    handoffCache = { search, value: takeHandoff(search) };
+  }
+  return handoffCache.value;
+}
+
 export function writeParams<T extends UrlStateShape>(state: T, defaults: T, search = ''): string {
   const params = new URLSearchParams(search);
+  params.delete(HANDOFF_PARAM);
   for (const [key, value] of Object.entries(state)) {
     if (value === defaults[key] || value === '') {
       params.delete(key);
@@ -45,9 +64,11 @@ export function useUrlState<T extends UrlStateShape>(
   defaults: T,
   { sync = true, debounceMs = 250 }: UrlStateOptions = {},
 ): [T, (patch: Partial<T>) => void] {
-  const [state, setState] = useState<T>(() =>
-    sync && typeof window !== 'undefined' ? readParams(defaults, window.location.search) : defaults,
-  );
+  const [state, setState] = useState<T>(() => {
+    if (!sync || typeof window === 'undefined') return defaults;
+    const search = window.location.search;
+    return readParams(defaults, mergeHandoff(search, readHandoff(search)));
+  });
   const defaultsRef = useRef(defaults);
   const stateRef = useRef(state);
   const timerRef = useRef<number | undefined>(undefined);
