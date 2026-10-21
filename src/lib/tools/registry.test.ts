@@ -2,7 +2,8 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { toolComponents } from '~/components/tools/components';
-import { categories, toolsByCategory, tools, withBase } from './registry';
+import { locales } from '~/i18n/locales';
+import { categories, toolPath, toolsByCategory, tools, withBase } from './registry';
 
 const docsDir = `${resolve(process.cwd(), 'src/content/docs')}/`;
 
@@ -15,8 +16,12 @@ describe('tool registry', () => {
   it.each(tools.map((tool) => [tool.slug, tool]))('%s is fully wired', (_, tool) => {
     expect(categories.some((category) => category.id === tool.category)).toBe(true);
     expect(toolComponents[tool.slug]).toBeDefined();
-    expect(existsSync(`${docsDir}tools/${tool.category}/${tool.slug}.mdx`)).toBe(true);
     expect(tool.keywords.length).toBeGreaterThan(0);
+    for (const locale of locales) {
+      expect(tool.name[locale].trim()).not.toBe('');
+      expect(tool.description[locale].trim()).not.toBe('');
+      expect(existsSync(`${docsDir}${locale}/tools/${tool.category}/${tool.slug}.mdx`)).toBe(true);
+    }
   });
 
   it('every component has a registry entry', () => {
@@ -26,7 +31,11 @@ describe('tool registry', () => {
   });
 
   it('groups only non-empty categories', () => {
-    for (const group of toolsByCategory()) expect(group.tools.length).toBeGreaterThan(0);
+    for (const group of toolsByCategory('en')) expect(group.tools.length).toBeGreaterThan(0);
+  });
+
+  it('builds locale-prefixed paths', () => {
+    expect(toolPath(tools[0], 'es')).toBe(`es/tools/${tools[0].category}/${tools[0].slug}/`);
   });
 });
 

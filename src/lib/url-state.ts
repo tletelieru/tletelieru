@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 export type UrlPrimitive = string | number | boolean;
 export type UrlStateShape = Record<string, UrlPrimitive>;
@@ -45,26 +45,28 @@ export function useUrlState<T extends UrlStateShape>(
   defaults: T,
   { sync = true, debounceMs = 250 }: UrlStateOptions = {},
 ): [T, (patch: Partial<T>) => void] {
-  const defaultsRef = useRef(defaults);
   const [state, setState] = useState<T>(() =>
-    sync && typeof window !== 'undefined'
-      ? readParams(defaultsRef.current, window.location.search)
-      : defaultsRef.current,
+    sync && typeof window !== 'undefined' ? readParams(defaults, window.location.search) : defaults,
   );
+  const defaultsRef = useRef(defaults);
+  const stateRef = useRef(state);
+  const timerRef = useRef<number | undefined>(undefined);
 
-  useEffect(() => {
-    if (!sync) return;
-    const timer = window.setTimeout(() => {
-      const query = writeParams(state, defaultsRef.current, window.location.search);
-      const url = `${window.location.pathname}${query}${window.location.hash}`;
-      window.history.replaceState(window.history.state, '', url);
-    }, debounceMs);
-    return () => window.clearTimeout(timer);
-  }, [state, sync, debounceMs]);
-
-  const update = useCallback((patch: Partial<T>) => {
-    setState((current) => ({ ...current, ...patch }));
-  }, []);
+  const update = useCallback(
+    (patch: Partial<T>) => {
+      const next = { ...stateRef.current, ...patch };
+      stateRef.current = next;
+      setState(next);
+      if (!sync) return;
+      window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        const query = writeParams(next, defaultsRef.current, window.location.search);
+        const url = `${window.location.pathname}${query}${window.location.hash}`;
+        window.history.replaceState(window.history.state, '', url);
+      }, debounceMs);
+    },
+    [sync, debounceMs],
+  );
 
   return [state, update];
 }

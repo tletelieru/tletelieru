@@ -13,18 +13,25 @@ export default defineConfig({
     starlight({
       title: 'tletelieru',
       description: 'Personal site and client-side dev toolbox. Nothing leaves your browser.',
+      defaultLocale: 'en',
+      locales: {
+        en: { label: 'English', lang: 'en' },
+        es: { label: 'Español', lang: 'es' },
+      },
       logo: { src: './src/assets/logo.svg', replacesTitle: false },
       favicon: '/favicon.svg',
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/tletelieru' }],
       lastUpdated: false,
       components: {
         Head: './src/components/starlight/Head.astro',
+        Sidebar: './src/components/starlight/Sidebar.astro',
       },
       customCss: ['./src/styles/custom.css'],
       sidebar: [
-        { label: 'All tools', slug: 'tools' },
+        { label: 'All tools', translations: { es: 'Todas las herramientas' }, slug: 'tools' },
         ...categoriesWithTools().map((category) => ({
-          label: category.label,
+          label: category.label.en,
+          translations: { es: category.label.es },
           items: [{ autogenerate: { directory: `tools/${category.id}` } }],
         })),
       ],

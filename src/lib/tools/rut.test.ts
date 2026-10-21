@@ -34,8 +34,22 @@ describe('formatRut', () => {
     expect(formatRut('123456785')).toBe('12.345.678-5');
   });
 
-  it('formats without dots', () => {
-    expect(formatRut('12.345.678-5', { dots: false })).toBe('12345678-5');
+  it.each([
+    ['dots', '12.345.678-5'],
+    ['dash', '12345678-5'],
+    ['plain', '123456785'],
+  ] as const)('formats with the %s style', (style, expected) => {
+    expect(formatRut('12.345.678-5', { style })).toBe(expected);
+  });
+
+  it('formats the K check digit upper or lower case', () => {
+    expect(formatRut('10000013k')).toBe('10.000.013-K');
+    expect(formatRut('10.000.013-K', { upperK: false })).toBe('10.000.013-k');
+    expect(formatRut('10000013K', { style: 'plain', upperK: false })).toBe('10000013k');
+  });
+
+  it('parses its own plain output back', () => {
+    expect(formatRut('10000013k', { style: 'dash' })).toBe('10000013-K');
   });
 
   it('formats short bodies', () => {
@@ -61,6 +75,13 @@ describe('validateRut', () => {
     expect(validateRut('12.345.678-9')).toEqual({ valid: false, reason: 'dv', expectedDv: '5' });
   });
 
+  it('formats the valid value with the requested style', () => {
+    expect(validateRut('10000013K', { style: 'dash', upperK: false })).toMatchObject({
+      valid: true,
+      formatted: '10000013-k',
+    });
+  });
+
   it('distinguishes empty and malformed input', () => {
     expect(validateRut('  ')).toEqual({ valid: false, reason: 'empty' });
     expect(validateRut('nope')).toEqual({ valid: false, reason: 'format' });
@@ -75,8 +96,11 @@ describe('generateRuts', () => {
   });
 
   it('respects range, format and the random source', () => {
-    expect(generateRuts({ count: 1, min: 12345678, max: 12345678, dots: false })).toEqual([
+    expect(generateRuts({ count: 1, min: 12345678, max: 12345678, style: 'dash' })).toEqual([
       '12345678-5',
+    ]);
+    expect(generateRuts({ min: 10000013, max: 10000013, style: 'plain', upperK: false })).toEqual([
+      '10000013k',
     ]);
     expect(generateRuts({ min: 1_000_000, max: 1_000_009 }, () => 0)).toEqual(['1.000.000-9']);
   });

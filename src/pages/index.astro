@@ -1,0 +1,49 @@
+---
+import { defaultLocale, localeLabels, locales, preferredLocaleKey } from '~/i18n/locales';
+
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+const fallback = `${base}/${defaultLocale}/`;
+---
+
+<!doctype html>
+<html lang={defaultLocale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>tletelieru</title>
+    <link rel="canonical" href={fallback} />
+    <script is:inline define:vars={{ base, locales, defaultLocale, preferredLocaleKey }}>
+      function readSaved() {
+        try {
+          return localStorage.getItem(preferredLocaleKey);
+        } catch {
+          return null;
+        }
+      }
+      function pick() {
+        const saved = readSaved();
+        if (locales.includes(saved)) return saved;
+        const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+        for (const language of languages) {
+          const short = String(language).toLowerCase().split('-')[0];
+          if (locales.includes(short)) return short;
+        }
+        return defaultLocale;
+      }
+      location.replace(`${base}/${pick()}/${location.search}${location.hash}`);
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content={`0; url=${fallback}`} />
+    </noscript>
+  </head>
+  <body>
+    {locales.map((locale) => (
+      <p>
+        <a href={`${base}/${locale}/`} hreflang={locale}>
+          {localeLabels[locale]}
+        </a>
+      </p>
+    ))}
+  </body>
+</html>

@@ -10,7 +10,7 @@ export const collections = {
     loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
     schema: z.object({
       title: z.string(),
-      description: z.string(),
+      description: z.object({ en: z.string(), es: z.string() }),
       repo: z.url().optional(),
       demo: z.url().optional(),
       tags: z.array(z.string()).default([]),
