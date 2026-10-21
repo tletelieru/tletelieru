@@ -47,6 +47,7 @@ const shortcutsConfig = {
   limit: RECENT_LIMIT,
   favoritesKey: favoritesStore.key,
   recentKey: recentStore.key,
+  sectionsKey: 'tl:sidebar-sections',
   event: STORE_CHANGE_EVENT,
 };
 const shortcutsScript = `(${shortcutsSource.replace(/^export\s+/m, '').trim()})(document.getElementById('tl-sidebar-shortcuts'), ${JSON.stringify(shortcutsConfig).replace(/</g, '\\u003c')});`;

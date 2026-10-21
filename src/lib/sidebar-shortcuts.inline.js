@@ -7,13 +7,23 @@ export function mountSidebarShortcuts(container, config) {
 
   const normalizePath = (path) => String(path).split(/[?#]/)[0].replace(/\/+$/, '');
 
-  const readList = (key) => {
+  const readJson = (key, fallback) => {
     try {
       const value = JSON.parse(window.localStorage.getItem(key) || 'null');
-      return Array.isArray(value) ? value : [];
+      return value === null ? fallback : value;
     } catch {
-      return [];
+      return fallback;
     }
+  };
+
+  const readList = (key) => {
+    const value = readJson(key, []);
+    return Array.isArray(value) ? value : [];
+  };
+
+  const readCollapsed = () => {
+    const value = readJson(config.sectionsKey, {});
+    return typeof value === 'object' && value !== null && !Array.isArray(value) ? value : {};
   };
 
   const resolve = (slugs) => {
@@ -37,20 +47,20 @@ export function mountSidebarShortcuts(container, config) {
     return `<ul>${items.join('')}</ul>`;
   };
 
+  const section = (id, title, links, extra, collapsed) =>
+    `<details data-section="${id}"${collapsed[id] === true ? '' : ' open'}><summary><span class="sidebar-shortcuts-title">${escapeHtml(title)}</span>${extra}<span class="sidebar-shortcuts-caret" aria-hidden="true"></span></summary>${list(links)}</details>`;
+
   const render = () => {
+    const collapsed = readCollapsed();
     const favorites = resolve(readList(config.favoritesKey));
     const recent = resolve(readList(config.recentKey).map((entry) => entry && entry.slug));
     const sections = [];
     if (favorites.length > 0) {
-      sections.push(
-        `<section><h2>${escapeHtml(config.labels.favorites)}</h2>${list(favorites)}</section>`,
-      );
+      sections.push(section('favorites', config.labels.favorites, favorites, '', collapsed));
     }
     if (recent.length > 0) {
       const clear = `<button type="button" data-clear-recent aria-label="${escapeHtml(config.labels.clearRecent)}" title="${escapeHtml(config.labels.clearRecent)}">${escapeHtml(config.labels.clear)}</button>`;
-      sections.push(
-        `<section><h2>${escapeHtml(config.labels.recent)}${clear}</h2>${list(recent)}</section>`,
-      );
+      sections.push(section('recent', config.labels.recent, recent, clear, collapsed));
     }
     container.innerHTML = sections.join('');
     container.hidden = sections.length === 0;
@@ -59,6 +69,7 @@ export function mountSidebarShortcuts(container, config) {
   container.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target || !target.closest('[data-clear-recent]')) return;
+    event.preventDefault();
     try {
       window.localStorage.setItem(config.recentKey, '[]');
     } catch {
@@ -66,6 +77,23 @@ export function mountSidebarShortcuts(container, config) {
     }
     render();
   });
+
+  container.addEventListener(
+    'toggle',
+    (event) => {
+      const details = event.target instanceof HTMLDetailsElement ? event.target : null;
+      const id = details && details.dataset.section;
+      if (!id) return;
+      const collapsed = readCollapsed();
+      collapsed[id] = !details.open;
+      try {
+        window.localStorage.setItem(config.sectionsKey, JSON.stringify(collapsed));
+      } catch {
+        return;
+      }
+    },
+    true,
+  );
 
   const onStoreChange = (event) => {
     const key = event.type === 'storage' ? event.key : event.detail;

@@ -12,16 +12,43 @@
   display: none;
 }
 
-.sidebar-shortcuts h2 {
+.sidebar-shortcuts summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin: 0;
+  gap: 0.5rem;
   padding: 0.2em var(--sl-sidebar-item-padding-inline, 0.5rem);
   font-size: var(--sl-text-sm);
   font-weight: 600;
   line-height: 1.4;
   color: var(--sl-color-white);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.sidebar-shortcuts summary::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-shortcuts-title {
+  flex-grow: 1;
+}
+
+.sidebar-shortcuts-caret {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+
+.sidebar-shortcuts details[open] > summary .sidebar-shortcuts-caret {
+  transform: rotate(45deg);
+}
+
+.sidebar-shortcuts details > ul {
+  margin-top: 0.125rem;
 }
 
 .sidebar-shortcuts ul {
