@@ -377,3 +377,13 @@ export function toolPath(tool: ToolMeta, locale: Locale): string {
 export function withBase(base: string, path: string): string {
   return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
 }
+
+export function toolHref(
+  base: string,
+  locale: Locale,
+  tool: ToolMeta,
+  params: Record<string, string> = {},
+): string {
+  const query = new URLSearchParams(params).toString();
+  return `${withBase(base, toolPath(tool, locale))}${query ? `?${query}` : ''}`;
+}

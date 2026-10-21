@@ -1,0 +1,20 @@
+---
+import FeatureIsland from './features/FeatureIsland';
+import { toLocale } from '~/i18n/locales';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+const locale = toLocale(Astro.locals.starlightRoute.locale);
+const loading = { en: 'Loading…', es: 'Cargando…' }[locale];
+---
+
+<div class="tool-embed">
+  <FeatureIsland client:only="react" name={name} locale={locale}>
+    <p slot="fallback" class="tool-loading">
+      {loading}
+    </p>
+  </FeatureIsland>
+</div>

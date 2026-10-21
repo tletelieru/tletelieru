@@ -2,11 +2,13 @@
 import Default from '@astrojs/starlight/components/Sidebar.astro';
 import { Icon } from '@astrojs/starlight/components';
 import { toLocale } from '~/i18n/locales';
+import SidebarShortcuts from '~/components/favorites/SidebarShortcuts';
 
+const locale = toLocale(Astro.locals.starlightRoute.locale);
 const labels = {
   en: { collapse: 'Collapse sidebar', expand: 'Expand sidebar' },
   es: { collapse: 'Contraer barra lateral', expand: 'Expandir barra lateral' },
-}[toLocale(Astro.locals.starlightRoute.locale)];
+}[locale];
 ---
 
 <button
@@ -21,6 +23,9 @@ const labels = {
 >
   <Icon name="left-caret" size="1.25rem" />
 </button>
+<div class="sidebar-shortcuts">
+  <SidebarShortcuts client:only="react" locale={locale} />
+</div>
 <Default>
   <slot />
 </Default>

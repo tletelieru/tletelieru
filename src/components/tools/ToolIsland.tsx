@@ -5,6 +5,8 @@ import { toLocale } from '~/i18n/locales';
 import { LocaleProvider } from '~/i18n/react';
 import { toolComponents } from './components';
 import { sharedMessages } from './_shared/messages';
+import { ToolProvider } from './_shared/ToolContext';
+import { ToolFrame } from './_shared/ToolFrame';
 import { ToolRoot } from './_shared/ToolRoot';
 
 export default function ToolIsland({ slug, locale }: { slug: string; locale?: string }) {
@@ -12,15 +14,19 @@ export default function ToolIsland({ slug, locale }: { slug: string; locale?: st
   const Tool = toolComponents[slug];
   return (
     <LocaleProvider locale={lang}>
-      <ToolRoot>
-        {Tool ? (
-          <Suspense fallback={<LinearProgress />}>
-            <Tool />
-          </Suspense>
-        ) : (
-          <Alert severity="error">{sharedMessages[lang].unknownTool(slug)}</Alert>
-        )}
-      </ToolRoot>
+      <ToolProvider slug={slug}>
+        <ToolRoot>
+          <ToolFrame>
+            {Tool ? (
+              <Suspense fallback={<LinearProgress />}>
+                <Tool />
+              </Suspense>
+            ) : (
+              <Alert severity="error">{sharedMessages[lang].unknownTool(slug)}</Alert>
+            )}
+          </ToolFrame>
+        </ToolRoot>
+      </ToolProvider>
     </LocaleProvider>
   );
 }

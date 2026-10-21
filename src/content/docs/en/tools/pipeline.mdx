@@ -1,0 +1,35 @@
+---
+title: Pipelines
+description: Chain tools into a pipeline — trim, dedupe, change case, format JSON, build SQL and more, step by step.
+---
+
+import FeatureEmbed from '~/components/FeatureEmbed.astro';
+
+Paste some text and chain operations: each step receives the previous step's output. Expand any
+step to inspect or copy its intermediate result. The whole pipeline lives in the URL, so you can
+bookmark or share it. If a step fails, the chain stops there and shows why.
+
+<FeatureEmbed name="pipeline" />
+
+## Operations
+
+- **Lines**: trim each line, remove blank lines, remove duplicates, sort (natural order), reverse,
+  add prefix / suffix, join lines with a separator, split into lines.
+- **Text**: UPPERCASE, lowercase, trim, find and replace (literal).
+- **Case**: snake_case, kebab-case, camelCase, PascalCase, CONSTANT_CASE, Title Case and more.
+- **JSON**: format (2 / 4 spaces or tab), minify, sort keys.
+- **SQL**: `IN` from text, `IN` from numbers, `LIKE` chain, list wrappers (`ARRAY[…]`, `ANY`,
+  `VALUES`…).
+- **IDs**: format RUT, CPF and CNPJ line by line.
+- **Time**: Unix timestamps or dates → ISO 8601, seconds or milliseconds.
+- **Encoding**: Base64 encode / decode (UTF-8), URL encode / decode.
+
+Separators accept `\n` (newline) and `\t` (tab).
+
+## Examples
+
+| Pipeline                                      | Input                    | Result                   |
+| --------------------------------------------- | ------------------------ | ------------------------ |
+| Trim → remove blanks → dedupe → SQL IN (text) | `apple` `banana` `apple` | `IN ('apple', 'banana')` |
+| Base64 decode → format JSON                   | `eyJhIjoxfQ==`           | `{ "a": 1 }` (indented)  |
+| Convert case (snake) → dedupe → SQL IN (text) | `First Name` `firstName` | `IN ('first_name')`      |

@@ -17,7 +17,7 @@ const labels = {
 }[locale];
 ---
 
-<div class="tool-embed">
+<div class="tool-embed" data-tool-slug={slug}>
   <ToolIsland client:only="react" slug={slug} locale={locale}>
     <p slot="fallback" class="tool-loading">
       {labels.loading}
@@ -28,3 +28,11 @@ const labels = {
 <p class="tool-keywords">
   {labels.keywords}: {tool.keywords.join(', ')}
 </p>
+
+<script>
+  import { recordVisit } from '~/lib/user-data/recent';
+
+  for (const element of document.querySelectorAll<HTMLElement>('[data-tool-slug]')) {
+    if (element.dataset.toolSlug) recordVisit(element.dataset.toolSlug);
+  }
+</script>
