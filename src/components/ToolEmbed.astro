@@ -1,5 +1,6 @@
 ---
 import ToolIsland from './tools/ToolIsland';
+import { toolModules } from './tools/components';
 import { toLocale } from '~/i18n/locales';
 import { getTool } from '~/lib/tools/registry';
 
@@ -10,20 +11,16 @@ interface Props {
 const { slug } = Astro.props;
 const tool = getTool(slug);
 if (!tool) throw new Error(`ToolEmbed: unknown tool "${slug}"`);
+await toolModules.preload(slug);
 const locale = toLocale(Astro.locals.starlightRoute.locale);
 const labels = {
-  en: { loading: 'Loading', keywords: 'Keywords' },
-  es: { loading: 'Cargando', keywords: 'Palabras clave' },
+  en: { keywords: 'Keywords' },
+  es: { keywords: 'Palabras clave' },
 }[locale];
 ---
 
 <div class="tool-embed" data-tool-slug={slug}>
-  <ToolIsland client:only="react" slug={slug} locale={locale}>
-    <p slot="fallback" class="tool-loading">
-      {labels.loading}
-      {tool.name[locale]}…
-    </p>
-  </ToolIsland>
+  <ToolIsland client:load slug={slug} locale={locale} />
 </div>
 <p class="tool-keywords">
   {labels.keywords}: {tool.keywords.join(', ')}
