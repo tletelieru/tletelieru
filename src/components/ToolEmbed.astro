@@ -1,0 +1,21 @@
+---
+import ToolIsland from './tools/ToolIsland';
+import { getTool } from '~/lib/tools/registry';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const tool = getTool(slug);
+if (!tool) throw new Error(`ToolEmbed: unknown tool "${slug}"`);
+---
+
+<div class="tool-embed">
+  <ToolIsland client:only="react" slug={slug}>
+    <p slot="fallback" class="tool-loading">
+      Loading {tool.name}…
+    </p>
+  </ToolIsland>
+</div>
+<p class="tool-keywords">Keywords: {tool.keywords.join(', ')}</p>
