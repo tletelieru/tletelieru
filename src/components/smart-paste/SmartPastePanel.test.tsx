@@ -2,7 +2,26 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LocaleProvider } from '~/i18n/react';
+import type { ToolMeta } from '~/lib/tools/registry';
 import SmartPastePanel from './SmartPastePanel';
+
+vi.mock('~/lib/tools/registry', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('~/lib/tools/registry')>();
+  const fallback: ToolMeta = {
+    slug: 'jwt',
+    name: { en: 'JWT decoder', es: 'Decodificador JWT' },
+    category: 'jwt',
+    description: { en: 'Decode JWTs.', es: 'Decodifica JWTs.' },
+    keywords: ['jwt'],
+  };
+  return {
+    ...actual,
+    getTool: (slug: string) => actual.getTool(slug) ?? (slug === 'jwt' ? fallback : undefined),
+  };
+});
+
+const jwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
 const assign = vi.fn();
 
@@ -70,6 +89,22 @@ describe('SmartPastePanel', () => {
     await userEvent.click(open);
     expect(assign).toHaveBeenCalledWith('/en/tools/data/json/?handoff=1');
     expect(JSON.parse(window.sessionStorage.getItem('tl:handoff') ?? '{}')).toEqual({ input: big });
+  });
+
+  it('never puts a pasted JWT in the URL', async () => {
+    vi.stubGlobal('location', { ...window.location, assign });
+    render(<SmartPastePanel />);
+    await userEvent.click(screen.getByLabelText('Paste anything'));
+    await userEvent.paste(jwt);
+    const [open] = await screen.findAllByRole('link');
+    const href = open?.getAttribute('href') ?? '';
+    expect(href).toMatch(/^\/en\/tools\/[a-z-]+\/jwt\/\?handoff=1$/);
+    expect(href).not.toContain(jwt.slice(0, 20));
+    if (open) await userEvent.click(open);
+    expect(assign).toHaveBeenCalledWith(href);
+    expect(JSON.parse(window.sessionStorage.getItem('tl:handoff') ?? '{}')).toEqual({
+      input: jwt,
+    });
   });
 
   it('lets small links navigate natively', async () => {

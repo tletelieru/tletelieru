@@ -1,3 +1,6 @@
+import { decodeBase64 } from '../pipeline/encoding';
+import { countKnownEntities } from '../tools/html-entities';
+import { unescapeJsonString } from '../tools/json-escape';
 import { validateCnpj } from '../tools/cnpj';
 import { validateCpf } from '../tools/cpf';
 import { validateCuit } from '../tools/ids/argentina';
@@ -12,6 +15,7 @@ export interface Detection {
   slug: string;
   confidence: number;
   params: Record<string, string>;
+  sensitive?: boolean;
 }
 
 export interface DetectContext {
@@ -218,7 +222,138 @@ export const detectCase: Detector = ({ text, lines }) => {
   return result('case', lines.length === 1 ? 0.7 : 0.5, { input: text });
 };
 
+const JWT_SHAPE = /^(?:Bearer\s+)?([A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]*)$/;
+
+function decodeJsonSegment(segment: string): unknown {
+  const decoded = decodeBase64(segment);
+  if (!decoded.ok) return null;
+  try {
+    return JSON.parse(decoded.text);
+  } catch {
+    return null;
+  }
+}
+
+export const detectJwt: Detector = ({ lines }) => {
+  if (lines.length !== 1) return [];
+  const token = JWT_SHAPE.exec(lines[0] ?? '')?.[1];
+  if (!token) return [];
+  const header = decodeJsonSegment(token.split('.')[0] ?? '');
+  if (typeof header !== 'object' || header === null || Array.isArray(header)) return [];
+  if (typeof (header as Record<string, unknown>).alg !== 'string') return [];
+  return [{ slug: 'jwt', confidence: 0.97, params: { input: token }, sensitive: true }];
+};
+
+const UUID_LIKE =
+  /^(?:urn:uuid:)?\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$/i;
+const ULID = /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/i;
+
+function isUlid(value: string): boolean {
+  return ULID.test(value) && /\d/.test(value.slice(1)) && /[A-Z]/i.test(value);
+}
+
+export const detectUuid: Detector = ({ text, lines, values }) => {
+  const items = lines.length === 1 ? values : lines;
+  if (items.length === 0) return [];
+  if (!items.every((item) => UUID_LIKE.test(item) || isUlid(item))) return [];
+  return result('uuid', items.length === 1 ? 0.9 : 0.75, { mode: 'inspect', input: text });
+};
+
+const BASE64_STANDARD = /^[A-Za-z0-9+/]+={0,2}$/;
+const BASE64_URL = /^[A-Za-z0-9_-]+={0,2}$/;
+const HEX_ONLY = /^[0-9a-f]+$/i;
+const WINDOWS_PATH = /^[A-Za-z]:\\/;
+
+function printableRatio(text: string): number {
+  if (!text) return 0;
+  let printable = 0;
+  let total = 0;
+  for (const char of text) {
+    const code = char.codePointAt(0) ?? 0;
+    total++;
+    if (code === 0xfffd) return 0;
+    if (code === 0x09 || code === 0x0a || code === 0x0d || (code >= 0x20 && code !== 0x7f)) {
+      printable++;
+    }
+  }
+  return printable / total;
+}
+
+function sameWidth(lines: readonly string[]): boolean {
+  if (lines.length < 2) return true;
+  const width = lines[0]?.length ?? 0;
+  return (
+    lines.slice(0, -1).every((line) => line.length === width) &&
+    (lines.at(-1)?.length ?? 0) <= width
+  );
+}
+
+export const detectBase64: Detector = ({ text, trimmed, lines }) => {
+  if (lines.length === 0 || lines.length > 500 || !sameWidth(lines)) return [];
+  const joined = lines.join('');
+  if (joined.length < 16 || joined.length % 4 === 1) return [];
+  if (!BASE64_STANDARD.test(joined) && !BASE64_URL.test(joined)) return [];
+  if (HEX_ONLY.test(joined) || UUID_LIKE.test(trimmed)) return [];
+  if (!/[a-z]/.test(joined) || !/[A-Z]/.test(joined) || !/[0-9+/=]/.test(joined)) return [];
+  const padded = joined.endsWith('=');
+  if (padded && joined.length % 4 !== 0) return [];
+  const decoded = decodeBase64(joined);
+  if (!decoded.ok || !decoded.text.trim() || printableRatio(decoded.text) < 0.95) return [];
+  const body = decoded.text.trim();
+  const json = looksLikeJsonContainer(body) && parseJson(body).ok;
+  const strong = padded || /[+/]/.test(joined);
+  return result('base64', json ? 0.85 : strong ? 0.75 : 0.6, { mode: 'decode', input: text });
+};
+
+const QUERY_PAIR = String.raw`[\w.~%+\-\[\]]+=[^&\s#]*`;
+const QUERY_STRING = new RegExp(
+  String.raw`^(?:\?${QUERY_PAIR}(?:&${QUERY_PAIR})*|${QUERY_PAIR}(?:&${QUERY_PAIR})+)$`,
+);
+
+function isHttpUrl(value: string): boolean {
+  if (!/^https?:\/\/\S+$/i.test(value)) return false;
+  try {
+    return new URL(value).hostname !== '';
+  } catch {
+    return false;
+  }
+}
+
+export const detectUrl: Detector = ({ lines }) => {
+  if (lines.length !== 1) return [];
+  const [line = ''] = lines;
+  if (isHttpUrl(line)) return result('url', 0.9, { mode: 'parse', input: line });
+  if (QUERY_STRING.test(line)) return result('url', 0.7, { mode: 'parse', input: line });
+  return [];
+};
+
+export const detectHtmlEntities: Detector = ({ text, trimmed }) => {
+  const count = countKnownEntities(trimmed.slice(0, 20000));
+  if (count === 0) return [];
+  return result('html-entities', count > 1 ? 0.8 : 0.7, { mode: 'decode', input: text });
+};
+
+const JSON_ESCAPE = /\\(?:["\\/bfnrt]|u[0-9a-fA-F]{4})/;
+const STRONG_ESCAPE = /\\(?:"|u[0-9a-fA-F]{4})/;
+
+export const detectJsonEscape: Detector = ({ text, trimmed }) => {
+  if (!JSON_ESCAPE.test(trimmed) || WINDOWS_PATH.test(trimmed)) return [];
+  if (looksLikeJsonContainer(trimmed) && parseJson(trimmed).ok) return [];
+  const unescaped = unescapeJsonString(trimmed);
+  if (!unescaped.ok || unescaped.escapes === 0) return [];
+  const confidence = unescaped.quoted ? 0.85 : STRONG_ESCAPE.test(trimmed) ? 0.7 : 0.45;
+  return result('json-escape', confidence, { mode: 'unescape', input: text });
+};
+
+const HASH = /^(?:[0-9a-f]{32}|[0-9a-f]{40}|[0-9a-f]{64})$/i;
+
+export const detectHash: Detector = ({ lines }) => {
+  if (lines.length !== 1 || !HASH.test(lines[0] ?? '')) return [];
+  return result('hash', 0.35, { mode: 'verify', expected: lines[0] ?? '' });
+};
+
 export const detectors: Detector[] = [
+  detectJwt,
   detectRut,
   detectCpf,
   detectCnpj,
@@ -229,6 +364,12 @@ export const detectors: Detector[] = [
   detectDateTime,
   detectLists,
   detectCase,
+  detectUuid,
+  detectBase64,
+  detectUrl,
+  detectHtmlEntities,
+  detectJsonEscape,
+  detectHash,
 ];
 
 export const largeDetectors: Detector[] = [detectJson, detectHtml];
