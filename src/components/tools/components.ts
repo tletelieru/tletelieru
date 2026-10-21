@@ -15,4 +15,11 @@ export const toolComponents: Record<string, LazyExoticComponent<ComponentType>> 
   case: lazy(() => import('./case/CaseTool')),
   json: lazy(() => import('./json/JsonTool')),
   html: lazy(() => import('./html/HtmlTool')),
+  hash: lazy(() => import('./hash/HashTool')),
+  jwt: lazy(() => import('./jwt/JwtTool')),
+  uuid: lazy(() => import('./uuid/UuidTool')),
+  base64: lazy(() => import('./base64/Base64Tool')),
+  url: lazy(() => import('./url/UrlTool')),
+  'html-entities': lazy(() => import('./html-entities/HtmlEntitiesTool')),
+  'json-escape': lazy(() => import('./json-escape/JsonEscapeTool')),
 };
