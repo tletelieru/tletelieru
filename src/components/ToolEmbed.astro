@@ -32,7 +32,11 @@ const labels = {
 <script>
   import { recordVisit } from '~/lib/user-data/recent';
 
-  for (const element of document.querySelectorAll<HTMLElement>('[data-tool-slug]')) {
-    if (element.dataset.toolSlug) recordVisit(element.dataset.toolSlug);
-  }
+  const slugs = [...document.querySelectorAll<HTMLElement>('[data-tool-slug]')]
+    .map((element) => element.dataset.toolSlug)
+    .filter((slug): slug is string => Boolean(slug));
+
+  window.addEventListener('pagehide', () => {
+    for (const slug of slugs) recordVisit(slug);
+  });
 </script>
