@@ -1,0 +1,24 @@
+---
+title: CPF (Brazil)
+description: Generate valid Brazilian CPFs, validate both check digits and mask or unmask them.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one CPF per line. Dots, dashes and spaces are all accepted.
+
+<ToolEmbed slug="cpf" />
+
+## Modes
+
+- **Validate**: checks both mod-11 check digits, reports the expected ones when they do not match and rejects repeated digits like `111.111.111-11`.
+- **Format**: outputs `123.456.789-09` (with separators), `123456789-09` (dash only) or `12345678909` (no separators).
+- **Generate**: creates random valid CPFs for test data, masked or not.
+
+## Examples
+
+| Input            | Result                            |
+| ---------------- | --------------------------------- |
+| `52998224725`    | `529.982.247-25` ✔                |
+| `529.982.247-26` | wrong check digit (expected `25`) |
+| `111.111.111-11` | repeated digits                   |

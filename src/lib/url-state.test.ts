@@ -1,6 +1,28 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { readParams, useUrlState, writeParams } from './url-state';
+import { HANDOFF_KEY } from './handoff';
+import { mergeHandoff, readParams, useUrlState, writeParams } from './url-state';
+
+describe('handoff', () => {
+  it('merges handed-off params over the URL and drops the flag', () => {
+    expect(mergeHandoff('?handoff=1&mode=x', { input: 'big' })).toBe('?mode=x&input=big');
+    expect(mergeHandoff('?a=1', null)).toBe('?a=1');
+  });
+
+  it('hydrates large inputs passed through session storage', () => {
+    window.sessionStorage.setItem(HANDOFF_KEY, JSON.stringify({ input: '{"big":true}' }));
+    window.history.replaceState(null, '', '/tool/?handoff=1&count=7');
+    const { result } = renderHook(() =>
+      useUrlState({ input: '', dots: true, count: 5, mode: 'validate' }),
+    );
+    expect(result.current[0]).toMatchObject({ input: '{"big":true}', count: 7 });
+    expect(window.sessionStorage.getItem(HANDOFF_KEY)).toBeNull();
+  });
+
+  it('never writes the handoff flag back to the URL', () => {
+    expect(writeParams({ a: 'x' }, { a: '' }, '?handoff=1')).toBe('?a=x');
+  });
+});
 
 const defaults = { input: '', dots: true, count: 5, mode: 'validate' };
 

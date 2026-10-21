@@ -1,0 +1,33 @@
+---
+title: Codificador y decodificador Base64
+description: Codifica y decodifica texto UTF-8 o archivos en Base64, con alfabeto seguro para URL, relleno, líneas MIME y data URIs.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Codifica texto en Base64 o decodifícalo de vuelta. El texto se maneja como UTF-8, así que los acentos y emojis se conservan.
+
+<ToolEmbed slug="base64" />
+
+## Modos
+
+- **Codificar**: texto → Base64.
+- **Decodificar**: Base64 o un `data:` URI → texto. Se ignoran los espacios y el relleno faltante, y se aceptan ambos alfabetos. Los caracteres inválidos se informan con su posición. Si los bytes no son texto UTF-8, **Descargar archivo** los guarda como archivo (la extensión sale del tipo mime del data URI).
+- **Archivo**: elige un archivo y obtén su Base64 o un URI `data:<mime>;base64,...`. Los archivos nunca salen de tu navegador y no se guardan en la URL.
+
+## Opciones
+
+- **Alfabeto**: **Estándar** (`+` `/`) o **Seguro para URL** (`-` `_`, RFC 4648 §5).
+- **Relleno**: agrega o quita los `=` finales.
+- **Cortar a 76 (MIME)**: divide la salida en líneas de 76 caracteres con CRLF.
+
+Los tamaños junto a la salida muestran los bytes de entrada y de salida.
+
+## Ejemplos
+
+| Entrada                               | Resultado                              |
+| ------------------------------------- | -------------------------------------- |
+| `hello`                               | `aGVsbG8=`                             |
+| `ñandú ✓`                             | `w7FhbmTDuiDinJM=`                     |
+| `???>` (seguro para URL, sin relleno) | `Pz8_Pg`                               |
+| `Zm9v*YmFy` (decodificar)             | carácter inválido `*` en la posición 5 |

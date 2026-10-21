@@ -1,0 +1,41 @@
+---
+title: National IDs by country
+description: Validate, format and generate national IDs and tax numbers from Argentina, Peru, Colombia, Mexico, Uruguay, Spain and Ecuador.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pick a country and a document, then paste one value per line.
+
+<ToolEmbed slug="national-id" />
+
+## Documents
+
+| Country   | Document    | Rule                                                                    |
+| --------- | ----------- | ----------------------------------------------------------------------- |
+| Argentina | DNI         | 7–8 digits, no check digit                                              |
+| Argentina | CUIT / CUIL | prefix 20, 23, 24, 27, 30, 33 or 34 + mod 11                            |
+| Peru      | DNI         | 8 digits + optional check character                                     |
+| Peru      | RUC         | prefix 10, 15, 17 or 20 + mod 11                                        |
+| Colombia  | CC          | 6–10 digits, no check digit                                             |
+| Colombia  | NIT         | DIAN weights + mod 11                                                   |
+| Mexico    | CURP        | 18 characters, structure + mod 10 check digit                           |
+| Mexico    | RFC         | 12 (moral) or 13 (física) characters, structure + homoclave check digit |
+| Uruguay   | CI          | weights 2, 9, 8, 7, 6, 3, 4 + mod 10                                    |
+| Spain     | DNI         | 8 digits + control letter                                               |
+| Spain     | NIE         | X/Y/Z + 7 digits + control letter                                       |
+| Spain     | NIF         | DNI or NIE (persons)                                                    |
+| Ecuador   | Cédula      | province 01–24 or 30, third digit below 6, mod 10                       |
+
+## Examples
+
+| Document    | Input                | Result                           |
+| ----------- | -------------------- | -------------------------------- |
+| CUIT / CUIL | `33693450239`        | `33-69345023-9` ✔                |
+| RUC         | `20131312955`        | `20131312955` ✔                  |
+| NIT         | `8001972684`         | `800.197.268-4` ✔                |
+| CURP        | `BOXW310820HNERXN09` | `BOXW310820HNERXN09` ✔           |
+| RFC         | `GODE561231GR8`      | `GODE561231GR8` ✔                |
+| CI          | `1.234.567-3`        | wrong check digit (expected `2`) |
+| NIE         | `X1234567L`          | `X1234567L` ✔                    |
+| Cédula      | `1710034065`         | `1710034065` ✔                   |

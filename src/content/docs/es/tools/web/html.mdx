@@ -1,0 +1,27 @@
+---
+title: Visor HTML
+description: Vista previa en vivo de HTML en un iframe aislado con las solicitudes de red bloqueadas.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un fragmento HTML o un documento completo para verlo en un iframe aislado que no puede acceder a la red.
+
+<ToolEmbed slug="html" />
+
+## Opciones
+
+- **Vista**: móvil (375 px), tablet (768 px) o escritorio (ancho completo).
+- **Fondo**: claro u oscuro detrás de la vista previa.
+- **Alto**: altura del iframe en píxeles.
+- **Permitir scripts**: agrega solo `allow-scripts` al sandbox; nunca se concede `allow-same-origin`.
+
+Los fragmentos se envuelven en un documento completo. Cada vista previa recibe un `<meta charset>`, un estilo base y una Content-Security-Policy con `default-src 'none'`, de modo que se bloquean imágenes, estilos, fuentes y scripts externos; solo se cargan imágenes `data:` y `blob:` y estilos en línea. **Copiar documento** copia el documento exacto que se muestra en el iframe.
+
+## Ejemplos
+
+| Entrada                                 | Resultado                                     |
+| --------------------------------------- | --------------------------------------------- |
+| `<h1>Hola</h1>`                         | Se envuelve en `<!doctype html>` y se muestra |
+| `<img src="https://example.com/a.png">` | Bloqueado por la CSP                          |
+| `<script>alert(1)</script>`             | Solo se ejecuta con **Permitir scripts**      |

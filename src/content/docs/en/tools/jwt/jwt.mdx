@@ -1,0 +1,36 @@
+---
+title: JWT decoder
+description: 'Decode a JSON Web Token: header, payload, signature, exp / nbf / iat as dates and warnings about risky tokens.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a token. A leading `Bearer ` (or `Authorization: Bearer `), spaces and line breaks are
+ignored. Decoding happens entirely in your browser: the token is never sent anywhere and is not
+stored in the URL, the local history or snippets.
+
+<ToolEmbed slug="jwt" />
+
+## What you get
+
+- **Token view** with the header, payload and signature color-coded.
+- **Header** and **payload** as pretty-printed JSON, plus the raw **signature** (base64url) and
+  the `alg`.
+- **Time claims**: `exp`, `nbf` and `iat` in UTC, in the selected zone (default
+  `America/Santiago`) and relative to now ("expires in 12 minutes", "3 hours ago").
+- **Status**: valid, expired or not yet valid.
+
+## Warnings
+
+- `alg: none` (unsigned token) or a missing `alg`.
+- No `exp`, or a lifetime longer than 30 days.
+- `exp` / `nbf` / `iat` that are not NumericDate (seconds since 1970).
+- Payload keys that look sensitive (`password`, `secret`, `ssn`, `card`, …): a JWT payload is
+  only encoded, anyone holding the token can read it.
+
+## Signature
+
+This tool **does not verify the signature**. A token that decodes is not a trusted token; verify
+it with the issuer's key on the server.
+
+Encrypted tokens (JWE, five parts) cannot be decoded without the key and are reported as such.

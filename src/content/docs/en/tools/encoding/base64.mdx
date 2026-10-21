@@ -1,0 +1,33 @@
+---
+title: Base64 encoder & decoder
+description: Encode and decode UTF-8 text or files as Base64, with URL-safe alphabet, padding, MIME line wrapping and data URIs.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Encode text as Base64 or decode it back. Text is handled as UTF-8, so accents and emoji round trip correctly.
+
+<ToolEmbed slug="base64" />
+
+## Modes
+
+- **Encode**: text → Base64.
+- **Decode**: Base64 or a `data:` URI → text. Whitespace and missing padding are ignored, and both alphabets are accepted. Invalid characters are reported with their position. When the bytes are not UTF-8 text, **Download file** saves them as a file (the extension comes from the data URI mime type).
+- **File**: pick a file and get its Base64 or a `data:<mime>;base64,...` URI. Files never leave your browser and are not stored in the URL.
+
+## Options
+
+- **Alphabet**: **Standard** (`+` `/`) or **URL-safe** (`-` `_`, RFC 4648 §5).
+- **Padding**: adds or drops the trailing `=`.
+- **Wrap at 76 (MIME)**: splits the output into 76-character lines with CRLF.
+
+The sizes next to the output show input and output bytes.
+
+## Examples
+
+| Input                     | Result                              |
+| ------------------------- | ----------------------------------- |
+| `hello`                   | `aGVsbG8=`                          |
+| `ñandú ✓`                 | `w7FhbmTDuiDinJM=`                  |
+| `???>` (URL-safe, no pad) | `Pz8_Pg`                            |
+| `Zm9v*YmFy` (decode)      | invalid character `*` at position 5 |

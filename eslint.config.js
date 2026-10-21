@@ -5,6 +5,7 @@ import astro from 'eslint-plugin-astro';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
+import local from './eslint-rules/index.js';
 
 export default defineConfig([
   globalIgnores(['dist/', '.astro/', 'dev-dist/', 'coverage/', 'node_modules/']),
@@ -19,6 +20,14 @@ export default defineConfig([
       reactHooks.configs.flat.recommended,
     ],
     settings: { react: { version: '19.3' } },
+  },
+  {
+    files: ['**/*.tsx', '**/*.astro'],
+    plugins: { local },
+    rules: {
+      'local/prefer-logical-and': 'error',
+      'local/no-leaked-length': 'error',
+    },
   },
   {
     languageOptions: {

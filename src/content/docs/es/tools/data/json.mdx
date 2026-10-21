@@ -1,0 +1,28 @@
+---
+title: Formateador JSON
+description: Formatea, minifica y valida JSON con la posición exacta de los errores, claves ordenadas y números sin pérdida.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega JSON para formatearlo, minificarlo o validarlo; los errores muestran la línea y la columna exactas con un `^` bajo el problema.
+
+<ToolEmbed slug="json" />
+
+## Opciones
+
+- **Formatear**: indenta con 2 espacios, 4 espacios o tabuladores.
+- **Minificar**: elimina todo el espacio en blanco entre tokens.
+- **Validar**: revisa la entrada e informa el primer error.
+- **Ordenar claves**: ordena las claves de los objetos de forma recursiva (estable); los arreglos mantienen su orden.
+
+Los números y los escapes de los strings se copian tal como están escritos, así que `12345678901234567890` y `1.0` no cambian. Se aceptan un BOM inicial y saltos de línea CRLF. Las estadísticas muestran el tamaño antes y después, la profundidad de anidamiento y el total de claves.
+
+## Ejemplos
+
+| Entrada           | Resultado                                          |
+| ----------------- | -------------------------------------------------- |
+| `{"b":1,"a":1.0}` | `{"a":1.0,"b":1}` (minificar + ordenar claves)     |
+| `{"a": 1,}`       | Línea 1, columna 8: coma final antes de `}`        |
+| `{'a': 1}`        | Línea 1, columna 2: las propiedades requieren `"`  |
+| `[01]`            | Línea 1, columna 2: no se permiten ceros iniciales |

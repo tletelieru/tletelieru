@@ -1,0 +1,30 @@
+---
+title: SQL LIKE chain
+description: Build a chain of LIKE conditions from a list of values, with match modes, NOT LIKE, ILIKE and wildcard escaping.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Enter a column and paste values to get `col LIKE '%a%' OR col LIKE '%b%'`.
+
+<ToolEmbed slug="sql-like" />
+
+## Options
+
+- **Match**: contains `%v%`, starts with `v%`, ends with `%v` or exact.
+- **Joiner**: `OR` or `AND` between conditions.
+- **NOT LIKE**: negates each condition.
+- **ILIKE (Postgres)**: case-insensitive match.
+- **Escape % and \_**: treats wildcards in values literally by prefixing `%`, `_` and `!` with `!`, and adds `ESCAPE '!'` to the conditions that need it. This works in Postgres, MySQL, SQLite, SQL Server and Oracle.
+- **Wrap in parentheses**: wraps the chain when there is more than one condition.
+- **Batch size**: splits the chain into groups separated by a blank line.
+- **Split on**, **Remove duplicates**, **Strip existing quotes**, **Escape quotes**, **Layout** and **Uppercase keywords** are shared with the other SQL tools.
+
+## Examples
+
+| Input       | Options          | Result                                 |
+| ----------- | ---------------- | -------------------------------------- |
+| `a, b`      | column `name`    | `(name LIKE '%a%' OR name LIKE '%b%')` |
+| `gmail.com` | ends, NOT, ILIKE | `email NOT ILIKE '%gmail.com'`         |
+| `O'Brien`   | exact            | `last_name LIKE 'O''Brien'`            |
+| `txn_1`     | escape wildcards | `id LIKE '%txn!_1%' ESCAPE '!'`        |

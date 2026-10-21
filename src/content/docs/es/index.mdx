@@ -1,0 +1,55 @@
+---
+title: T. Letelier
+description: Desarrollo fullstack. Sitio personal y una caja de herramientas de desarrollo que corre en el navegador.
+hero:
+  tagline: Desarrollo fullstack · Ingeniería Civil Informática, USM. React y React Native en el frontend; Go, Rust y Nest (TypeScript) en el backend.
+  actions:
+    - text: Abrir las herramientas
+      link: /tletelieru/es/tools/
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/tletelieru
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+import ProjectList from '~/components/ProjectList.astro';
+
+## Proyectos
+
+<ProjectList />
+
+## Stack
+
+<CardGrid>
+  <Card title="Frontend" icon="laptop">
+    React, TypeScript
+  </Card>
+  <Card title="Mobile" icon="phone">
+    React Native, Expo
+  </Card>
+  <Card title="Backend" icon="seti:go">
+    Go, Node.js, Rust, PHP
+  </Card>
+  <Card title="Bases de datos" icon="seti:db">
+    PostgreSQL, MySQL, MongoDB, DynamoDB
+  </Card>
+  <Card title="Otros" icon="setting">
+    Docker, Git
+  </Card>
+</CardGrid>
+
+## Herramientas
+
+Cada herramienta corre 100% en tu navegador: no se envía nada a ningún lado y el sitio funciona sin
+conexión una vez instalado. El estado vive en la URL, así que cualquier resultado se puede compartir
+como link.
+
+<LinkButton href="/tletelieru/es/tools/" icon="right-arrow">
+  Ir al índice de herramientas
+</LinkButton>
+
+## Contacto
+
+Encuéntrame en [GitHub](https://github.com/tletelieru).

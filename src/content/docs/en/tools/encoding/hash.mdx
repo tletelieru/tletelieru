@@ -1,0 +1,41 @@
+---
+title: Hash & HMAC
+description: Compute MD5, SHA-1, SHA-256, SHA-384 and SHA-512 hashes and HMACs of text or files, and verify an expected hash.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type or paste text (hashed as UTF-8) or pick a file. Everything is computed in your browser: nothing
+is uploaded and the HMAC key is never stored.
+
+<ToolEmbed slug="hash" />
+
+## Modes
+
+- **Hash**: MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of the input, all at once (each row has its own
+  copy button) or only the selected algorithm.
+- **HMAC**: keyed hash (RFC 2104) with HMAC-MD5, HMAC-SHA1, HMAC-SHA256, HMAC-SHA384 and
+  HMAC-SHA512. The key can be text (UTF-8), hex or Base64.
+- **Verify**: paste the expected hash and see whether it matches any algorithm. Hex is compared
+  case-insensitively; Base64 and Base64url are accepted too. Fill in the key to verify an HMAC.
+
+## Options
+
+- **Output encoding**: lowercase hex, uppercase HEX or Base64.
+- **Hash a file**: the file bytes are read locally and hashed instead of the text input.
+
+## Privacy
+
+The text, expected hash and options stay in the URL so the page can be shared. The HMAC key stays
+in memory only: it never goes to the URL, the local history or snippets.
+
+MD5 and SHA-1 are broken for collision resistance: use them only for checksums and legacy
+interoperability, never for passwords or signatures.
+
+## Examples
+
+| Input | Algorithm | Result                                                             |
+| ----- | --------- | ------------------------------------------------------------------ |
+| `abc` | MD5       | `900150983cd24fb0d6963f7d28e17f72`                                 |
+| `abc` | SHA-256   | `ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad` |
+| `""`  | SHA-1     | `da39a3ee5e6b4b0d3255bfef95601890afd80709`                         |
