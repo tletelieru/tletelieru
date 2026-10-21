@@ -1,0 +1,33 @@
+---
+title: RUT (Chile)
+description: Generate valid Chilean RUTs, validate the check digit and format with or without dots.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one RUT per line. Dots, dashes, spaces and a lowercase `k` are all accepted.
+
+<ToolEmbed slug="rut" />
+
+## Modes
+
+- **Validate**: checks the mod-11 check digit and reports the expected one when it does not match.
+- **Format**: normalizes every line to the chosen output format.
+- **Generate**: creates random valid RUTs for test data.
+
+## Output format
+
+- **Dots and dash**: `12.345.678-5`
+- **Dash only**: `12345678-5`
+- **No separators**: `123456785`
+- **Uppercase K**: toggles `10.000.013-K` ↔ `10.000.013-k`.
+
+Use **Paste** to drop the clipboard straight into the input.
+
+## Examples
+
+| Input        | Result                           |
+| ------------ | -------------------------------- |
+| `123456785`  | `12.345.678-5` ✔                 |
+| `12345678-9` | wrong check digit (expected `5`) |
+| `10000013k`  | `10.000.013-K` ✔                 |

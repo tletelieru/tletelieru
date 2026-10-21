@@ -1,0 +1,10 @@
+---
+import CommandPalette from '~/components/palette/CommandPalette';
+import { toLocale } from '~/i18n/locales';
+
+const locale = toLocale(Astro.locals.starlightRoute.locale);
+---
+
+<div class="palette-slot">
+  <CommandPalette client:only="react" locale={locale} />
+</div>

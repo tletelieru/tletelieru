@@ -1,0 +1,28 @@
+---
+title: Case converter
+description: Convert text between snake_case, kebab-case, camelCase, PascalCase, CONSTANT_CASE, Title Case and more.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type an identifier or phrase to see it in every case, or paste several lines to convert them all to one case.
+
+<ToolEmbed slug="case" />
+
+## Behaviour
+
+- **Word splitting** works on separators (spaces, `_`, `-`, `.`, `/`), camelCase humps and acronyms: `parseHTTPResponse` → `parse`, `HTTP`, `Response`.
+- Digits stay with the word before them (`version2Update` → `version2_update`, `v2` stays `v2`).
+- Accented letters are kept (`Árbol de Navidad` → `árbol_de_navidad`); **Remove accents** turns them into plain ASCII.
+- **Single line**: every case is listed with its own copy button. **Multiple lines**: each line is converted to the case chosen in **Convert to**.
+- Cases: snake_case, kebab-case, camelCase, PascalCase, CONSTANT_CASE, Title Case, Sentence case, dot.case, path/case, lower case, UPPER CASE.
+
+## Examples
+
+| Input               | snake_case            | camelCase           | CONSTANT_CASE         |
+| ------------------- | --------------------- | ------------------- | --------------------- |
+| `parseHTTPResponse` | `parse_http_response` | `parseHttpResponse` | `PARSE_HTTP_RESPONSE` |
+| `XMLHttpRequest`    | `xml_http_request`    | `xmlHttpRequest`    | `XML_HTTP_REQUEST`    |
+| `version2Update`    | `version2_update`     | `version2Update`    | `VERSION2_UPDATE`     |
+| `Árbol de Navidad`  | `árbol_de_navidad`    | `árbolDeNavidad`    | `ÁRBOL_DE_NAVIDAD`    |
+| `user-profile page` | `user_profile_page`   | `userProfilePage`   | `USER_PROFILE_PAGE`   |

@@ -1,0 +1,36 @@
+---
+title: HTML entities
+description: Encode text as HTML entities (named, decimal or hex) and decode entities back to text.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste text to escape it for HTML, or switch to **Decode** to turn entities back into characters.
+
+<ToolEmbed slug="html-entities" />
+
+## Modes
+
+- **Encode**: escapes `&`, `<`, `>`, `"` and `'` so the text is safe inside HTML.
+- **Decode**: resolves named (`&eacute;`), decimal (`&#233;`) and hex (`&#xE9;`) references.
+
+## Encode options
+
+- **Only `& < > " '`**: the minimal set, enough for element content and quoted attributes.
+- **Also non-ASCII**: every character above ASCII becomes an entity too (emoji included).
+- **Named**: uses names such as `&copy;`, `&mdash;` or `&euro;` when they exist, decimal otherwise.
+- **Decimal** / **Hex**: always numeric references, e.g. `&#128512;` or `&#x1F600;`.
+
+## Decode warnings
+
+Unknown entities are kept as they are and listed with their line and column. Legacy names such
+as `&copy` or `&amp` and numeric references are still decoded without the trailing `;`, with a
+warning. Decoding runs once, so `&amp;amp;` becomes `&amp;`.
+
+## Examples
+
+| Input            | Mode                      | Result                     |
+| ---------------- | ------------------------- | -------------------------- |
+| `<b>Tom & Jerry` | Encode                    | `&lt;b&gt;Tom &amp; Jerry` |
+| `café 😀`        | Encode (non-ASCII, named) | `caf&eacute; &#128512;`    |
+| `&#xE9;&hellip;` | Decode                    | `é…`                       |

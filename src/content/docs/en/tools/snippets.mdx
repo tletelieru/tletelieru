@@ -1,0 +1,22 @@
+---
+title: Snippets
+description: Save, tag, search and reuse your own queries, payloads and commands, stored only in this browser.
+---
+
+import FeatureEmbed from '~/components/FeatureEmbed.astro';
+
+Keep the queries, payloads and commands you reuse all the time. Save any tool output with
+**Save snippet**, or create one here with **New snippet**, then find it again by title, tag or
+content.
+
+<FeatureEmbed name="snippets" />
+
+## How it works
+
+- Snippets live in this browser's `localStorage`. Nothing is uploaded or synced anywhere.
+- Search ignores case and accents and matches titles, tags and content. Click a tag to filter.
+- **Export** downloads every snippet as a JSON file. Use it as a backup or to move snippets to
+  another browser or device.
+- **Import** reads an exported JSON file and merges it by id: new snippets are added, and an
+  existing one is replaced only when the imported copy is newer.
+- Clearing site data in the browser deletes your snippets, so export them first.

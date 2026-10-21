@@ -1,0 +1,32 @@
+---
+title: SQL IN (texto)
+description: Convierte una lista de valores en una cláusula SQL IN con comillas, con columna opcional, NOT IN y lotes.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega valores separados por saltos de línea, comas, tabulaciones o punto y coma y obtén una cláusula `IN (...)` lista para usar.
+
+<ToolEmbed slug="sql-in-text" />
+
+## Opciones
+
+- **Columna**: antepone la columna a la cláusula, `ref IN (...)`. Déjala vacía para obtener solo `IN (...)`.
+- **NOT IN**: niega la cláusula.
+- **Separar por**: cualquier separador, o solo saltos de línea cuando los valores contienen comas.
+- **Quitar duplicados**: conserva la primera aparición de cada valor, en orden.
+- **Quitar comillas existentes**: convierte `'a'` o `"a"` en `a` antes de volver a agregar comillas.
+- **Tipo de comillas**: `'simples'`, `"dobles"`, `` `backticks` `` o ninguna.
+- **Escapar comillas**: duplica las comillas internas, así `O'Brien` queda como `'O''Brien'`.
+- **Diseño**: una línea o un valor por línea.
+- **Tamaño de lote**: divide listas largas en varias cláusulas. Con columna se unen con `OR` (`AND` para `NOT IN`); sin columna se separan con una línea en blanco.
+- **Palabras clave en mayúsculas**: `IN` o `in`.
+
+## Ejemplos
+
+| Entrada                                    | Resultado                                         |
+| ------------------------------------------ | ------------------------------------------------- |
+| `txn_ab8fcd54-7491-4a31-8066-cf805be27871` | `IN ('txn_ab8fcd54-7491-4a31-8066-cf805be27871')` |
+| `a, b, a`                                  | `IN ('a', 'b')`                                   |
+| `O'Brien`                                  | `IN ('O''Brien')`                                 |
+| `a b c` con columna `id`, lote de 2        | `(id IN ('a', 'b') OR id IN ('c'))`               |

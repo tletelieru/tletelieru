@@ -1,0 +1,32 @@
+---
+title: SQL IN (text)
+description: Turn a list of values into a quoted SQL IN clause, with optional column, NOT IN and batching.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste values separated by newlines, commas, tabs or semicolons and get a ready-to-use `IN (...)` clause.
+
+<ToolEmbed slug="sql-in-text" />
+
+## Options
+
+- **Column**: prefixes the clause, `ref IN (...)`. Leave it empty to get a bare `IN (...)`.
+- **NOT IN**: negates the clause.
+- **Split on**: any separator, or newlines only when values contain commas.
+- **Remove duplicates**: keeps the first occurrence of each value, in order.
+- **Strip existing quotes**: turns `'a'` or `"a"` back into `a` before quoting again.
+- **Quote style**: `'single'`, `"double"`, `` `backtick` `` or none.
+- **Escape quotes**: doubles embedded quotes, so `O'Brien` becomes `'O''Brien'`.
+- **Layout**: single line or one value per line.
+- **Batch size**: splits long lists into several clauses. With a column they are joined with `OR` (`AND` for `NOT IN`), otherwise separated by a blank line.
+- **Uppercase keywords**: `IN` vs `in`.
+
+## Examples
+
+| Input                                      | Result                                            |
+| ------------------------------------------ | ------------------------------------------------- |
+| `txn_ab8fcd54-7491-4a31-8066-cf805be27871` | `IN ('txn_ab8fcd54-7491-4a31-8066-cf805be27871')` |
+| `a, b, a`                                  | `IN ('a', 'b')`                                   |
+| `O'Brien`                                  | `IN ('O''Brien')`                                 |
+| `a b c` with column `id`, batch size 2     | `(id IN ('a', 'b') OR id IN ('c'))`               |

@@ -1,0 +1,40 @@
+---
+title: Entidades HTML
+description: Codifica texto como entidades HTML (con nombre, decimales o hexadecimales) y decodifica entidades a texto.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un texto para escaparlo para HTML, o cambia a **Decodificar** para convertir las entidades en
+caracteres.
+
+<ToolEmbed slug="html-entities" />
+
+## Modos
+
+- **Codificar**: escapa `&`, `<`, `>`, `"` y `'` para que el texto sea seguro dentro de HTML.
+- **Decodificar**: resuelve referencias con nombre (`&eacute;`), decimales (`&#233;`) y
+  hexadecimales (`&#xE9;`).
+
+## Opciones de codificación
+
+- **Solo `& < > " '`**: el conjunto mínimo, suficiente para contenido y atributos entre comillas.
+- **También no ASCII**: todo carácter fuera de ASCII también se convierte en entidad (incluidos
+  los emoji).
+- **Con nombre**: usa nombres como `&copy;`, `&mdash;` o `&euro;` cuando existen y, si no, decimal.
+- **Decimal** / **Hexadecimal**: siempre referencias numéricas, por ejemplo `&#128512;` o
+  `&#x1F600;`.
+
+## Advertencias al decodificar
+
+Las entidades desconocidas se mantienen igual y se listan con su línea y columna. Los nombres
+heredados como `&copy` o `&amp` y las referencias numéricas se decodifican aunque falte el `;`
+final, con una advertencia. Se decodifica una sola vez, así que `&amp;amp;` queda como `&amp;`.
+
+## Ejemplos
+
+| Entrada          | Modo                             | Resultado                  |
+| ---------------- | -------------------------------- | -------------------------- |
+| `<b>Tom & Jerry` | Codificar                        | `&lt;b&gt;Tom &amp; Jerry` |
+| `café 😀`        | Codificar (no ASCII, con nombre) | `caf&eacute; &#128512;`    |
+| `&#xE9;&hellip;` | Decodificar                      | `é…`                       |

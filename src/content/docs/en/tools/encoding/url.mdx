@@ -1,0 +1,29 @@
+---
+title: URL encoder & query string parser
+description: Percent-encode and decode URL components or full URIs, parse a URL into its parts and query params, and build query strings.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Percent-encode text for URLs, decode it back, take a URL apart or build a query string from key/value pairs.
+
+<ToolEmbed slug="url" />
+
+## Modes
+
+- **Encode** / **Decode**: **Component** scope uses `encodeURIComponent` (escapes `/ ? & = #`); **Full URI** uses `encodeURI` and keeps the URL structure. Invalid percent-escapes and invalid UTF-8 sequences are reported with their position.
+- **Parse**: paste a URL or a query string (with or without `?`). Shows protocol, host, port, path and hash, and a table with every query parameter (key, decoded value and raw text). Repeated keys are kept in order. The output is the same data as JSON.
+- **Build**: add key/value rows and an optional base URL; the output is the encoded query string or the full URL. An existing query in the base is replaced and the `#hash` is kept.
+
+## Options
+
+- **Form encoding (+ for spaces)**: uses `+` instead of `%20` for spaces, like `application/x-www-form-urlencoded`. Parse mode always reads `+` as a space.
+
+## Examples
+
+| Input                    | Result                               |
+| ------------------------ | ------------------------------------ |
+| `a b&c=ñ` (encode)       | `a%20b%26c%3D%C3%B1`                 |
+| `a+b%2Bc` (decode, form) | `a b+c`                              |
+| `abc%zz` (decode)        | invalid percent-escape at position 4 |
+| `?tag=a&tag=b` (parse)   | `tag` = `a`, `tag` = `b`             |

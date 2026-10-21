@@ -1,0 +1,29 @@
+---
+title: Unix timestamp converter
+description: Convert Unix timestamps (s, ms, µs, ns) to ISO 8601, RFC 2822 and relative time, and dates back to timestamps.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one timestamp or date per line; each line is converted independently.
+
+<ToolEmbed slug="unix" />
+
+## Behaviour
+
+- **Auto-detect** by digit count: up to 11 digits is seconds, 12–14 milliseconds, 15–17 microseconds, 18+ nanoseconds. Force a unit when the guess is wrong (e.g. milliseconds before March 1973).
+- Negative timestamps (before 1970) and fractional seconds (`1700000000.5`) are supported.
+- **Output**: seconds, milliseconds, ISO 8601 in UTC and in the selected zone (default `America/Santiago`), RFC 2822, relative time and day of week. **Show** picks a single format to get one value per line.
+- **Reverse**: ISO 8601 or RFC 2822 strings become seconds and milliseconds. Dates without an offset are read in the selected zone; skipped DST times are rejected and repeated ones use the earlier offset.
+- **Now** fills the current timestamp in seconds.
+
+## Examples
+
+| Input                             | Detected     | ISO 8601 UTC               |
+| --------------------------------- | ------------ | -------------------------- |
+| `1700000000`                      | seconds      | `2023-11-14T22:13:20.000Z` |
+| `1700000000123`                   | milliseconds | `2023-11-14T22:13:20.123Z` |
+| `1700000000123456789`             | nanoseconds  | `2023-11-14T22:13:20.123Z` |
+| `-86400`                          | seconds      | `1969-12-31T00:00:00.000Z` |
+| `2023-11-14T19:13:20-03:00`       | date         | seconds `1700000000`       |
+| `Tue, 14 Nov 2023 22:13:20 +0000` | date         | seconds `1700000000`       |

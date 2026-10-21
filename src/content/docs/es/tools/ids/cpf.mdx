@@ -1,0 +1,24 @@
+---
+title: CPF (Brasil)
+description: Genera CPFs brasileños válidos, valida ambos dígitos verificadores y aplica o quita la máscara.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un CPF por línea. Se aceptan puntos, guiones y espacios.
+
+<ToolEmbed slug="cpf" />
+
+## Modos
+
+- **Validar**: revisa ambos dígitos verificadores (módulo 11), indica los esperados cuando no coinciden y rechaza dígitos repetidos como `111.111.111-11`.
+- **Formatear**: entrega `123.456.789-09` (con separadores), `123456789-09` (solo guion) o `12345678909` (sin separadores).
+- **Generar**: crea CPFs válidos aleatorios para datos de prueba, con o sin máscara.
+
+## Ejemplos
+
+| Entrada          | Resultado                                     |
+| ---------------- | --------------------------------------------- |
+| `52998224725`    | `529.982.247-25` ✔                            |
+| `529.982.247-26` | dígito verificador incorrecto (esperado `25`) |
+| `111.111.111-11` | dígitos repetidos                             |

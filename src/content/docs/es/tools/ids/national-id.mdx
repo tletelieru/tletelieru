@@ -1,0 +1,41 @@
+---
+title: Documentos de identidad por país
+description: Valida, formatea y genera documentos de identidad y números tributarios de Argentina, Perú, Colombia, México, Uruguay, España y Ecuador.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Elige un país y un documento, y luego pega un valor por línea.
+
+<ToolEmbed slug="national-id" />
+
+## Documentos
+
+| País      | Documento   | Regla                                                                          |
+| --------- | ----------- | ------------------------------------------------------------------------------ |
+| Argentina | DNI         | 7–8 dígitos, sin dígito verificador                                            |
+| Argentina | CUIT / CUIL | prefijo 20, 23, 24, 27, 30, 33 o 34 + módulo 11                                |
+| Perú      | DNI         | 8 dígitos + carácter verificador opcional                                      |
+| Perú      | RUC         | prefijo 10, 15, 17 o 20 + módulo 11                                            |
+| Colombia  | CC          | 6–10 dígitos, sin dígito verificador                                           |
+| Colombia  | NIT         | pesos de la DIAN + módulo 11                                                   |
+| México    | CURP        | 18 caracteres, estructura + dígito verificador módulo 10                       |
+| México    | RFC         | 12 (moral) o 13 (física) caracteres, estructura + dígito verificador homoclave |
+| Uruguay   | CI          | pesos 2, 9, 8, 7, 6, 3, 4 + módulo 10                                          |
+| España    | DNI         | 8 dígitos + letra de control                                                   |
+| España    | NIE         | X/Y/Z + 7 dígitos + letra de control                                           |
+| España    | NIF         | DNI o NIE (personas)                                                           |
+| Ecuador   | Cédula      | provincia 01–24 o 30, tercer dígito menor que 6, módulo 10                     |
+
+## Ejemplos
+
+| Documento   | Entrada              | Resultado                                    |
+| ----------- | -------------------- | -------------------------------------------- |
+| CUIT / CUIL | `33693450239`        | `33-69345023-9` ✔                            |
+| RUC         | `20131312955`        | `20131312955` ✔                              |
+| NIT         | `8001972684`         | `800.197.268-4` ✔                            |
+| CURP        | `BOXW310820HNERXN09` | `BOXW310820HNERXN09` ✔                       |
+| RFC         | `GODE561231GR8`      | `GODE561231GR8` ✔                            |
+| CI          | `1.234.567-3`        | dígito verificador incorrecto (esperado `2`) |
+| NIE         | `X1234567L`          | `X1234567L` ✔                                |
+| Cédula      | `1710034065`         | `1710034065` ✔                               |

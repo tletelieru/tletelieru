@@ -1,0 +1,31 @@
+---
+title: Formateador de listas SQL
+description: Formatea una lista de valores para SQL como lista simple, paréntesis, arrays de Postgres, ANY, literales de array o filas VALUES.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega los valores y elige cómo envolver la lista; aquí están disponibles todas las opciones de formato que comparten las herramientas SQL.
+
+<ToolEmbed slug="sql-list" />
+
+## Opciones
+
+- **Envoltura**: lista simple, paréntesis, `ARRAY[...]`, `= ANY(ARRAY[...])`, literal de array de Postgres `'{a,b}'` o filas `VALUES (...)`.
+- **Columna**: solo para `= ANY(...)`, da `id = ANY(ARRAY[...])`; en ese caso los lotes se unen con `OR`.
+- **Tipo de comillas**: `'simples'`, `"dobles"`, `` `backticks` `` o ninguna. El literal de array siempre usa su propio entrecomillado.
+- **Escapar comillas**: duplica las comillas internas, `O'Brien` queda como `'O''Brien'`.
+- **Diseño**: una línea o un valor por línea.
+- **Tamaño de lote**: divide la lista en varias listas separadas por una línea en blanco.
+- **Separar por**, **Quitar duplicados**, **Quitar comillas existentes** y **Palabras clave en mayúsculas** funcionan igual que en las demás herramientas SQL.
+
+## Ejemplos
+
+| Envoltura        | Resultado                   |
+| ---------------- | --------------------------- |
+| Lista simple     | `'a', 'b'`                  |
+| Paréntesis       | `('a', 'b')`                |
+| Array            | `ARRAY['a', 'b']`           |
+| ANY              | `id = ANY(ARRAY['a', 'b'])` |
+| Literal de array | `'{a,"b c"}'`               |
+| VALUES           | `VALUES ('a'), ('b')`       |

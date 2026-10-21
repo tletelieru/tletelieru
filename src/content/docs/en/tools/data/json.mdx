@@ -1,0 +1,28 @@
+---
+title: JSON prettier
+description: Format, minify and validate JSON with exact error positions, sorted keys and lossless numbers.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste JSON to format, minify or validate it; errors show the exact line and column with a caret under the problem.
+
+<ToolEmbed slug="json" />
+
+## Options
+
+- **Format**: pretty-prints with 2 spaces, 4 spaces or tabs.
+- **Minify**: removes all whitespace between tokens.
+- **Validate**: checks the input and reports the first error.
+- **Sort keys**: sorts object keys recursively (stable); arrays keep their order.
+
+Numbers and string escapes are copied as written, so `12345678901234567890` and `1.0` stay untouched. A leading BOM and CRLF line endings are accepted. Stats show the size before and after, the nesting depth and the total key count.
+
+## Examples
+
+| Input             | Result                                      |
+| ----------------- | ------------------------------------------- |
+| `{"b":1,"a":1.0}` | `{"a":1.0,"b":1}` (minify + sort keys)      |
+| `{"a": 1,}`       | Line 1, column 8: trailing comma before `}` |
+| `{'a': 1}`        | Line 1, column 2: property names need `"`   |
+| `[01]`            | Line 1, column 2: leading zeros not allowed |

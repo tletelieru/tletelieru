@@ -1,0 +1,28 @@
+---
+title: Conversor de mayúsculas/minúsculas
+description: Convierte texto entre snake_case, kebab-case, camelCase, PascalCase, CONSTANT_CASE, Title Case y más.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe un identificador o una frase para verlo en todos los formatos, o pega varias líneas para convertirlas todas a uno solo.
+
+<ToolEmbed slug="case" />
+
+## Comportamiento
+
+- **Separación de palabras**: usa separadores (espacios, `_`, `-`, `.`, `/`), las jorobas de camelCase y las siglas: `parseHTTPResponse` → `parse`, `HTTP`, `Response`.
+- Los dígitos quedan con la palabra anterior (`version2Update` → `version2_update`, `v2` se mantiene como `v2`).
+- Las letras con tilde se conservan (`Árbol de Navidad` → `árbol_de_navidad`); **Quitar tildes** las convierte a ASCII simple.
+- **Una línea**: se listan todos los formatos, cada uno con su botón de copiar. **Varias líneas**: cada línea se convierte al formato elegido en **Convertir a**.
+- Formatos: snake_case, kebab-case, camelCase, PascalCase, CONSTANT_CASE, Tipo Título, Tipo oración, dot.case, path/case, minúsculas, MAYÚSCULAS.
+
+## Ejemplos
+
+| Entrada             | snake_case            | camelCase           | CONSTANT_CASE         |
+| ------------------- | --------------------- | ------------------- | --------------------- |
+| `parseHTTPResponse` | `parse_http_response` | `parseHttpResponse` | `PARSE_HTTP_RESPONSE` |
+| `XMLHttpRequest`    | `xml_http_request`    | `xmlHttpRequest`    | `XML_HTTP_REQUEST`    |
+| `version2Update`    | `version2_update`     | `version2Update`    | `VERSION2_UPDATE`     |
+| `Árbol de Navidad`  | `árbol_de_navidad`    | `árbolDeNavidad`    | `ÁRBOL_DE_NAVIDAD`    |
+| `user-profile page` | `user_profile_page`   | `userProfilePage`   | `USER_PROFILE_PAGE`   |

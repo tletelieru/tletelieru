@@ -1,0 +1,30 @@
+---
+title: SQL IN (números)
+description: Convierte una lista de números en una cláusula SQL IN sin comillas, validando cada valor.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega números separados por saltos de línea, comas, tabulaciones o punto y coma; lo que no sea un número se informa y se omite.
+
+<ToolEmbed slug="sql-in-numbers" />
+
+## Opciones
+
+- **Columna**: antepone la columna a la cláusula, `user_id IN (...)`.
+- **NOT IN**: niega la cláusula.
+- **Ordenar ascendente**: ordena los números por valor.
+- **Quitar duplicados**: compara por valor numérico, así `1` y `1.0` cuentan como el mismo número.
+- **Quitar comillas existentes**: acepta `'1'` o `"1"`.
+- **Diseño**, **Tamaño de lote** y **Palabras clave en mayúsculas** funcionan igual que en la versión de texto.
+
+Se aceptan enteros y decimales, con signo menos opcional: `42`, `-7`, `3.14`, `.5`.
+
+## Ejemplos
+
+| Entrada                             | Resultado                              |
+| ----------------------------------- | -------------------------------------- |
+| `1, 2, 3`                           | `IN (1, 2, 3)`                         |
+| `10 -2 3.5` ordenado                | `IN (-2, 3.5, 10)`                     |
+| `1, abc, 2`                         | `IN (1, 2)` y un aviso sobre `abc`     |
+| `1 2 3` con `id`, NOT IN, lote de 2 | `(id NOT IN (1, 2) AND id NOT IN (3))` |
