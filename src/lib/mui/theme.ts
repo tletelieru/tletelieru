@@ -1,16 +1,22 @@
 import { createTheme, type Theme } from '@mui/material/styles';
 
-export type ColorMode = 'light' | 'dark';
-
-export function createToolTheme(mode: ColorMode): Theme {
+export function createToolTheme(): Theme {
   return createTheme({
-    palette: {
-      mode,
-      primary: { main: mode === 'dark' ? '#8ea1ff' : '#3b4fe4' },
-      background:
-        mode === 'dark'
-          ? { default: '#17181c', paper: '#23262f' }
-          : { default: '#ffffff', paper: '#f6f6f6' },
+    cssVariables: { colorSchemeSelector: '[data-theme="%s"]' },
+    defaultColorScheme: 'dark',
+    colorSchemes: {
+      dark: {
+        palette: {
+          primary: { main: '#8ea1ff' },
+          background: { default: '#17181c', paper: '#23262f' },
+        },
+      },
+      light: {
+        palette: {
+          primary: { main: '#3b4fe4' },
+          background: { default: '#ffffff', paper: '#f6f6f6' },
+        },
+      },
     },
     shape: { borderRadius: 8 },
     typography: {
@@ -23,3 +29,5 @@ export function createToolTheme(mode: ColorMode): Theme {
     },
   });
 }
+
+export const toolTheme = createToolTheme();

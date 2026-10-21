@@ -8,6 +8,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 import { useMessages } from '~/i18n/react';
+import { useHydrated } from '~/lib/hydration';
 import { clampInt, nonEmptyLines } from '~/lib/tools/_shared/lines';
 import {
   NANOID_ALPHABET,
@@ -18,6 +19,7 @@ import {
   inspectId,
   type IdCase,
   type IdGenerateOptions,
+  type IdGenerateResult,
   type IdType,
 } from '~/lib/tools/uuid';
 import { useUrlState } from '~/lib/url-state';
@@ -42,8 +44,6 @@ const defaults = {
   alphabet: '',
 };
 
-type State = typeof defaults;
-
 function toType(value: string): IdType {
   return (idTypes as readonly string[]).includes(value) ? (value as IdType) : 'v4';
 }
@@ -52,15 +52,23 @@ function toCase(value: string): IdCase {
   return (idCases as readonly string[]).includes(value) ? (value as IdCase) : 'default';
 }
 
-function generateOptions(state: State): IdGenerateOptions {
+function generateOptions(
+  type: string,
+  count: number,
+  monotonic: boolean,
+  size: number,
+  alphabet: string,
+): IdGenerateOptions {
   return {
-    type: toType(state.type),
-    count: clampInt(state.count, 1, 1000),
-    monotonic: state.monotonic,
-    size: Math.trunc(state.size),
-    alphabet: state.alphabet || NANOID_ALPHABET,
+    type: toType(type),
+    count: clampInt(count, 1, 1000),
+    monotonic,
+    size: Math.trunc(size),
+    alphabet: alphabet || NANOID_ALPHABET,
   };
 }
+
+const NOT_GENERATED: IdGenerateResult = { ok: true, ids: [] };
 
 function describeLine(line: string, t: UuidMessages): string {
   const result = inspectId(line);
@@ -79,15 +87,22 @@ export default function UuidTool() {
   const mode: Mode = state.mode === 'inspect' ? 'inspect' : 'generate';
   const type = toType(state.type);
   const letterCase = toCase(state.case);
-  const [generated, setGenerated] = useState(() => generateIds(generateOptions(state)));
-
-  const change = useCallback(
-    (patch: Partial<State>) => {
-      update(patch);
-      setGenerated(generateIds(generateOptions({ ...state, ...patch })));
-    },
-    [update, state],
+  const hydrated = useHydrated();
+  const options = useMemo(
+    () => generateOptions(state.type, state.count, state.monotonic, state.size, state.alphabet),
+    [state.type, state.count, state.monotonic, state.size, state.alphabet],
   );
+  const automatic = useMemo(
+    () => (hydrated ? generateIds(options) : NOT_GENERATED),
+    [hydrated, options],
+  );
+  const [manual, setManual] = useState<{
+    options: IdGenerateOptions;
+    result: IdGenerateResult;
+  } | null>(null);
+  const generated = manual && manual.options === options ? manual.result : automatic;
+
+  const change = update;
 
   const lines = useMemo(() => nonEmptyLines(state.input), [state.input]);
 
@@ -153,7 +168,10 @@ export default function UuidTool() {
     [change],
   );
 
-  const onRegenerate = useCallback(() => change({}), [change]);
+  const onRegenerate = useCallback(
+    () => setManual({ options, result: generateIds(options) }),
+    [options],
+  );
 
   const onInputChange = useCallback((input: string) => update({ input }), [update]);
 
