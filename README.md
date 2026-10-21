@@ -1,8 +1,10 @@
 # T. Letelier
 
-Fullstack developer · Software Engineer, USM.
+Fullstack developer\
+🎓 Software Engineer, USM\
+📍 Cartagena, Chile
 
-React and React Native on the frontend; Go, Rust and Nest (TypeScript) on the backend.
+I develop in React and React Native on the frontend; TypeScript, Go and Rust on the backend.
 
 **Site:** [tletelieru.github.io/tletelieru](https://tletelieru.github.io/tletelieru/)
 
