@@ -2,7 +2,10 @@ import { defineMessages } from '~/i18n/react';
 import type { JsonErrorDetail } from '~/lib/tools/json';
 import type { PresetId } from '~/lib/pipeline/presets';
 import type { OperationGroup, StepError } from '~/lib/pipeline/types';
+import type { JsonUnescapeErrorCode } from '~/lib/tools/json-escape';
 import { caseMessages } from '../tools/case/messages';
+import { htmlEntitiesMessages } from '../tools/html-entities/messages';
+import { jsonEscapeMessages } from '../tools/json-escape/messages';
 import { jsonMessages } from '../tools/json/messages';
 
 type Data = NonNullable<StepError['data']>;
@@ -15,6 +18,18 @@ function text(data: Data | undefined, key: string): string {
 function count(data: Data | undefined, key: string): number {
   const value = Number(data?.[key] ?? 0);
   return Number.isFinite(value) ? value : 0;
+}
+
+function unescapeError(
+  messages: (typeof jsonEscapeMessages)['en'],
+  data: Data | undefined,
+): string {
+  return messages.error(
+    text(data, 'reason') as JsonUnescapeErrorCode,
+    text(data, 'sequence'),
+    count(data, 'line'),
+    count(data, 'column'),
+  );
 }
 
 function jsonDetail(data: Data | undefined): JsonErrorDetail {
@@ -115,6 +130,10 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
       'base64-decode': 'Base64 decode',
       'url-encode': 'URL encode',
       'url-decode': 'URL decode',
+      'html-encode': 'HTML entities encode',
+      'html-decode': 'HTML entities decode',
+      'json-escape': 'JSON string escape',
+      'json-unescape': 'JSON string unescape',
     },
     options: {
       case: 'Letter case',
@@ -141,6 +160,10 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
       variant: 'Alphabet',
       mode: 'Mode',
       plus: 'Decode + as space',
+      scope: 'Characters',
+      format: 'Entity format',
+      quotes: 'Wrap in quotes',
+      ascii: 'Escape non-ASCII',
     },
     yes: 'Yes',
     no: 'No',
@@ -175,6 +198,8 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
       },
       variant: { standard: 'Standard', url: 'URL-safe' },
       mode: { component: 'Component', uri: 'Full URI' },
+      scope: htmlEntitiesMessages.en.scopes,
+      format: htmlEntitiesMessages.en.formats,
     },
     error: (error) => {
       const { data } = error;
@@ -201,6 +226,8 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
           return 'The decoded bytes are not valid UTF-8 text.';
         case 'url-invalid':
           return 'The input contains an invalid percent-encoded sequence.';
+        case 'json-unescape-invalid':
+          return unescapeError(jsonEscapeMessages.en, data);
         case 'unknown-op':
           return `Unknown operation: ${text(data, 'op')}`;
         default:
@@ -270,6 +297,10 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
       'base64-decode': 'Decodificar Base64',
       'url-encode': 'Codificar URL',
       'url-decode': 'Decodificar URL',
+      'html-encode': 'Codificar entidades HTML',
+      'html-decode': 'Decodificar entidades HTML',
+      'json-escape': 'Escapar string JSON',
+      'json-unescape': 'Desescapar string JSON',
     },
     options: {
       case: 'Mayúsculas',
@@ -296,6 +327,10 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
       variant: 'Alfabeto',
       mode: 'Modo',
       plus: 'Decodificar + como espacio',
+      scope: 'Caracteres',
+      format: 'Formato de entidad',
+      quotes: 'Envolver en comillas',
+      ascii: 'Escapar no ASCII',
     },
     yes: 'Sí',
     no: 'No',
@@ -340,6 +375,8 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
       },
       variant: { standard: 'Estándar', url: 'Seguro para URL' },
       mode: { component: 'Componente', uri: 'URI completa' },
+      scope: htmlEntitiesMessages.es.scopes,
+      format: htmlEntitiesMessages.es.formats,
     },
     error: (error) => {
       const { data } = error;
@@ -366,6 +403,8 @@ export const pipelineMessages = defineMessages<PipelineMessages>({
           return 'Los bytes decodificados no son texto UTF-8 válido.';
         case 'url-invalid':
           return 'La entrada contiene una secuencia de porcentaje inválida.';
+        case 'json-unescape-invalid':
+          return unescapeError(jsonEscapeMessages.es, data);
         case 'unknown-op':
           return `Operación desconocida: ${text(data, 'op')}`;
         default:

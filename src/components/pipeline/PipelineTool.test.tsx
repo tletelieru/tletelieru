@@ -2,6 +2,8 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LocaleProvider } from '~/i18n/react';
+import { pipelineOperations } from '~/lib/pipeline/operations';
+import { pipelineMessages } from './messages';
 import PipelineTool from './PipelineTool';
 
 function finalOutput(label = 'Final output'): string {
@@ -137,5 +139,36 @@ describe('PipelineTool', () => {
     );
     expect(screen.getByText('El pipeline se detuvo en el paso 1.')).toBeInTheDocument();
     expect(screen.getByLabelText('Resultado final')).toHaveValue('');
+  });
+});
+
+describe('pipeline messages', () => {
+  it('labels every operation, option and enum value in both locales', () => {
+    for (const locale of ['en', 'es'] as const) {
+      const t = pipelineMessages[locale];
+      for (const operation of pipelineOperations) {
+        expect(t.ops[operation.id]).toBeDefined();
+        for (const spec of operation.options) {
+          expect(t.options[spec.key]).toBeDefined();
+        }
+      }
+      for (const id of ['html-encode', 'json-escape']) {
+        const operation = pipelineOperations.find((item) => item.id === id);
+        for (const spec of operation?.options ?? []) {
+          if (spec.kind !== 'enum' || spec.values.includes('yes')) continue;
+          for (const value of spec.values) expect(t.values[spec.key]?.[value]).toBeDefined();
+        }
+      }
+    }
+  });
+
+  it('describes JSON unescape errors', () => {
+    const bs = String.fromCharCode(92);
+    const error = {
+      code: 'json-unescape-invalid',
+      data: { reason: 'invalid-escape', sequence: `${bs}x`, line: 2, column: 1 },
+    };
+    expect(pipelineMessages.en.error(error)).toBe(`Invalid escape ${bs}x at line 2, column 1.`);
+    expect(pipelineMessages.es.error(error)).toBe(`Escape inválido ${bs}x en línea 2, columna 1.`);
   });
 });

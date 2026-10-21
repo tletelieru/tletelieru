@@ -193,3 +193,42 @@ describe('encoding operations', () => {
     expect(run('url-encode', '\uD800')).toEqual({ ok: false, error: { code: 'url-invalid' } });
   });
 });
+
+const BS = String.fromCharCode(92);
+
+describe('html entity operations', () => {
+  it('encodes with scope and format options', () => {
+    expect(output('html-encode', '<a> & é')).toBe('&lt;a&gt; &amp; é');
+    expect(output('html-encode', 'é 😀', { scope: 'non-ascii' })).toBe('&eacute; &#128512;');
+    expect(output('html-encode', 'é', { scope: 'non-ascii', format: 'hex' })).toBe('&#xE9;');
+    expect(output('html-encode', '<', { format: 'bogus' })).toBe('&lt;');
+  });
+
+  it('decodes entities and keeps unknown ones', () => {
+    expect(output('html-decode', '&lt;b&gt; &#233; &#x1F600; &foo;')).toBe('<b> é 😀 &foo;');
+    expect(output('html-decode', '&amp;amp;')).toBe('&amp;');
+  });
+});
+
+describe('json string operations', () => {
+  it('escapes with quote and ASCII options', () => {
+    expect(output('json-escape', 'a"\n')).toBe(`a${BS}"${BS}n`);
+    expect(output('json-escape', 'é', { quotes: 'yes', ascii: 'yes' })).toBe(`"${BS}u00e9"`);
+  });
+
+  it('unescapes and reports bad escapes with a position', () => {
+    expect(output('json-unescape', `"${BS}ud83d${BS}ude00 ${BS}"x${BS}""`)).toBe('😀 "x"');
+    expect(run('json-unescape', `ok\n${BS}x`)).toEqual({
+      ok: false,
+      error: {
+        code: 'json-unescape-invalid',
+        data: { reason: 'invalid-escape', sequence: `${BS}x`, line: 2, column: 1 },
+      },
+    });
+  });
+
+  it('round-trips through escape and unescape', () => {
+    const sample = `línea "1"\n${BS} 😀`;
+    expect(output('json-unescape', output('json-escape', sample, { quotes: 'yes' }))).toBe(sample);
+  });
+});

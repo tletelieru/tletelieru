@@ -4,6 +4,13 @@ import { tools } from '../tools/registry';
 import { computeRutDv } from '../tools/rut';
 import { detectInput, MAX_DETECT_LENGTH } from './index';
 import {
+  detectBase64,
+  detectHash,
+  detectHtmlEntities,
+  detectJsonEscape,
+  detectJwt,
+  detectUrl,
+  detectUuid,
   detectCase,
   detectCnpj,
   detectCpf,
@@ -269,5 +276,216 @@ describe('detectInput', () => {
   it('never throws on odd input', () => {
     expect(() => detectInput('\u0000￿{[<')).not.toThrow();
     expect(() => detectInput(undefined as unknown as string)).not.toThrow();
+  });
+});
+
+const jwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+const uuid = '550e8400-e29b-41d4-a716-446655440000';
+const ulid = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+const md5 = 'd41d8cd98f00b204e9800998ecf8427e';
+const sha1 = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+const sha256 = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+const anyTool = () => true;
+
+function topAny(text: string) {
+  return detectInput(text, anyTool)[0];
+}
+
+function slugsAny(text: string): string[] {
+  return detectInput(text, anyTool).map((item) => item.slug);
+}
+
+describe('detectJwt', () => {
+  it('detects a JWT, strips a Bearer prefix and marks it sensitive', () => {
+    expect(detectJwt(ctx(jwt))).toEqual([
+      { slug: 'jwt', confidence: 0.97, params: { input: jwt }, sensitive: true },
+    ]);
+    expect(detectJwt(ctx(`Bearer ${jwt}`))[0]?.params).toEqual({ input: jwt });
+  });
+
+  it('ignores dotted text whose header is not JSON with alg', () => {
+    expect(detectJwt(ctx('www.example.com'))).toEqual([]);
+    expect(detectJwt(ctx('eyJ0eXAiOiJKV1QifQ.e30.sig'))).toEqual([]);
+    expect(detectJwt(ctx('a.b.c'))).toEqual([]);
+    expect(detectJwt(ctx(`${jwt}\n${jwt}`))).toEqual([]);
+  });
+
+  it('ranks the JWT first and never as Base64', () => {
+    expect(topAny(jwt).slug).toBe('jwt');
+    expect(slugsAny(jwt)).not.toContain('base64');
+  });
+});
+
+describe('detectUuid', () => {
+  it('detects single UUIDs and ULIDs in inspect mode', () => {
+    expect(detectUuid(ctx(uuid))).toEqual([
+      { slug: 'uuid', confidence: 0.9, params: { mode: 'inspect', input: uuid } },
+    ]);
+    expect(detectUuid(ctx(`{${uuid.toUpperCase()}}`))[0]?.confidence).toBe(0.9);
+    expect(detectUuid(ctx(ulid))[0]?.slug).toBe('uuid');
+  });
+
+  it('detects lists below a single value', () => {
+    const list = `${uuid}\n6ba7b810-9dad-11d1-80b4-00c04fd430c8\n${ulid}`;
+    expect(detectUuid(ctx(list))[0]?.confidence).toBe(0.75);
+    expect(topAny(list).slug).toBe('uuid');
+  });
+
+  it('ignores near misses', () => {
+    expect(detectUuid(ctx('550e8400-e29b-41d4-a716-44665544000'))).toEqual([]);
+    expect(detectUuid(ctx(`${uuid}\nhello`))).toEqual([]);
+    expect(detectUuid(ctx('ABCDEFGHJKMNPQRSTVWXYZABCD'))).toEqual([]);
+    expect(detectUuid(ctx('81ARZ3NDEKTSV4RRFFQ69G5FAV'))).toEqual([]);
+  });
+});
+
+describe('detectBase64', () => {
+  it('detects padded Base64 text in decode mode', () => {
+    const text = 'SGVsbG8sIFdvcmxkISBUaGlzIGlzIGJhc2U2NC4=';
+    expect(detectBase64(ctx(text))).toEqual([
+      { slug: 'base64', confidence: 0.75, params: { mode: 'decode', input: text } },
+    ]);
+    expect(topAny(text).slug).toBe('base64');
+  });
+
+  it('prefers Base64 that decodes to JSON', () => {
+    expect(detectBase64(ctx('eyJhIjoxLCJiIjoieCJ9'))[0]?.confidence).toBe(0.85);
+  });
+
+  it('accepts wrapped lines of equal width', () => {
+    const encoded =
+      'YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIHdyYXBwZWQgdGV4dCB0aGF0IGlzIGxvbmcgZW5vdWdoIHRvIG5lZWQgdHdvIGxpbmVzIG9mIGJhc2U2NCBvdXRwdXQgb2s=';
+    const wrapped = encoded.match(/.{1,76}/g)?.join('\n') ?? '';
+    expect(detectBase64(ctx(wrapped))[0]?.slug).toBe('base64');
+  });
+
+  it('avoids words, identifiers, hex, numbers and binary', () => {
+    for (const value of [
+      'hello',
+      'someVariableNameX',
+      'SomeLongPascalCaseName',
+      md5,
+      sha256,
+      '12345678901234567890',
+      uuid,
+      'aGk/Pj4/',
+      '/w==/w==/w==/w==',
+      'Administrator1234',
+      'abc$defghijklmnopq',
+    ]) {
+      expect(detectBase64(ctx(value))).toEqual([]);
+    }
+  });
+});
+
+describe('detectUrl', () => {
+  it('detects http(s) URLs in parse mode', () => {
+    const url = 'https://example.com/path?q=1&lang=es#top';
+    expect(detectUrl(ctx(url))).toEqual([
+      { slug: 'url', confidence: 0.9, params: { mode: 'parse', input: url } },
+    ]);
+    expect(topAny(url).slug).toBe('url');
+  });
+
+  it('detects query strings at a lower confidence', () => {
+    expect(detectUrl(ctx('?a=1&b=two'))[0]?.confidence).toBe(0.7);
+    expect(detectUrl(ctx('utm_source=x&utm_medium=email&id=%20a'))[0]?.slug).toBe('url');
+    expect(detectUrl(ctx('?q=hello'))[0]?.slug).toBe('url');
+  });
+
+  it('ignores other text', () => {
+    expect(detectUrl(ctx('a=1'))).toEqual([]);
+    expect(detectUrl(ctx('ftp://example.com'))).toEqual([]);
+    expect(detectUrl(ctx('https://'))).toEqual([]);
+    expect(detectUrl(ctx('see https://example.com for more'))).toEqual([]);
+    expect(detectUrl(ctx('https://a.com\nhttps://b.com'))).toEqual([]);
+  });
+});
+
+describe('detectHtmlEntities', () => {
+  it('detects named and numeric entities in decode mode', () => {
+    expect(detectHtmlEntities(ctx('Tom &amp; Jerry'))).toEqual([
+      {
+        slug: 'html-entities',
+        confidence: 0.7,
+        params: { mode: 'decode', input: 'Tom &amp; Jerry' },
+      },
+    ]);
+    expect(detectHtmlEntities(ctx('caf&eacute; &#233; &#xE9;'))[0]?.confidence).toBe(0.8);
+    expect(topAny('caf&eacute; &#233;').slug).toBe('html-entities');
+  });
+
+  it('ignores bare ampersands and unknown names', () => {
+    expect(detectHtmlEntities(ctx('Tom & Jerry'))).toEqual([]);
+    expect(detectHtmlEntities(ctx('a=1&b=2'))).toEqual([]);
+    expect(detectHtmlEntities(ctx('&foo; &bar;'))).toEqual([]);
+  });
+
+  it('keeps HTML markup ahead of entities', () => {
+    expect(topAny('<p>Tom &amp; Jerry</p>').slug).toBe('html');
+  });
+});
+
+describe('detectJsonEscape', () => {
+  it('detects quoted JSON strings with high confidence', () => {
+    const text = String.raw`"{\"a\":1}"`;
+    expect(detectJsonEscape(ctx(text))).toEqual([
+      { slug: 'json-escape', confidence: 0.85, params: { mode: 'unescape', input: text } },
+    ]);
+    expect(topAny(text).slug).toBe('json-escape');
+  });
+
+  it('scores unquoted escapes by strength', () => {
+    expect(detectJsonEscape(ctx(String.raw`caf\u00e9 \"x\"`))[0]?.confidence).toBe(0.7);
+    expect(detectJsonEscape(ctx(String.raw`line 1\nline 2`))[0]?.confidence).toBe(0.45);
+  });
+
+  it('ignores valid JSON, Windows paths, invalid escapes and plain text', () => {
+    expect(detectJsonEscape(ctx(String.raw`{"a":"x\ny"}`))).toEqual([]);
+    expect(detectJsonEscape(ctx(String.raw`C:\new\temp`))).toEqual([]);
+    expect(detectJsonEscape(ctx(String.raw`bad \x escape \n`))).toEqual([]);
+    expect(detectJsonEscape(ctx(String.raw`lone \ud83d`))).toEqual([]);
+    expect(detectJsonEscape(ctx('"plain"'))).toEqual([]);
+    expect(topAny(String.raw`{"a":"x\ny"}`).slug).toBe('json');
+  });
+});
+
+describe('detectHash', () => {
+  it('detects MD5, SHA-1 and SHA-256 digests at low confidence', () => {
+    for (const digest of [md5, sha1, sha256, sha256.toUpperCase()]) {
+      expect(detectHash(ctx(digest))).toEqual([
+        { slug: 'hash', confidence: 0.35, params: { mode: 'verify', expected: digest } },
+      ]);
+    }
+    expect(topAny(md5).slug).toBe('hash');
+  });
+
+  it('ignores other lengths and non-hex', () => {
+    expect(detectHash(ctx(md5.slice(1)))).toEqual([]);
+    expect(detectHash(ctx(`${md5.slice(1)}g`))).toEqual([]);
+    expect(detectHash(ctx(`${md5}\n${md5}`))).toEqual([]);
+  });
+});
+
+describe('detectInput with M3 tools', () => {
+  it('keeps existing rankings', () => {
+    expect(topAny('12.345.678-5').slug).toBe('rut');
+    expect(topAny('{"a": 1}').slug).toBe('json');
+    expect(topAny('1700000000').slug).toBe('unix');
+    expect(topAny('someVariableName').slug).toBe('case');
+    expect(topAny('2024-03-10T14:30:00Z').slug).toBe('timezone');
+    expect(topAny('1\n2\n3').slug).toBe('sql-in-numbers');
+  });
+
+  it('filters unregistered slugs by default', () => {
+    const registered = new Set(tools.map((tool) => tool.slug));
+    for (const item of detectInput(jwt)) expect(registered.has(item.slug)).toBe(true);
+  });
+
+  it('stays quiet for prose', () => {
+    const prose = 'The quick brown fox jumps over the lazy dog.\nIt was a sunny day, really.';
+    expect(detectInput(prose, anyTool).every((item) => item.confidence < 0.3)).toBe(true);
+    expect(detectInput('hello there', anyTool)).toEqual([]);
   });
 });

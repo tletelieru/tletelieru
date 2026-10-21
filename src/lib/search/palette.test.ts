@@ -1,5 +1,25 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { detectInput } from '../detect';
+import { followToolLink } from '../handoff';
+import type { ToolMeta } from '../tools/registry';
+
+vi.mock('../tools/registry', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../tools/registry')>();
+  const fallback: ToolMeta = {
+    slug: 'jwt',
+    name: { en: 'JWT', es: 'JWT' },
+    category: 'jwt',
+    description: { en: 'JWT', es: 'JWT' },
+    keywords: ['jwt'],
+  };
+  return {
+    ...actual,
+    getTool: (slug: string) => actual.getTool(slug) ?? (slug === 'jwt' ? fallback : undefined),
+  };
+});
+
+const jwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 import type { Snippet } from '../user-data/snippets';
 import {
   buildPaletteSections,
@@ -79,6 +99,29 @@ describe('buildPaletteSections', () => {
       href: '/tletelieru/en/tools/data/json/?handoff=1',
       handoff: { input: query },
     });
+  });
+
+  it('always hands off sensitive detections such as a JWT', () => {
+    const sections = buildPaletteSections({ ...base, query: jwt, detections: detectInput(jwt) });
+    const [first] = flattenSections(sections);
+    expect(first.kind === 'detection' && first.tool.slug).toBe('jwt');
+    const link = first.kind === 'detection' ? first.link : null;
+    expect(link?.href).toMatch(/^\/tletelieru\/en\/tools\/[a-z-]+\/jwt\/\?handoff=1$/);
+    expect(link?.href).not.toContain(jwt.slice(0, 20));
+    expect(link?.handoff).toEqual({ input: jwt });
+
+    const assign = vi.fn();
+    vi.stubGlobal('location', { ...window.location, assign });
+    try {
+      if (link) followToolLink(link);
+      expect(assign).toHaveBeenCalledWith(link?.href);
+      expect(JSON.parse(window.sessionStorage.getItem('tl:handoff') ?? '{}')).toEqual({
+        input: jwt,
+      });
+    } finally {
+      vi.unstubAllGlobals();
+      window.sessionStorage.clear();
+    }
   });
 
   it('ranks tools, marks favorites and appends snippets and the all-tools link', () => {

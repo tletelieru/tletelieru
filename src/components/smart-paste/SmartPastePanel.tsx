@@ -38,6 +38,7 @@ export default function SmartPastePanel() {
           link: buildToolLink(
             withBase(import.meta.env.BASE_URL, toolPath(tool, locale)),
             detection.params,
+            detection.sensitive ? 0 : undefined,
           ),
         });
       }

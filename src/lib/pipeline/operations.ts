@@ -1,8 +1,17 @@
 import { caseIds, convertLines, isCaseId } from '~/lib/tools/case';
 import { formatCnpj } from '~/lib/tools/cnpj';
 import { formatCpf } from '~/lib/tools/cpf';
+import {
+  decodeHtmlEntities,
+  encodeHtmlEntities,
+  htmlEncodeFormats,
+  htmlEncodeScopes,
+  isHtmlEncodeFormat,
+  isHtmlEncodeScope,
+} from '~/lib/tools/html-entities';
 import { formatStyles, type FormatStyle } from '~/lib/tools/ids/shared';
-import { processJson, type JsonIndent } from '~/lib/tools/json';
+import { locate, processJson, type JsonIndent } from '~/lib/tools/json';
+import { escapeJsonString, unescapeJsonString } from '~/lib/tools/json-escape';
 import { formatRut, rutStyles, type RutStyle } from '~/lib/tools/rut';
 import { buildSqlInNumbers } from '~/lib/tools/sql-in-numbers';
 import { buildSqlInText } from '~/lib/tools/sql-in-text';
@@ -397,6 +406,58 @@ export const pipelineOperations: readonly PipelineOperation[] = [
     run: (input, options) => {
       const output = decodeUrl(input, isYes(options, 'plus'));
       return output === null ? fail('url-invalid') : ok(output);
+    },
+  },
+  {
+    id: 'html-encode',
+    group: 'encoding',
+    options: [
+      enumOption('scope', htmlEncodeScopes, 'minimal'),
+      enumOption('format', htmlEncodeFormats, 'named'),
+    ],
+    run: (input, options) => {
+      const scope = optionValue(options, 'scope');
+      const format = optionValue(options, 'format');
+      return ok(
+        encodeHtmlEntities(input, {
+          scope: isHtmlEncodeScope(scope) ? scope : 'minimal',
+          format: isHtmlEncodeFormat(format) ? format : 'named',
+        }),
+      );
+    },
+  },
+  {
+    id: 'html-decode',
+    group: 'encoding',
+    options: [],
+    run: (input) => ok(decodeHtmlEntities(input).output),
+  },
+  {
+    id: 'json-escape',
+    group: 'encoding',
+    options: [enumOption('quotes', yesNo), enumOption('ascii', yesNo)],
+    run: (input, options) =>
+      ok(
+        escapeJsonString(input, {
+          quotes: isYes(options, 'quotes'),
+          asciiOnly: isYes(options, 'ascii'),
+        }),
+      ),
+  },
+  {
+    id: 'json-unescape',
+    group: 'encoding',
+    options: [],
+    run: (input) => {
+      const result = unescapeJsonString(input);
+      if (result.ok) return ok(result.text);
+      const { line, column } = locate(input, result.error.offset);
+      return fail('json-unescape-invalid', {
+        reason: result.error.code,
+        sequence: result.error.sequence,
+        line,
+        column,
+      });
     },
   },
 ];

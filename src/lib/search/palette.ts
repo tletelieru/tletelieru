@@ -124,7 +124,11 @@ export function buildPaletteSections({
       id: `detected:${tool.slug}`,
       tool,
       detection,
-      link: buildToolLink(withBase(base, toolPath(tool, locale)), detection.params),
+      link: buildToolLink(
+        withBase(base, toolPath(tool, locale)),
+        detection.params,
+        detection.sensitive ? 0 : undefined,
+      ),
     });
   }
 

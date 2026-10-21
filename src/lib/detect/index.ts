@@ -33,7 +33,14 @@ function safeRun(detector: Detector, context: DetectContext): Detection[] {
   }
 }
 
-export function detectInput(text: string): Detection[] {
+function isRegistered(slug: string): boolean {
+  return getTool(slug) !== undefined;
+}
+
+export function detectInput(
+  text: string,
+  isKnown: (slug: string) => boolean = isRegistered,
+): Detection[] {
   if (typeof text !== 'string' || !text.trim()) return [];
   const context = buildContext(text);
   const list = context.large ? largeDetectors : detectors;
@@ -41,7 +48,7 @@ export function detectInput(text: string): Detection[] {
   let order = 0;
   for (const detector of list) {
     for (const detection of safeRun(detector, context)) {
-      if (!getTool(detection.slug)) continue;
+      if (!isKnown(detection.slug)) continue;
       const current = best.get(detection.slug);
       if (!current || detection.confidence > current.detection.confidence) {
         best.set(detection.slug, { detection, order: current?.order ?? order });
