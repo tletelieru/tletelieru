@@ -10,7 +10,7 @@ interface ToolLayoutProps {
 export function ToolLayout({ options, input, output }: ToolLayoutProps) {
   return (
     <Stack spacing={2}>
-      {options ? (
+      {options && (
         <Stack
           direction="row"
           spacing={2}
@@ -19,7 +19,7 @@ export function ToolLayout({ options, input, output }: ToolLayoutProps) {
         >
           {options}
         </Stack>
-      ) : null}
+      )}
       {input}
       {output}
     </Stack>

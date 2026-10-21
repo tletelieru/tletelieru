@@ -141,7 +141,7 @@ export default function RutTool() {
             control={<Switch checked={state.upperK} onChange={onUpperKChange} />}
             label={t.upperK}
           />
-          {mode === 'generate' ? (
+          {mode === 'generate' && (
             <>
               <TextField
                 type="number"
@@ -156,11 +156,11 @@ export default function RutTool() {
                 {t.generateAgain}
               </Button>
             </>
-          ) : null}
+          )}
         </>
       }
       input={
-        mode === 'generate' ? null : (
+        !(mode === 'generate') && (
           <InputPanel
             label={t.inputLabel}
             placeholder={'12.345.678-5\n11111111-1\n10000013k'}
@@ -173,11 +173,12 @@ export default function RutTool() {
         <OutputPanel
           value={output}
           actions={
-            mode === 'validate' && lines.length ? (
+            mode === 'validate' &&
+            lines.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {t.summary(validCount, lines.length)}
               </Typography>
-            ) : null
+            )
           }
         />
       }

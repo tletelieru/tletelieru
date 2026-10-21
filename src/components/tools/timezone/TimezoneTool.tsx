@@ -123,13 +123,13 @@ export default function TimezoneTool() {
       }
       output={
         <Stack spacing={1}>
-          {note ? (
+          {note && (
             <Alert
               severity={result.status === 'ok' && result.kind === 'ambiguous' ? 'warning' : 'info'}
             >
               {note}
             </Alert>
-          ) : null}
+          )}
           <OutputPanel value={output} error={error} />
         </Stack>
       }

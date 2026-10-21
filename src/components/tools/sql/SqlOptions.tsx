@@ -88,7 +88,7 @@ export function SqlOptions({
         <ToggleButton value="any">{t.anySeparator}</ToggleButton>
         <ToggleButton value="newline">{t.newlinesOnly}</ToggleButton>
       </ToggleButtonGroup>
-      {quoteStyle ? (
+      {quoteStyle && (
         <ToggleButtonGroup
           exclusive
           size="small"
@@ -109,8 +109,8 @@ export function SqlOptions({
             {t.none}
           </ToggleButton>
         </ToggleButtonGroup>
-      ) : null}
-      {layout ? (
+      )}
+      {layout && (
         <ToggleButtonGroup
           exclusive
           size="small"
@@ -121,8 +121,8 @@ export function SqlOptions({
           <ToggleButton value="single">{t.singleLine}</ToggleButton>
           <ToggleButton value="multi">{t.onePerLine}</ToggleButton>
         </ToggleButtonGroup>
-      ) : null}
-      {batch ? (
+      )}
+      {batch && (
         <TextField
           type="number"
           label={t.batchSize}
@@ -132,7 +132,7 @@ export function SqlOptions({
           slotProps={{ htmlInput: { min: 0, max: MAX_BATCH } }}
           onChange={onBatchChange}
         />
-      ) : null}
+      )}
       <FormControlLabel
         control={<Switch checked={state.dedupe} onChange={onDedupeChange} />}
         label={t.removeDuplicates}
@@ -141,12 +141,12 @@ export function SqlOptions({
         control={<Switch checked={state.strip} onChange={onStripChange} />}
         label={t.stripQuotes}
       />
-      {escape ? (
+      {escape && (
         <FormControlLabel
           control={<Switch checked={state.escape} onChange={onEscapeChange} />}
           label={t.escapeQuotes}
         />
-      ) : null}
+      )}
       <FormControlLabel
         control={<Switch checked={state.upper} onChange={onUpperChange} />}
         label={t.uppercase}

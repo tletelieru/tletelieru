@@ -153,9 +153,7 @@ export default function SqlLikeTool() {
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={
-        <OutputPanel value={result.output} error={result.error ? t.error(result.error) : null} />
-      }
+      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
     />
   );
 }

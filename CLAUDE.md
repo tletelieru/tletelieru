@@ -27,7 +27,8 @@ Every tool runs 100% in the browser — no backend, nothing sent anywhere.
 
 ## Structure
 
-Built on **Astro Starlight** (sidebar, Pagefind search with `Ctrl/⌘ + K`, TOC, dark mode) with
+Built on **Astro Starlight** (sidebar, TOC, dark mode; Pagefind is disabled and Starlight's
+`Search` is replaced by our command palette on `Ctrl/⌘ + K`) with
 **i18n**: English and Spanish under `/tletelieru/en/` and `/tletelieru/es/` (Starlight language
 picker in the navbar). `/tletelieru/` (`src/pages/index.astro`) redirects to the saved or browser
 language.
@@ -43,16 +44,26 @@ src/
   components/ToolEmbed.astro             # mounts ToolIsland client:only with the page locale + keywords
   components/starlight/Head.astro        # Head override: PWA manifest + SW, saves preferred locale,
                                          # restores collapsed sidebar before paint
-  components/starlight/Sidebar.astro     # Sidebar override: collapse/expand toggle (desktop)
+  components/starlight/Sidebar.astro     # Sidebar override: collapse toggle + favorites/recent island
+  components/starlight/Search.astro      # Search override: CommandPalette (fuzzy + smart paste)
   components/tools/ToolIsland.tsx        # single island entry; lazy-loads the tool by slug
   components/tools/components.ts         # slug → lazy React component
-  components/tools/_shared/              # ToolRoot (MUI theme synced with Starlight), ToolLayout,
-                                         # CodeField, OutputPanel, CopyButton
+  components/tools/_shared/              # ToolRoot (MUI theme), ToolContext (slug + input/output
+                                         # handles), ToolFrame (favorite, shortcuts, hint),
+                                         # InputPanel (paste + history), OutputPanel (copy + snippet)
   components/tools/<slug>/<Name>Tool.tsx # tool UI (+ .test.tsx)
+  components/FeatureEmbed.astro          # mounts non-tool features (pipeline, snippets, smart-paste)
+  components/features/features.ts        # feature name → lazy React component
+  components/{palette,smart-paste,pipeline,snippets,history,favorites,shortcuts}/  # M2 site features
   lib/tools/<slug>.ts                    # pure functions (+ .test.ts)
   lib/tools/_shared/                     # shared helpers (lines, clamp, …)
   lib/tools/registry.ts                  # categories + tool metadata (no React; imported by config)
   lib/url-state.ts                       # useUrlState: state ↔ URL params (sync: false for secrets)
+  lib/handoff.ts                         # large prefilled inputs travel via sessionStorage, not URL
+  lib/storage.ts                         # createLocalStore/useLocalStore (useSyncExternalStore)
+  lib/user-data/                         # favorites, recent, history, snippets stores + reducers
+  lib/{search,detect,pipeline,snippets,history,shortcuts}  # pure logic for the M2 features
+eslint-rules/index.js                    # local ESLint rules (prefer-logical-and, no-leaked-length)
 ```
 
 ## Conventions
@@ -71,6 +82,13 @@ src/
 - Markdown/MDX links and hero links are not base-prefixed by Starlight: write `/tletelieru/...` or
   use `withBase(import.meta.env.BASE_URL, path)`.
 - Wrap MUI in `ToolRoot` (adds `.not-content` so Starlight prose styles don't leak in).
+- Use `InputPanel` / `OutputPanel` for the main input and output: they give every tool Paste,
+  per-tool history, Save snippet and the keyboard shortcuts (they register themselves in
+  `ToolContext`). Pass `history={false}` / `snippet={false}` for secrets.
+- User data lives only in localStorage through `createLocalStore`; read it with `useLocalStore`.
+- Conditional JSX: `cond && <X />`, never `cond ? <X /> : null` (`local/prefer-logical-and`, with
+  autofix); compare lengths explicitly (`list.length > 0 &&`, `local/no-leaked-length`). Ternaries
+  with null are still fine for non-JSX props such as `error={failed ? message : null}`.
 
 ## Tooling notes
 

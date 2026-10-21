@@ -84,12 +84,12 @@ export default function CaseTool() {
       output={
         <Stack spacing={2}>
           <OutputPanel value={output} label={t.output(t.cases[target])} />
-          {allCases ? (
+          {allCases && (
             <Stack spacing={1}>
               <Typography variant="subtitle2">{t.allCases}</Typography>
               <CaseList label={t.allCases} items={allCases} />
             </Stack>
-          ) : null}
+          )}
         </Stack>
       }
     />

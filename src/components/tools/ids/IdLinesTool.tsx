@@ -146,7 +146,7 @@ export function IdLinesTool({
             <ToggleButton value="format">{t.format}</ToggleButton>
             <ToggleButton value="generate">{t.generate}</ToggleButton>
           </ToggleButtonGroup>
-          {mode !== 'validate' && styles.length > 1 ? (
+          {mode !== 'validate' && styles.length > 1 && (
             <ToggleButtonGroup
               exclusive
               size="small"
@@ -164,8 +164,8 @@ export function IdLinesTool({
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-          ) : null}
-          {mode === 'generate' ? (
+          )}
+          {mode === 'generate' && (
             <>
               {generateOptions}
               <TextField
@@ -181,11 +181,11 @@ export function IdLinesTool({
                 {t.generateAgain}
               </Button>
             </>
-          ) : null}
+          )}
         </>
       }
       input={
-        mode === 'generate' ? null : (
+        !(mode === 'generate') && (
           <InputPanel
             label={inputLabel}
             placeholder={placeholder}
@@ -198,11 +198,12 @@ export function IdLinesTool({
         <OutputPanel
           value={output}
           actions={
-            mode === 'validate' && lines.length ? (
+            mode === 'validate' &&
+            lines.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {t.summary(validCount, lines.length)}
               </Typography>
-            ) : null
+            )
           }
         />
       }
