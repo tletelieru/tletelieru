@@ -1,0 +1,29 @@
+---
+title: Timezone converter
+description: Convert a date-time between time zones (America/Santiago ↔ UTC by default) with offsets, abbreviations and DST.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type a local date-time in the source zone and see it in every target zone at once.
+
+<ToolEmbed slug="timezone" />
+
+## Behaviour
+
+- **Input**: `YYYY-MM-DD HH:mm[:ss]` is read as wall-clock time in the source zone. ISO 8601 with an offset (`Z`, `-03:00`, `+0530`) is an exact instant and the source zone is only used for display.
+- **Targets**: add as many zones as needed; each row shows local time, UTC offset, abbreviation (when Intl has one) and whether DST is in effect.
+- **DST gaps**: local times skipped when clocks jump forward (Chile, first Sunday of September) are rejected with the transition and a suggested time.
+- **DST overlaps**: local times that happen twice when clocks fall back (Chile, first Sunday of April) show both readings, earlier and later.
+- **Swap** exchanges the source zone with the first target and rewrites the input so the instant stays the same. **Now** fills the current time in the source zone.
+
+## Examples
+
+| Input                  | From               | To             | Result                                                |
+| ---------------------- | ------------------ | -------------- | ----------------------------------------------------- |
+| `2026-01-15 09:30`     | `America/Santiago` | `UTC`          | `2026-01-15 12:30:00` `+00:00`                        |
+| `2026-07-01 08:00`     | `America/Santiago` | `UTC`          | `2026-07-01 12:00:00` (Santiago is `-04:00`)          |
+| `2026-03-01 00:00`     | `Asia/Kolkata`     | `UTC`          | `2026-02-28 18:30:00`                                 |
+| `2026-01-15T12:00:00Z` | any                | `Asia/Kolkata` | `2026-01-15 17:30:00` `+05:30`                        |
+| `2026-04-04 23:30`     | `America/Santiago` | `UTC`          | ambiguous: `02:30Z` (`-03:00`) or `03:30Z` (`-04:00`) |
+| `2026-09-06 00:30`     | `America/Santiago` | `UTC`          | does not exist (clocks jump `00:00` → `01:00`)        |

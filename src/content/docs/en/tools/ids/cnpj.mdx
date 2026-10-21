@@ -1,0 +1,25 @@
+---
+title: CNPJ (Brazil)
+description: Generate, validate and mask Brazilian CNPJs, including the new alphanumeric format.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one CNPJ per line. Numeric and alphanumeric CNPJs (Receita Federal, from July 2026) share the same check digit algorithm.
+
+<ToolEmbed slug="cnpj" />
+
+## Modes
+
+- **Validate**: checks both mod-11 check digits, using `ASCII code − 48` as the value of each character, and rejects repeated characters.
+- **Format**: outputs `12.345.678/0001-95` (with separators), `123456780001-95` (dash only) or `12345678000195` (no separators).
+- **Generate**: creates random valid CNPJs, numeric or alphanumeric, masked or not.
+
+## Examples
+
+| Input                | Result                            |
+| -------------------- | --------------------------------- |
+| `11222333000181`     | `11.222.333/0001-81` ✔            |
+| `12ABC34501DE35`     | `12.ABC.345/01DE-35` ✔            |
+| `11.222.333/0001-82` | wrong check digit (expected `81`) |
+| `00.000.000/0000-00` | repeated digits                   |

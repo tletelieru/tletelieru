@@ -1,0 +1,30 @@
+---
+title: Cadena SQL LIKE
+description: Arma una cadena de condiciones LIKE a partir de una lista de valores, con modos de coincidencia, NOT LIKE, ILIKE y escape de comodines.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe una columna y pega los valores para obtener `col LIKE '%a%' OR col LIKE '%b%'`.
+
+<ToolEmbed slug="sql-like" />
+
+## Opciones
+
+- **Coincidencia**: contiene `%v%`, empieza con `v%`, termina con `%v` o exacta.
+- **Conector**: `OR` o `AND` entre condiciones.
+- **NOT LIKE**: niega cada condición.
+- **ILIKE (Postgres)**: coincidencia sin distinguir mayúsculas.
+- **Escapar % y \_**: trata los comodines de los valores de forma literal anteponiendo `!` a `%`, `_` y `!`, y agrega `ESCAPE '!'` a las condiciones que lo necesitan. Funciona en Postgres, MySQL, SQLite, SQL Server y Oracle.
+- **Envolver en paréntesis**: envuelve la cadena cuando hay más de una condición.
+- **Tamaño de lote**: divide la cadena en grupos separados por una línea en blanco.
+- **Separar por**, **Quitar duplicados**, **Quitar comillas existentes**, **Escapar comillas**, **Diseño** y **Palabras clave en mayúsculas** se comparten con las demás herramientas SQL.
+
+## Ejemplos
+
+| Entrada     | Opciones            | Resultado                              |
+| ----------- | ------------------- | -------------------------------------- |
+| `a, b`      | columna `name`      | `(name LIKE '%a%' OR name LIKE '%b%')` |
+| `gmail.com` | termina, NOT, ILIKE | `email NOT ILIKE '%gmail.com'`         |
+| `O'Brien`   | exacta              | `last_name LIKE 'O''Brien'`            |
+| `txn_1`     | escapar comodines   | `id LIKE '%txn!_1%' ESCAPE '!'`        |

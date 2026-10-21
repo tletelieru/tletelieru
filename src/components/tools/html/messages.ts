@@ -1,0 +1,38 @@
+import { defineMessages } from '~/i18n/react';
+
+export const htmlMessages = defineMessages({
+  en: {
+    viewport: 'Viewport',
+    mobile: 'Mobile 375',
+    tablet: 'Tablet 768',
+    desktop: 'Desktop 100%',
+    background: 'Background',
+    light: 'Light',
+    dark: 'Dark',
+    height: 'Height (px)',
+    allowScripts: 'Allow scripts',
+    inputLabel: 'HTML',
+    placeholder: '<h1>Hello</h1>\n<p>Paste a fragment or a full document.</p>',
+    preview: 'Preview',
+    scriptsAllowed: 'Scripts allowed · network blocked',
+    scriptsBlocked: 'Scripts blocked · network blocked',
+    copyDocument: 'Copy document',
+  },
+  es: {
+    viewport: 'Vista',
+    mobile: 'Móvil 375',
+    tablet: 'Tablet 768',
+    desktop: 'Escritorio 100%',
+    background: 'Fondo',
+    light: 'Claro',
+    dark: 'Oscuro',
+    height: 'Alto (px)',
+    allowScripts: 'Permitir scripts',
+    inputLabel: 'HTML',
+    placeholder: '<h1>Hola</h1>\n<p>Pega un fragmento o un documento completo.</p>',
+    preview: 'Vista previa',
+    scriptsAllowed: 'Scripts permitidos · red bloqueada',
+    scriptsBlocked: 'Scripts bloqueados · red bloqueada',
+    copyDocument: 'Copiar documento',
+  },
+});

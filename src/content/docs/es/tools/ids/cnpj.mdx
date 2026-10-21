@@ -1,0 +1,25 @@
+---
+title: CNPJ (Brasil)
+description: Genera, valida y aplica máscara a CNPJs brasileños, incluido el nuevo formato alfanumérico.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un CNPJ por línea. Los CNPJs numéricos y alfanuméricos (Receita Federal, desde julio de 2026) usan el mismo algoritmo de dígito verificador.
+
+<ToolEmbed slug="cnpj" />
+
+## Modos
+
+- **Validar**: revisa ambos dígitos verificadores (módulo 11), usando `código ASCII − 48` como valor de cada carácter, y rechaza caracteres repetidos.
+- **Formatear**: entrega `12.345.678/0001-95` (con separadores), `123456780001-95` (solo guion) o `12345678000195` (sin separadores).
+- **Generar**: crea CNPJs válidos aleatorios, numéricos o alfanuméricos, con o sin máscara.
+
+## Ejemplos
+
+| Entrada              | Resultado                                     |
+| -------------------- | --------------------------------------------- |
+| `11222333000181`     | `11.222.333/0001-81` ✔                        |
+| `12ABC34501DE35`     | `12.ABC.345/01DE-35` ✔                        |
+| `11.222.333/0001-82` | dígito verificador incorrecto (esperado `81`) |
+| `00.000.000/0000-00` | dígitos repetidos                             |

@@ -1,0 +1,27 @@
+---
+title: HTML renderer
+description: Live preview of HTML in a sandboxed iframe with network requests blocked.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste an HTML fragment or a full document to preview it in a sandboxed iframe that cannot reach the network.
+
+<ToolEmbed slug="html" />
+
+## Options
+
+- **Viewport**: mobile (375 px), tablet (768 px) or desktop (full width).
+- **Background**: light or dark behind the preview.
+- **Height**: iframe height in pixels.
+- **Allow scripts**: adds only `allow-scripts` to the sandbox; `allow-same-origin` is never granted.
+
+Fragments are wrapped in a full document. Every preview gets a `<meta charset>`, a base style and a Content-Security-Policy with `default-src 'none'`, so external images, styles, fonts and scripts are blocked; only `data:` and `blob:` images and inline styles load. **Copy document** copies the exact document rendered in the iframe.
+
+## Examples
+
+| Input                                   | Result                                    |
+| --------------------------------------- | ----------------------------------------- |
+| `<h1>Hello</h1>`                        | Wrapped in `<!doctype html>` and rendered |
+| `<img src="https://example.com/a.png">` | Blocked by the CSP                        |
+| `<script>alert(1)</script>`             | Runs only with **Allow scripts** enabled  |

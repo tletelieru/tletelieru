@@ -1,0 +1,29 @@
+---
+title: Conversor de zonas horarias
+description: Convierte una fecha y hora entre zonas horarias (America/Santiago ↔ UTC por defecto) con offset, abreviatura y horario de verano.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe una fecha y hora local en la zona de origen para verla en todas las zonas de destino a la vez.
+
+<ToolEmbed slug="timezone" />
+
+## Comportamiento
+
+- **Entrada**: `YYYY-MM-DD HH:mm[:ss]` se interpreta como hora local en la zona de origen. ISO 8601 con offset (`Z`, `-03:00`, `+0530`) es un instante exacto y la zona de origen solo se usa para mostrarlo.
+- **Destinos**: agrega todas las zonas que necesites; cada fila muestra la hora local, el offset UTC, la abreviatura (cuando Intl la entrega) y si rige el horario de verano.
+- **Horas inexistentes**: las horas que se saltan cuando los relojes se adelantan (Chile, primer domingo de septiembre) se rechazan indicando el cambio y una hora sugerida.
+- **Horas repetidas**: las horas que ocurren dos veces cuando los relojes se atrasan (Chile, primer domingo de abril) muestran ambas lecturas, la primera y la segunda.
+- **Invertir** intercambia la zona de origen con el primer destino y reescribe la entrada para mantener el mismo instante. **Ahora** completa la hora actual en la zona de origen.
+
+## Ejemplos
+
+| Entrada                | Desde              | Hacia          | Resultado                                           |
+| ---------------------- | ------------------ | -------------- | --------------------------------------------------- |
+| `2026-01-15 09:30`     | `America/Santiago` | `UTC`          | `2026-01-15 12:30:00` `+00:00`                      |
+| `2026-07-01 08:00`     | `America/Santiago` | `UTC`          | `2026-07-01 12:00:00` (Santiago está en `-04:00`)   |
+| `2026-03-01 00:00`     | `Asia/Kolkata`     | `UTC`          | `2026-02-28 18:30:00`                               |
+| `2026-01-15T12:00:00Z` | cualquiera         | `Asia/Kolkata` | `2026-01-15 17:30:00` `+05:30`                      |
+| `2026-04-04 23:30`     | `America/Santiago` | `UTC`          | ambigua: `02:30Z` (`-03:00`) o `03:30Z` (`-04:00`)  |
+| `2026-09-06 00:30`     | `America/Santiago` | `UTC`          | no existe (los relojes saltan de `00:00` a `01:00`) |
