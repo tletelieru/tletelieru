@@ -1,0 +1,31 @@
+---
+title: SQL list formatter
+description: Format a list of values for SQL as a plain list, parentheses, Postgres arrays, ANY, array literals or VALUES rows.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste values and pick how the list should be wrapped; every formatting option shared by the SQL tools is available here.
+
+<ToolEmbed slug="sql-list" />
+
+## Options
+
+- **Wrapper**: plain list, parentheses, `ARRAY[...]`, `= ANY(ARRAY[...])`, Postgres array literal `'{a,b}'` or `VALUES (...)` rows.
+- **Column**: only for `= ANY(...)`, giving `id = ANY(ARRAY[...])`; batches are then joined with `OR`.
+- **Quote style**: `'single'`, `"double"`, `` `backtick` `` or none. The array literal always uses its own quoting.
+- **Escape quotes**: doubles embedded quotes, `O'Brien` becomes `'O''Brien'`.
+- **Layout**: single line or one value per line.
+- **Batch size**: splits the list into several lists separated by a blank line.
+- **Split on**, **Remove duplicates**, **Strip existing quotes** and **Uppercase keywords** work as in the other SQL tools.
+
+## Examples
+
+| Wrapper       | Result                      |
+| ------------- | --------------------------- |
+| Plain list    | `'a', 'b'`                  |
+| Parentheses   | `('a', 'b')`                |
+| Array         | `ARRAY['a', 'b']`           |
+| ANY           | `id = ANY(ARRAY['a', 'b'])` |
+| Array literal | `'{a,"b c"}'`               |
+| VALUES        | `VALUES ('a'), ('b')`       |

@@ -1,0 +1,37 @@
+---
+title: UUID, ULID & Nano ID generator
+description: Generate UUID v4 and v7, ULIDs and Nano IDs, and inspect the version, variant and embedded timestamp of existing ids.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Generate random or time-ordered ids in bulk, or paste existing UUIDs and ULIDs to see what they contain. Everything runs in your browser with `crypto.getRandomValues`.
+
+<ToolEmbed slug="uuid" />
+
+## Modes
+
+- **Generate**: creates 1–1000 ids of the selected type. **Generate again** draws a new batch.
+- **Inspect**: one id per line; shows the UUID version and variant, and the embedded timestamp for UUID v1, v6, v7 and ULID as an ISO 8601 date. Braces, `urn:uuid:` and ids without hyphens are accepted.
+
+## Types
+
+- **UUID v4**: 122 random bits.
+- **UUID v7**: 48-bit Unix timestamp in milliseconds followed by random bits (RFC 9562), so ids sort by creation time.
+- **ULID**: 48-bit time and 80 bits of randomness in Crockford base32 (26 characters). **Monotonic** increments the random part for ids created in the same millisecond, keeping them in order.
+- **Nano ID**: URL-friendly random id. **Size** defaults to 21 and the **Alphabet** to `A-Za-z0-9_-`; a custom alphabet needs 2–256 distinct characters.
+
+## Options
+
+- **Letter case**: **Default** is lowercase for UUIDs and uppercase for ULIDs.
+- **Hyphens**: UUIDs with or without the `8-4-4-4-12` hyphens.
+
+## Examples
+
+| Input                                  | Result                               |
+| -------------------------------------- | ------------------------------------ |
+| `018f4df7-3e00-7000-8000-000000000000` | UUID v7 · `2024-05-06T12:53:20.000Z` |
+| `b4cc8000-a838-11ee-8000-000000000000` | UUID v1 · `2024-01-01T00:00:00.000Z` |
+| `01ARYZ6S41TSV4RRFFQ69G5FAV`           | ULID · `2016-07-30T22:36:16.385Z`    |
+| `00000000-0000-0000-0000-000000000000` | nil UUID                             |
+| `ffffffff-ffff-ffff-ffff-ffffffffffff` | max UUID                             |

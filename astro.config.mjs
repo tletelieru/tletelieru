@@ -13,18 +13,29 @@ export default defineConfig({
     starlight({
       title: 'tletelieru',
       description: 'Personal site and client-side dev toolbox. Nothing leaves your browser.',
+      defaultLocale: 'en',
+      locales: {
+        en: { label: 'English', lang: 'en' },
+        es: { label: 'Español', lang: 'es' },
+      },
       logo: { src: './src/assets/logo.svg', replacesTitle: false },
       favicon: '/favicon.svg',
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/tletelieru' }],
       lastUpdated: false,
+      pagefind: false,
       components: {
         Head: './src/components/starlight/Head.astro',
+        Search: './src/components/starlight/Search.astro',
+        Sidebar: './src/components/starlight/Sidebar.astro',
       },
       customCss: ['./src/styles/custom.css'],
       sidebar: [
-        { label: 'All tools', slug: 'tools' },
+        { label: 'All tools', translations: { es: 'Todas las herramientas' }, slug: 'tools' },
+        { label: 'Pipelines', translations: { es: 'Pipelines' }, slug: 'tools/pipeline' },
+        { label: 'Snippets', translations: { es: 'Snippets' }, slug: 'tools/snippets' },
         ...categoriesWithTools().map((category) => ({
-          label: category.label,
+          label: category.label.en,
+          translations: { es: category.label.es },
           items: [{ autogenerate: { directory: `tools/${category.id}` } }],
         })),
       ],
@@ -51,10 +62,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: null,
-        globPatterns: [
-          '**/*.{html,js,css,svg,png,ico,webp,woff,woff2,txt}',
-          'pagefind/**/*.{js,css,json,pagefind,pf_meta,pf_index,pf_fragment}',
-        ],
+        globPatterns: ['**/*.{html,js,css,svg,png,ico,webp,woff,woff2,txt}'],
       },
     }),
   ],

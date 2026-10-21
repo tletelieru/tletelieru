@@ -1,25 +1,36 @@
-# tletelieru
+# T. Letelier
 
-Personal site + client-side dev toolbox, built with **Astro Starlight + React islands (MUI)**.
-Static on GitHub Pages and installable as a PWA. All tools run 100% in the browser — nothing is
-sent anywhere.
+Fullstack developer · Software Engineer, USM.
 
-**Site:** https://tletelieru.github.io/tletelieru/
+React and React Native on the frontend; Go, Rust and Nest (TypeScript) on the backend.
 
-## Toolbox
+**Site:** [tletelieru.github.io/tletelieru](https://tletelieru.github.io/tletelieru/)
 
-IDs & documents (RUT, CPF, CNPJ, national IDs), SQL helpers, time converters, text and JSON tools,
-with more on the way. Every tool keeps its state in the URL, so results can be shared as links.
+## Stack
 
-## Development
+| Area      | Tools                                |
+| --------- | ------------------------------------ |
+| Frontend  | React, TypeScript                    |
+| Mobile    | React Native, Expo                   |
+| Backend   | Go, Rust, Node.js (Nest), PHP        |
+| Databases | PostgreSQL, MySQL, MongoDB, DynamoDB |
+| Other     | Docker, Git                          |
 
-```sh
-npm install
-npm run dev        # http://localhost:4321/tletelieru/
-npm test           # Vitest
-npm run lint       # ESLint
-npm run check      # astro check
-npm run build      # static build + PWA service worker
-```
+## Dev toolbox
 
-See [`CLAUDE.md`](./CLAUDE.md) for architecture and conventions.
+Dev tools that run only in the browser, in English and Spanish. Nothing is sent anywhere, results
+can be shared as links, and the site works offline once installed.
+
+- **IDs & documents:** RUT, CPF, CNPJ (incl. alphanumeric), national IDs for AR, PE, CO, MX, UY,
+  ES and EC, UUID / ULID / Nano ID.
+- **SQL:** `IN` lists, `LIKE` chains, JSON field queries for Postgres and MySQL, list formatter.
+- **Encoding:** Base64, URL, hashes and HMAC, HTML entities, JSON string escape, JWT decoder.
+- **Time & text:** timezone and Unix timestamp converters, case converter, JSON formatter, HTML
+  preview.
+- **Workflow:** `Ctrl/⌘ + K` search, smart paste, pipelines, snippets, favorites and history.
+
+[Open the toolbox](https://tletelieru.github.io/tletelieru/en/tools/) ·
+[Abrir las herramientas](https://tletelieru.github.io/tletelieru/es/tools/)
+
+<sub>This repository is the site itself (Astro + React). Development notes are in
+[CONTRIBUTING.md](./CONTRIBUTING.md).</sub>

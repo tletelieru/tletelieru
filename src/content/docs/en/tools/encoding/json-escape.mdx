@@ -1,0 +1,38 @@
+---
+title: JSON string escape
+description: Escape text as a JSON string literal and unescape JSON strings, with exact error positions.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste raw text to turn it into JSON string content, or switch to **Unescape** to get the raw text
+back from a JSON string, with or without its surrounding quotes.
+
+<ToolEmbed slug="json-escape" />
+
+## Modes
+
+- **Escape**: escapes `"`, `\`, line breaks and tabs, and writes other control characters as
+  `\uXXXX`.
+- **Unescape**: resolves `\"`, `\\`, `\n`, `\t`, `\uXXXX` and surrogate pairs such as
+  `\ud83d\ude00`.
+
+## Options
+
+- **Wrap in quotes**: outputs a complete JSON string literal, ready to paste into a JSON file.
+- **Escape non-ASCII as \uXXXX**: produces pure ASCII output; emoji become surrogate pairs.
+
+## Errors and stringified JSON
+
+Invalid escapes (`\x`), incomplete `\u` sequences and lone surrogates (`\ud83d` with no low half)
+are reported with their line and column. When the unescaped text is itself JSON (a payload that
+was stringified twice), **Pretty-print embedded JSON** formats it.
+
+## Examples
+
+| Input                      | Mode     | Result                          |
+| -------------------------- | -------- | ------------------------------- |
+| `say "hi"`                 | Escape   | `say \"hi\"`                    |
+| `"caf\u00e9 \ud83d\ude00"` | Unescape | `café 😀`                       |
+| `"{\"a\":1}"`              | Unescape | `{"a":1}`                       |
+| `ab\x`                     | Unescape | invalid escape `\x` at column 3 |

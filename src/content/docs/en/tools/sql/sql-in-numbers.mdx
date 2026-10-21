@@ -1,0 +1,30 @@
+---
+title: SQL IN (numbers)
+description: Turn a list of numbers into an unquoted SQL IN clause, validating every value.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste numbers separated by newlines, commas, tabs or semicolons; anything that is not a number is reported and left out.
+
+<ToolEmbed slug="sql-in-numbers" />
+
+## Options
+
+- **Column**: prefixes the clause, `user_id IN (...)`.
+- **NOT IN**: negates the clause.
+- **Sort ascending**: orders the numbers by value.
+- **Remove duplicates**: compares by numeric value, so `1` and `1.0` count as the same number.
+- **Strip existing quotes**: accepts `'1'` or `"1"`.
+- **Layout**, **Batch size** and **Uppercase keywords** work as in the text version.
+
+Integers and decimals are accepted, with an optional leading minus: `42`, `-7`, `3.14`, `.5`.
+
+## Examples
+
+| Input                              | Result                                 |
+| ---------------------------------- | -------------------------------------- |
+| `1, 2, 3`                          | `IN (1, 2, 3)`                         |
+| `10 -2 3.5` sorted                 | `IN (-2, 3.5, 10)`                     |
+| `1, abc, 2`                        | `IN (1, 2)` and a warning about `abc`  |
+| `1 2 3` with `id`, NOT IN, batch 2 | `(id NOT IN (1, 2) AND id NOT IN (3))` |

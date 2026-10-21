@@ -1,0 +1,29 @@
+---
+title: Codificador de URL y parser de query string
+description: Codifica y decodifica componentes o URIs completas, separa una URL en sus partes y parámetros, y construye query strings.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Codifica texto para URLs con escapes porcentuales, decodifícalo de vuelta, separa una URL en partes o construye una query string desde pares clave/valor.
+
+<ToolEmbed slug="url" />
+
+## Modos
+
+- **Codificar** / **Decodificar**: el alcance **Componente** usa `encodeURIComponent` (escapa `/ ? & = #`); **URI completa** usa `encodeURI` y mantiene la estructura de la URL. Las secuencias de escape inválidas y el UTF-8 inválido se informan con su posición.
+- **Analizar**: pega una URL o una query string (con o sin `?`). Muestra protocolo, host, puerto, ruta y hash, y una tabla con cada parámetro (clave, valor decodificado y texto original). Las claves repetidas se mantienen en orden. La salida son los mismos datos en JSON.
+- **Construir**: agrega filas clave/valor y una URL base opcional; la salida es la query string codificada o la URL completa. Si la base ya trae query se reemplaza, y el `#hash` se conserva.
+
+## Opciones
+
+- **Codificación de formulario (+ para espacios)**: usa `+` en lugar de `%20` para los espacios, como `application/x-www-form-urlencoded`. El modo Analizar siempre lee `+` como espacio.
+
+## Ejemplos
+
+| Entrada                             | Resultado                                                |
+| ----------------------------------- | -------------------------------------------------------- |
+| `a b&c=ñ` (codificar)               | `a%20b%26c%3D%C3%B1`                                     |
+| `a+b%2Bc` (decodificar, formulario) | `a b+c`                                                  |
+| `abc%zz` (decodificar)              | secuencia de escape porcentual inválida en la posición 4 |
+| `?tag=a&tag=b` (analizar)           | `tag` = `a`, `tag` = `b`                                 |

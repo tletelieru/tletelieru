@@ -1,0 +1,39 @@
+---
+title: Escapar strings JSON
+description: Escapa texto como string JSON y desescapa strings JSON, con la posición exacta de cada error.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un texto para convertirlo en contenido de un string JSON, o cambia a **Desescapar** para
+recuperar el texto original de un string JSON, con o sin las comillas.
+
+<ToolEmbed slug="json-escape" />
+
+## Modos
+
+- **Escapar**: escapa `"`, `\`, saltos de línea y tabuladores, y escribe los demás caracteres de
+  control como `\uXXXX`.
+- **Desescapar**: resuelve `\"`, `\\`, `\n`, `\t`, `\uXXXX` y pares surrogate como
+  `\ud83d\ude00`.
+
+## Opciones
+
+- **Envolver en comillas**: genera un string JSON completo, listo para pegar en un archivo JSON.
+- **Escapar no ASCII como \uXXXX**: produce una salida solo ASCII; los emoji quedan como pares
+  surrogate.
+
+## Errores y JSON serializado
+
+Los escapes inválidos (`\x`), las secuencias `\u` incompletas y los surrogates sueltos (`\ud83d`
+sin su mitad baja) se informan con su línea y columna. Si el texto desescapado es JSON (un payload
+serializado dos veces), **Formatear el JSON embebido** lo formatea.
+
+## Ejemplos
+
+| Entrada                    | Modo       | Resultado                         |
+| -------------------------- | ---------- | --------------------------------- |
+| `say "hi"`                 | Escapar    | `say \"hi\"`                      |
+| `"caf\u00e9 \ud83d\ude00"` | Desescapar | `café 😀`                         |
+| `"{\"a\":1}"`              | Desescapar | `{"a":1}`                         |
+| `ab\x`                     | Desescapar | escape inválido `\x` en columna 3 |
