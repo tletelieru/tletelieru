@@ -1,5 +1,6 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { HANDOFF_PARAM, takeHandoff, type HandoffParams } from './handoff';
+import { useHydrated } from './hydration';
 
 export type UrlPrimitive = string | number | boolean;
 export type UrlStateShape = Record<string, UrlPrimitive>;
@@ -32,7 +33,7 @@ export function mergeHandoff(search: string, handoff: HandoffParams | null): str
 
 let handoffCache: { search: string; value: HandoffParams | null } | null = null;
 
-function readHandoff(search: string): HandoffParams | null {
+export function readHandoff(search: string): HandoffParams | null {
   if (!handoffCache || handoffCache.search !== search) {
     handoffCache = { search, value: takeHandoff(search) };
   }
@@ -64,29 +65,35 @@ export function useUrlState<T extends UrlStateShape>(
   defaults: T,
   { sync = true, debounceMs = 250 }: UrlStateOptions = {},
 ): [T, (patch: Partial<T>) => void] {
-  const [state, setState] = useState<T>(() => {
-    if (!sync || typeof window === 'undefined') return defaults;
-    const search = window.location.search;
-    return readParams(defaults, mergeHandoff(search, readHandoff(search)));
-  });
-  const defaultsRef = useRef(defaults);
-  const stateRef = useRef(state);
+  const [initialDefaults] = useState(defaults);
+  const hydrated = useHydrated();
+  const search = useMemo(() => (hydrated ? window.location.search : ''), [hydrated]);
+  const fromUrl = useMemo(
+    () =>
+      sync && search
+        ? readParams(initialDefaults, mergeHandoff(search, readHandoff(search)))
+        : initialDefaults,
+    [sync, search, initialDefaults],
+  );
+  const [edited, setEdited] = useState<T | null>(null);
+  const state = edited ?? fromUrl;
+  const latestRef = useRef<T | null>(null);
   const timerRef = useRef<number | undefined>(undefined);
 
   const update = useCallback(
     (patch: Partial<T>) => {
-      const next = { ...stateRef.current, ...patch };
-      stateRef.current = next;
-      setState(next);
+      const next = { ...(latestRef.current ?? state), ...patch };
+      latestRef.current = next;
+      setEdited(next);
       if (!sync) return;
       window.clearTimeout(timerRef.current);
       timerRef.current = window.setTimeout(() => {
-        const query = writeParams(next, defaultsRef.current, window.location.search);
+        const query = writeParams(next, initialDefaults, window.location.search);
         const url = `${window.location.pathname}${query}${window.location.hash}`;
         window.history.replaceState(window.history.state, '', url);
       }, debounceMs);
     },
-    [sync, debounceMs],
+    [state, sync, debounceMs, initialDefaults],
   );
 
   return [state, update];

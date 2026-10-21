@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { toolComponents } from '~/components/tools/components';
+import { toolLoaders } from '~/components/tools/components';
 import { locales } from '~/i18n/locales';
 import { categories, toolPath, toolsByCategory, tools, withBase } from './registry';
 
@@ -15,7 +15,7 @@ describe('tool registry', () => {
 
   it.each(tools.map((tool) => [tool.slug, tool]))('%s is fully wired', (_, tool) => {
     expect(categories.some((category) => category.id === tool.category)).toBe(true);
-    expect(toolComponents[tool.slug]).toBeDefined();
+    expect(toolLoaders[tool.slug]).toBeDefined();
     expect(tool.keywords.length).toBeGreaterThan(0);
     for (const locale of locales) {
       expect(tool.name[locale].trim()).not.toBe('');
@@ -25,7 +25,7 @@ describe('tool registry', () => {
   });
 
   it('every component has a registry entry', () => {
-    for (const slug of Object.keys(toolComponents)) {
+    for (const slug of Object.keys(toolLoaders)) {
       expect(tools.some((tool) => tool.slug === slug)).toBe(true);
     }
   });

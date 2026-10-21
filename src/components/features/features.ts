@@ -1,9 +1,14 @@
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import type { ComponentType } from 'react';
+import { createModuleCache } from '../module-cache';
 
-export const featureComponents: Record<string, LazyExoticComponent<ComponentType>> = {
-  pipeline: lazy(() => import('../pipeline/PipelineTool')),
-  snippets: lazy(() => import('../snippets/SnippetsPage')),
-  'smart-paste': lazy(() => import('../smart-paste/SmartPastePanel')),
+type FeatureModule = { default: ComponentType };
+
+export const featureLoaders: Record<string, () => Promise<FeatureModule>> = {
+  pipeline: () => import('../pipeline/PipelineTool'),
+  snippets: () => import('../snippets/SnippetsPage'),
+  'smart-paste': () => import('../smart-paste/SmartPastePanel'),
 };
+
+export const featureModules = createModuleCache(featureLoaders);
 
 export const featuresWithShortcuts: ReadonlySet<string> = new Set(['pipeline']);

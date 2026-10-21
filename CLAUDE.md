@@ -12,7 +12,7 @@ Every tool runs 100% in the browser — no backend, nothing sent anywhere.
 ## Stack
 
 - **Astro** (static output) — about me / projects as `.astro` + markdown, zero JS where possible.
-- **React islands** for each tool (`client:only="react"`).
+- **React islands** for each tool (`client:load`, rendered into the build HTML and hydrated).
 - **TypeScript** (strict).
 - **MUI** inside the React islands.
 - **PWA**: `@vite-pwa/astro` (installable + offline).
@@ -41,24 +41,28 @@ src/
   content/docs/<locale>/tools/index.mdx  # /tools index (ToolIndex, grouped by category)
   content/docs/<locale>/tools/<category>/<slug>.mdx  # one page per tool and locale
   content/projects/*.md                  # projects collection (description: { en, es })
-  components/ToolEmbed.astro             # mounts ToolIsland client:only with the page locale + keywords
+  components/ToolEmbed.astro             # preloads the tool module, mounts ToolIsland client:load + keywords
   components/starlight/Head.astro        # Head override: PWA manifest + SW, saves preferred locale,
                                          # restores collapsed sidebar before paint
   components/starlight/Sidebar.astro     # Sidebar override: collapse toggle + favorites/recent island
   components/starlight/Search.astro      # Search override: CommandPalette (fuzzy + smart paste)
-  components/tools/ToolIsland.tsx        # single island entry; lazy-loads the tool by slug
-  components/tools/components.ts         # slug → lazy React component
+  components/module-cache.ts             # createModuleCache: preload + render via use() (no Suspense)
+  components/hydration.test.tsx          # prerender + hydrateRoot every tool/feature, no mismatches
+  components/tools/ToolIsland.tsx        # single island entry; renders the tool by slug
+  components/tools/components.ts         # toolLoaders (slug → import) + toolModules cache
   components/tools/_shared/              # ToolRoot (MUI theme), ToolContext (slug + input/output
                                          # handles), ToolFrame (favorite, shortcuts, hint),
                                          # InputPanel (paste + history), OutputPanel (copy + snippet)
   components/tools/<slug>/<Name>Tool.tsx # tool UI (+ .test.tsx)
   components/FeatureEmbed.astro          # mounts non-tool features (pipeline, snippets, smart-paste)
-  components/features/features.ts        # feature name → lazy React component
+  components/features/features.ts        # featureLoaders + featureModules cache
   components/{palette,smart-paste,pipeline,snippets,history,favorites,shortcuts}/  # M2 site features
   lib/tools/<slug>.ts                    # pure functions (+ .test.ts)
   lib/tools/_shared/                     # shared helpers (lines, clamp, …)
   lib/tools/registry.ts                  # categories + tool metadata (no React; imported by config)
   lib/url-state.ts                       # useUrlState: state ↔ URL params (sync: false for secrets)
+  lib/hydration.ts                       # useHydrated (useSyncExternalStore), useIsMac
+  lib/mui/theme.ts                       # toolTheme: CSS variables keyed on Starlight's data-theme
   lib/handoff.ts                         # large prefilled inputs travel via sessionStorage, not URL
   lib/storage.ts                         # createLocalStore/useLocalStore (useSyncExternalStore)
   lib/user-data/                         # favorites, recent, history, snippets stores + reducers
@@ -82,6 +86,10 @@ eslint-rules/index.js                    # local ESLint rules (prefer-logical-an
 - Markdown/MDX links and hero links are not base-prefixed by Starlight: write `/tletelieru/...` or
   use `withBase(import.meta.env.BASE_URL, path)`.
 - Wrap MUI in `ToolRoot` (adds `.not-content` so Starlight prose styles don't leak in).
+- Tools render at build time with their defaults. Anything that reads the browser (URL params,
+  `Date.now`, random values, `navigator`, storage) must wait for `useHydrated()` so the first
+  client render matches the HTML; `useUrlState` already does this. Don't add `Suspense` or
+  `React.lazy` around tools: `hydration.test.tsx` fails on mismatches or outlined boundaries.
 - Use `InputPanel` / `OutputPanel` for the main input and output: they give every tool Paste,
   per-tool history, Save snippet and the keyboard shortcuts (they register themselves in
   `ToolContext`). Pass `history={false}` / `snippet={false}` for secrets.
