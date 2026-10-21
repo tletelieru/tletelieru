@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   formatOffset,
+  zoneOffsetLabel,
   formatWallTime,
   formatZonedIso,
   getAbbreviation,
@@ -162,5 +163,20 @@ describe('America/Santiago 2026 transitions', () => {
       kind: 'unique',
       epochMs: Date.UTC(2026, 8, 5, 19),
     });
+  });
+});
+
+describe('zoneOffsetLabel', () => {
+  it('labels the current UTC offset of a zone, DST included', () => {
+    const summer = Date.UTC(2026, 0, 15, 12);
+    const winter = Date.UTC(2026, 6, 15, 12);
+    expect(zoneOffsetLabel('America/Santiago', summer)).toBe('UTC-03:00');
+    expect(zoneOffsetLabel('America/Santiago', winter)).toBe('UTC-04:00');
+    expect(zoneOffsetLabel('Asia/Kolkata', summer)).toBe('UTC+05:30');
+    expect(zoneOffsetLabel('UTC', summer)).toBe('UTC+00:00');
+  });
+
+  it('returns an empty label for unknown zones', () => {
+    expect(zoneOffsetLabel('Mars/Olympus', Date.UTC(2026, 0, 1))).toBe('');
   });
 });

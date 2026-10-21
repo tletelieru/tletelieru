@@ -129,6 +129,23 @@ export function formatOffset(minutes: number, separator = ':'): string {
   return `${sign}${hours}${separator}${rest}`;
 }
 
+const HOUR = 3_600_000;
+const offsetLabelCache = new Map<string, { hour: number; label: string }>();
+
+export function zoneOffsetLabel(zone: string, epochMs: number): string {
+  const hour = Math.floor(epochMs / HOUR);
+  const cached = offsetLabelCache.get(zone);
+  if (cached && cached.hour === hour) return cached.label;
+  let label: string;
+  try {
+    label = `UTC${formatOffset(getOffsetMinutes(epochMs, zone))}`;
+  } catch {
+    label = '';
+  }
+  offsetLabelCache.set(zone, { hour, label });
+  return label;
+}
+
 function pad(value: number, length = 2): string {
   return String(value).padStart(length, '0');
 }
