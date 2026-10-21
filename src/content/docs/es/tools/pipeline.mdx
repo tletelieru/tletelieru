@@ -1,0 +1,37 @@
+---
+title: Pipelines
+description: Encadena herramientas en un pipeline — recorta, quita duplicados, cambia el formato, formatea JSON, arma SQL y más, paso a paso.
+---
+
+import FeatureEmbed from '~/components/FeatureEmbed.astro';
+
+Pega un texto y encadena operaciones: cada paso recibe el resultado del anterior. Expande
+cualquier paso para revisar o copiar su resultado intermedio. Todo el pipeline queda en la URL,
+así que puedes guardarlo o compartirlo. Si un paso falla, la cadena se detiene ahí y muestra el
+motivo.
+
+<FeatureEmbed name="pipeline" />
+
+## Operaciones
+
+- **Líneas**: recortar cada línea, quitar líneas vacías, quitar duplicados, ordenar (orden
+  natural), invertir, agregar prefijo / sufijo, unir líneas con un separador, separar en líneas.
+- **Texto**: MAYÚSCULAS, minúsculas, recortar, buscar y reemplazar (literal).
+- **Formato de nombres**: snake_case, kebab-case, camelCase, PascalCase, CONSTANT_CASE, Tipo
+  Título y más.
+- **JSON**: formatear (2 / 4 espacios o tabulador), minificar, ordenar claves.
+- **SQL**: `IN` desde texto, `IN` desde números, cadena `LIKE`, envolturas de lista
+  (`ARRAY[…]`, `ANY`, `VALUES`…).
+- **Identificadores**: formatear RUT, CPF y CNPJ línea por línea.
+- **Tiempo**: timestamps Unix o fechas → ISO 8601, segundos o milisegundos.
+- **Codificación**: codificar / decodificar Base64 (UTF-8), codificar / decodificar URL.
+
+Los separadores aceptan `\n` (salto de línea) y `\t` (tabulador).
+
+## Ejemplos
+
+| Pipeline                                                       | Entrada                  | Resultado                |
+| -------------------------------------------------------------- | ------------------------ | ------------------------ |
+| Recortar → quitar vacías → quitar duplicados → SQL IN (texto)  | `apple` `banana` `apple` | `IN ('apple', 'banana')` |
+| Decodificar Base64 → formatear JSON                            | `eyJhIjoxfQ==`           | `{ "a": 1 }` (indentado) |
+| Convertir formato (snake) → quitar duplicados → SQL IN (texto) | `First Name` `firstName` | `IN ('first_name')`      |

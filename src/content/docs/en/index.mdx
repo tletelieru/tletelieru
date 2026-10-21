@@ -1,0 +1,54 @@
+---
+title: T. Letelier
+description: Fullstack developer. Personal site and a client-side dev toolbox.
+hero:
+  tagline: Fullstack developer · Software Engineer, USM. React and React Native on the frontend; Go, Rust and Nest (TypeScript) on the backend.
+  actions:
+    - text: Open the toolbox
+      link: /tletelieru/en/tools/
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/tletelieru
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+import ProjectList from '~/components/ProjectList.astro';
+
+## Projects
+
+<ProjectList />
+
+## Stack
+
+<CardGrid>
+  <Card title="Frontend" icon="laptop">
+    React, TypeScript
+  </Card>
+  <Card title="Mobile" icon="phone">
+    React Native, Expo
+  </Card>
+  <Card title="Backend" icon="seti:go">
+    Go, Node.js, Rust, PHP
+  </Card>
+  <Card title="Databases" icon="seti:db">
+    PostgreSQL, MySQL, MongoDB, DynamoDB
+  </Card>
+  <Card title="Other" icon="setting">
+    Docker, Git
+  </Card>
+</CardGrid>
+
+## Toolbox
+
+Every tool runs 100% in your browser: nothing is sent anywhere, and the site works offline once
+installed. State lives in the URL, so any result can be shared as a link.
+
+<LinkButton href="/tletelieru/en/tools/" icon="right-arrow">
+  Open the tools index
+</LinkButton>
+
+## Contact
+
+Find me on [GitHub](https://github.com/tletelieru).

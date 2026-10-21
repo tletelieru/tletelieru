@@ -1,0 +1,23 @@
+---
+title: Snippets
+description: Guarda, etiqueta, busca y reutiliza tus consultas, payloads y comandos, almacenados solo en este navegador.
+---
+
+import FeatureEmbed from '~/components/FeatureEmbed.astro';
+
+Guarda las consultas, payloads y comandos que usas todo el tiempo. Guarda el resultado de cualquier
+herramienta con **Guardar snippet**, o crea uno aquí con **Nuevo snippet**, y encuéntralo después
+por título, etiqueta o contenido.
+
+<FeatureEmbed name="snippets" />
+
+## Cómo funciona
+
+- Los snippets se guardan en el `localStorage` de este navegador. No se sube ni se sincroniza nada.
+- La búsqueda ignora mayúsculas y tildes, y revisa títulos, etiquetas y contenido. Haz clic en una
+  etiqueta para filtrar.
+- **Exportar** descarga todos los snippets como un archivo JSON. Úsalo como respaldo o para llevar
+  tus snippets a otro navegador o dispositivo.
+- **Importar** lee un archivo JSON exportado y lo combina por id: los snippets nuevos se agregan, y
+  uno existente solo se reemplaza cuando la copia importada es más reciente.
+- Si borras los datos del sitio en el navegador, se pierden los snippets, así que expórtalos antes.

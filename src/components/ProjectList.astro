@@ -1,7 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import { Badge, Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+import { toLocale } from '~/i18n/locales';
 
+const locale = toLocale(Astro.locals.starlightRoute.locale);
 const projects = (await getCollection('projects')).sort(
   (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
 );
@@ -10,7 +12,7 @@ const projects = (await getCollection('projects')).sort(
 <CardGrid>
   {projects.map(({ data }) => (
     <Card title={data.title}>
-      <p>{data.description}</p>
+      <p>{data.description[locale]}</p>
       <div class="project-tags">
         {data.tags.map((tag) => (
           <Badge text={tag} variant="note" />

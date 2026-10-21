@@ -8,8 +8,22 @@ sent anywhere.
 
 ## Toolbox
 
-IDs & documents (RUT, CPF, CNPJ, national IDs), SQL helpers, time converters, text and JSON tools,
-with more on the way. Every tool keeps its state in the URL, so results can be shared as links.
+Available in English and Spanish. Every tool keeps its state in the URL, so results can be shared
+as links (secrets such as JWTs and HMAC keys never are). Press `Ctrl/⌘ + K` to search or paste
+anything and the right tool opens with it; chain tools in Pipelines and keep favorites, history
+and snippets locally.
+
+- **IDs & documents:** RUT (Chile), CPF and CNPJ (Brazil, incl. alphanumeric CNPJ), national IDs
+  for Argentina, Peru, Colombia, Mexico, Uruguay, Spain and Ecuador, UUID v4/v7, ULID and Nano ID
+  generator and inspector.
+- **Encoding & hashing:** Base64 (text and files), URL encoder and query parser, MD5 / SHA hashes
+  and HMAC, HTML entities, JSON string escape.
+- **JWT:** decoder with claim dates and warnings.
+- **SQL:** `IN` from text or numbers, `LIKE` chains, JSON field queries (Postgres / MySQL), list
+  formatter (quotes, escaping, batches, arrays, `VALUES`).
+- **Time:** timezone converter (DST-aware), Unix timestamp converter.
+- **Text & data:** case converter, JSON formatter / validator with exact error positions.
+- **Web:** sandboxed HTML preview.
 
 ## Development
 

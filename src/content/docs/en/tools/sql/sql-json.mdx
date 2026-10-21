@@ -1,0 +1,34 @@
+---
+title: SQL JSON field query
+description: Query a JSON field by key path in Postgres (jsonb) or MySQL (JSON) for a list of values.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pick a dialect, a JSON column and a key path, then paste the values to match.
+
+<ToolEmbed slug="sql-json" />
+
+## Options
+
+- **Dialect**: Postgres (`jsonb`) or MySQL (`JSON`).
+- **Operation (Postgres)**: `->>` arrow chain, `#>>` path, or `@>` containment.
+- **Operation (MySQL)**: `JSON_UNQUOTE(JSON_EXTRACT(...))`, `->>` arrow, or `JSON_CONTAINS`.
+- **Column**: the JSON column, `meta_data` by default.
+- **Key path**: dot notation, `reference` or `nested.key`. Letters, digits, `_` and `-` are allowed in each key.
+- **Batch size**: splits long `IN` lists into several clauses joined with `OR`.
+- **Split on**, **Remove duplicates**, **Strip existing quotes**, **Layout** and **Uppercase keywords** are shared with the other SQL tools.
+
+A single value uses `=`, several use `IN (...)`. Containment builds one condition per value joined with `OR`. Values are escaped for SQL string literals and, inside containment documents, for JSON as well; MySQL also gets its backslashes doubled.
+
+## Examples
+
+| Dialect  | Operation | Path         | Result                                                               |
+| -------- | --------- | ------------ | -------------------------------------------------------------------- |
+| Postgres | `->>`     | `reference`  | `meta_data->>'reference' IN ('a', 'b')`                              |
+| Postgres | `->>`     | `nested.key` | `meta_data->'nested'->>'key' = 'x'`                                  |
+| Postgres | `#>>`     | `nested.key` | `meta_data #>> '{nested,key}' = 'x'`                                 |
+| Postgres | `@>`      | `reference`  | `meta_data @> '{"reference": "a"}'`                                  |
+| MySQL    | extract   | `reference`  | `JSON_UNQUOTE(JSON_EXTRACT(meta_data, '$.reference')) IN ('a', 'b')` |
+| MySQL    | `->>`     | `reference`  | `meta_data->>'$.reference' = 'a'`                                    |
+| MySQL    | contains  | `reference`  | `JSON_CONTAINS(meta_data, '"a"', '$.reference')`                     |
