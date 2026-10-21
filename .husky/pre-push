@@ -1,0 +1,4 @@
+[ -n "$GLOBAL_PRE_PUSH_DELEGATED" ] && exit 0
+global_hooks=$(git config --global --get core.hooksPath)
+[ -n "$global_hooks" ] && [ -f "$global_hooks/pre-push" ] || exit 0
+GLOBAL_PRE_PUSH_DELEGATED=1 exec sh "$global_hooks/pre-push" "$@"

@@ -1,0 +1,14 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+import { pwaInfo } from 'virtual:pwa-info';
+
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+---
+
+<Default>
+  <slot />
+</Default>
+<link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
+<meta name="theme-color" content="#17181c" />
+{pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+<script src="../../pwa.ts"></script>

@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import { Badge, Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+---
+
+<CardGrid>
+  {projects.map(({ data }) => (
+    <Card title={data.title}>
+      <p>{data.description}</p>
+      <div class="project-tags">
+        {data.tags.map((tag) => (
+          <Badge text={tag} variant="note" />
+        ))}
+      </div>
+      {data.repo && (
+        <LinkButton href={data.repo} variant="minimal" icon="github">
+          Repo
+        </LinkButton>
+      )}
+      {data.demo && (
+        <LinkButton href={data.demo} variant="minimal" icon="external">
+          Demo
+        </LinkButton>
+      )}
+    </Card>
+  ))}
+</CardGrid>
