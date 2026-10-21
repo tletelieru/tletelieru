@@ -2,6 +2,64 @@
   margin-block: 1.5rem;
 }
 
+.sidebar-toggle {
+  display: none;
+}
+
+@media (min-width: 50rem) {
+  .sidebar-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-self: flex-end;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: -0.5rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    cursor: pointer;
+  }
+
+  .sidebar-toggle:hover {
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+  }
+
+  .sidebar-toggle svg {
+    transition: transform 0.2s ease;
+  }
+
+  :root[data-has-sidebar][data-sidebar-collapsed] {
+    --sl-content-inline-start: 3.5rem;
+  }
+
+  :root[data-sidebar-collapsed] .sidebar-pane {
+    width: 3.5rem;
+    overflow: hidden;
+    scrollbar-gutter: auto;
+  }
+
+  :root[data-sidebar-collapsed] .sidebar-content {
+    padding-inline: 0.75rem;
+  }
+
+  :root[data-sidebar-collapsed] .sidebar-content > :not(.sidebar-toggle) {
+    display: none;
+  }
+
+  :root[data-sidebar-collapsed] .sidebar-toggle {
+    align-self: center;
+    margin-bottom: 0;
+  }
+
+  :root[data-sidebar-collapsed] .sidebar-toggle svg {
+    transform: rotate(180deg);
+  }
+}
+
 .tool-root {
   color: var(--sl-color-white);
 }

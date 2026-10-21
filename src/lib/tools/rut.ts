@@ -7,8 +7,13 @@ export type RutValidation =
   | { valid: true; body: string; dv: string; formatted: string }
   | { valid: false; reason: 'empty' | 'format' | 'dv'; expectedDv?: string };
 
+export type RutStyle = 'dots' | 'dash' | 'plain';
+
+export const rutStyles: readonly RutStyle[] = ['dots', 'dash', 'plain'];
+
 export interface RutFormatOptions {
-  dots?: boolean;
+  style?: RutStyle;
+  upperK?: boolean;
 }
 
 export interface RutGenerateOptions extends RutFormatOptions {
@@ -42,9 +47,18 @@ export function parseRut(input: string): RutParts | null {
   return { body, dv };
 }
 
-export function joinRut({ body, dv }: RutParts, { dots = true }: RutFormatOptions = {}): string {
-  const grouped = dots ? body.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : body;
-  return `${grouped}-${dv}`;
+export function isRutStyle(value: unknown): value is RutStyle {
+  return typeof value === 'string' && (rutStyles as readonly string[]).includes(value);
+}
+
+export function joinRut(
+  { body, dv }: RutParts,
+  { style = 'dots', upperK = true }: RutFormatOptions = {},
+): string {
+  const digit = upperK ? dv.toUpperCase() : dv.toLowerCase();
+  if (style === 'plain') return `${body}${digit}`;
+  const grouped = style === 'dots' ? body.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : body;
+  return `${grouped}-${digit}`;
 }
 
 export function formatRut(input: string, options: RutFormatOptions = {}): string | null {
@@ -52,21 +66,21 @@ export function formatRut(input: string, options: RutFormatOptions = {}): string
   return parts ? joinRut(parts, options) : null;
 }
 
-export function validateRut(input: string): RutValidation {
+export function validateRut(input: string, options: RutFormatOptions = {}): RutValidation {
   if (!input.trim()) return { valid: false, reason: 'empty' };
   const parts = parseRut(input);
   if (!parts) return { valid: false, reason: 'format' };
   const expectedDv = computeRutDv(parts.body);
   if (expectedDv !== parts.dv) return { valid: false, reason: 'dv', expectedDv };
-  return { valid: true, ...parts, formatted: joinRut(parts) };
+  return { valid: true, ...parts, formatted: joinRut(parts, options) };
 }
 
 export function generateRuts(
-  { count = 1, min = 1_000_000, max = 29_999_999, dots = true }: RutGenerateOptions = {},
+  { count = 1, min = 1_000_000, max = 29_999_999, ...format }: RutGenerateOptions = {},
   random: () => number = Math.random,
 ): string[] {
   return Array.from({ length: count }, () => {
     const body = String(min + Math.floor(random() * (max - min + 1)));
-    return joinRut({ body, dv: computeRutDv(body) }, { dots });
+    return joinRut({ body, dv: computeRutDv(body) }, format);
   });
 }

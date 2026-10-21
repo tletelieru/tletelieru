@@ -1,0 +1,52 @@
+---
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import { Icon } from '@astrojs/starlight/components';
+import { toLocale } from '~/i18n/locales';
+
+const labels = {
+  en: { collapse: 'Collapse sidebar', expand: 'Expand sidebar' },
+  es: { collapse: 'Contraer barra lateral', expand: 'Expandir barra lateral' },
+}[toLocale(Astro.locals.starlightRoute.locale)];
+---
+
+<button
+  type="button"
+  class="sidebar-toggle"
+  aria-controls="starlight__sidebar"
+  aria-expanded="true"
+  aria-label={labels.collapse}
+  title={labels.collapse}
+  data-label-collapse={labels.collapse}
+  data-label-expand={labels.expand}
+>
+  <Icon name="left-caret" size="1.25rem" />
+</button>
+<Default>
+  <slot />
+</Default>
+
+<script>
+  const STORAGE_KEY = 'sl-sidebar-collapsed';
+  const root = document.documentElement;
+
+  function syncButton(button: HTMLButtonElement) {
+    const collapsed = root.hasAttribute('data-sidebar-collapsed');
+    const label = collapsed ? button.dataset.labelExpand : button.dataset.labelCollapse;
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.setAttribute('aria-label', label ?? '');
+    button.title = label ?? '';
+  }
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('.sidebar-toggle')) {
+    syncButton(button);
+    button.addEventListener('click', () => {
+      const collapsed = root.toggleAttribute('data-sidebar-collapsed');
+      syncButton(button);
+      try {
+        localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+      } catch {
+        return;
+      }
+    });
+  }
+</script>

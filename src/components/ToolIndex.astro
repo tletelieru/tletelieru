@@ -1,18 +1,20 @@
 ---
+import { toLocale } from '~/i18n/locales';
 import { toolPath, toolsByCategory, withBase } from '~/lib/tools/registry';
 
-const groups = toolsByCategory();
+const locale = toLocale(Astro.locals.starlightRoute.locale);
+const groups = toolsByCategory(locale);
 const base = import.meta.env.BASE_URL;
 ---
 
 {groups.map(({ category, tools }) => (
   <section class="tool-index-category">
-    <h2 id={category.id}>{category.label}</h2>
+    <h2 id={category.id}>{category.label[locale]}</h2>
     <ul class="tool-index-list">
       {tools.map((tool) => (
         <li>
-          <a href={withBase(base, toolPath(tool))}>{tool.name}</a>
-          <p>{tool.description}</p>
+          <a href={withBase(base, toolPath(tool, locale))}>{tool.name[locale]}</a>
+          <p>{tool.description[locale]}</p>
         </li>
       ))}
     </ul>

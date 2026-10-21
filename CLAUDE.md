@@ -27,16 +27,23 @@ Every tool runs 100% in the browser — no backend, nothing sent anywhere.
 
 ## Structure
 
-Built on **Astro Starlight** (sidebar, Pagefind search with `Ctrl/⌘ + K`, TOC, dark mode).
+Built on **Astro Starlight** (sidebar, Pagefind search with `Ctrl/⌘ + K`, TOC, dark mode) with
+**i18n**: English and Spanish under `/tletelieru/en/` and `/tletelieru/es/` (Starlight language
+picker in the navbar). `/tletelieru/` (`src/pages/index.astro`) redirects to the saved or browser
+language.
 
 ```txt
 src/
-  content/docs/index.mdx                 # home (splash): about me, projects, stack, contact
-  content/docs/tools/index.mdx           # /tools index (ToolIndex, grouped by category)
-  content/docs/tools/<category>/<slug>.mdx  # one page per tool: description + <ToolEmbed> + examples
-  content/projects/*.md                  # projects collection (rendered by ProjectList.astro)
-  components/ToolEmbed.astro             # mounts ToolIsland client:only + keywords (indexed by Pagefind)
-  components/starlight/Head.astro        # Head override: PWA manifest + SW registration
+  i18n/locales.ts                        # Locale, Localized<T>, toLocale, pickLocale (no React)
+  i18n/react.tsx                         # LocaleProvider, useLocale, useMessages, defineMessages
+  content/docs/<locale>/index.mdx        # home: about me, projects, stack, contact (sidebar visible)
+  content/docs/<locale>/tools/index.mdx  # /tools index (ToolIndex, grouped by category)
+  content/docs/<locale>/tools/<category>/<slug>.mdx  # one page per tool and locale
+  content/projects/*.md                  # projects collection (description: { en, es })
+  components/ToolEmbed.astro             # mounts ToolIsland client:only with the page locale + keywords
+  components/starlight/Head.astro        # Head override: PWA manifest + SW, saves preferred locale,
+                                         # restores collapsed sidebar before paint
+  components/starlight/Sidebar.astro     # Sidebar override: collapse/expand toggle (desktop)
   components/tools/ToolIsland.tsx        # single island entry; lazy-loads the tool by slug
   components/tools/components.ts         # slug → lazy React component
   components/tools/_shared/              # ToolRoot (MUI theme synced with Starlight), ToolLayout,
@@ -51,9 +58,14 @@ src/
 ## Conventions
 
 - Adding a tool = pure function + tests in `src/lib/tools/`, island in
-  `src/components/tools/<slug>/`, entry in `registry.ts`, entry in `components.ts`, and
-  `src/content/docs/tools/<category>/<slug>.mdx`. `registry.test.ts` fails if any piece is missing.
-  The sidebar group for a category appears automatically once it has a tool.
+  `src/components/tools/<slug>/` with its `messages.ts`, entry in `registry.ts` (`name` and
+  `description` as `{ en, es }`), entry in `components.ts`, and one MDX page per locale at
+  `src/content/docs/{en,es}/tools/<category>/<slug>.mdx`. `registry.test.ts` fails if any piece is
+  missing. The sidebar group for a category appears automatically once it has a tool.
+- i18n: every UI string lives in `messages.ts` via `defineMessages({ en, es })` (functions for
+  interpolated text) and is read with `useMessages`. Pure functions return codes/data, never prose;
+  locale-aware formatting takes a `locale` argument. Tests without a provider run in English; add a
+  `<LocaleProvider locale="es">` test per island. Spanish copy uses neutral tuteo, never voseo.
 - Tool UI: input box → output box + copy button. State in URL params via `useUrlState`; tools that
   handle secrets (JWT, keys, HMAC) must use `{ sync: false }`.
 - Markdown/MDX links and hero links are not base-prefixed by Starlight: write `/tletelieru/...` or
@@ -66,6 +78,8 @@ src/
   `eslint-plugin-react` (eslint). Don't switch to `legacy-peer-deps` (it drops required peers).
 - `eslint-plugin-react` needs an explicit `settings.react.version` under ESLint 10 (`detect` crashes).
 - TypeScript stays on 6.x: `astro check` and typescript-eslint don't support TS 7 yet.
+- `astro.config.mjs` builds the sidebar from `registry.ts`; the dev server does not reload the
+  config when the registry changes, so restart `astro dev` after adding a category or tool.
 - `.husky/pre-push` delegates to the global `core.hooksPath` pre-push (branch-name guard), with an
   env guard to avoid the global hook's chain looping back.
 
@@ -110,3 +124,7 @@ building.
 ## Working rules
 
 - No code comments unless explicitly requested.
+- Avoid `useEffect`. Derive values during render or with `useMemo`, wrap handlers in `useCallback`,
+  keep timers and mutable values in `useRef`, and run side effects inside event handlers. External
+  stores go through `useSyncExternalStore`. `useEffect` only for syncing with an external system
+  that no event can drive.

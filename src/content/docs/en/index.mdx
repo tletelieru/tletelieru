@@ -1,12 +1,11 @@
 ---
-title: Agatha Letelier
+title: T. Letelier
 description: Fullstack developer. Personal site and a client-side dev toolbox.
-template: splash
 hero:
   tagline: Fullstack developer · Ingeniería Civil Informática, USM. I build products end to end, from React and React Native front ends to Go and Node.js services.
   actions:
     - text: Open the toolbox
-      link: /tletelieru/tools/
+      link: /tletelieru/en/tools/
       icon: right-arrow
     - text: GitHub
       link: https://github.com/tletelieru
@@ -25,16 +24,19 @@ import ProjectList from '~/components/ProjectList.astro';
 
 <CardGrid>
   <Card title="Frontend" icon="laptop">
-    React, React Native, TypeScript
+    React, TypeScript
+  </Card>
+  <Card title="Mobile" icon="phone">
+    React Native, Expo
   </Card>
   <Card title="Backend" icon="seti:go">
-    Go, Node.js
+    Go, Node.js, Rust, PHP
   </Card>
-  <Card title="Databases" icon="list-format">
-    PostgreSQL, MySQL
+  <Card title="Databases" icon="seti:db">
+    PostgreSQL, MySQL, MongoDB, DynamoDB
   </Card>
   <Card title="Other" icon="setting">
-    Rust, Docker, Git
+    Docker, Git
   </Card>
 </CardGrid>
 
