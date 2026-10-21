@@ -1,5 +1,6 @@
 ---
 import FeatureIsland from './features/FeatureIsland';
+import { featureModules } from './features/features';
 import { toLocale } from '~/i18n/locales';
 
 interface Props {
@@ -7,14 +8,10 @@ interface Props {
 }
 
 const { name } = Astro.props;
+await featureModules.preload(name);
 const locale = toLocale(Astro.locals.starlightRoute.locale);
-const loading = { en: 'Loading…', es: 'Cargando…' }[locale];
 ---
 
 <div class="tool-embed">
-  <FeatureIsland client:only="react" name={name} locale={locale}>
-    <p slot="fallback" class="tool-loading">
-      {loading}
-    </p>
-  </FeatureIsland>
+  <FeatureIsland client:load name={name} locale={locale} />
 </div>

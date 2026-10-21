@@ -21,6 +21,7 @@ import { toLocale, type Locale } from '~/i18n/locales';
 import { LocaleProvider, useLocale, useMessages } from '~/i18n/react';
 import { detectInput } from '~/lib/detect';
 import { followToolLink } from '~/lib/handoff';
+import { useIsMac } from '~/lib/hydration';
 import {
   buildPaletteSections,
   flattenSections,
@@ -41,11 +42,6 @@ type PaletteMessages = (typeof paletteMessages)['en'];
 
 const PREVIEW_LENGTH = 80;
 const LISTBOX_ID = 'command-palette-results';
-
-function isMacPlatform(): boolean {
-  if (typeof navigator === 'undefined') return false;
-  return /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent);
-}
 
 function SearchIcon() {
   return (
@@ -125,7 +121,7 @@ function Palette() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const timerRef = useRef<number | undefined>(undefined);
   const deferredQuery = useDeferredValue(query);
-  const isMac = isMacPlatform();
+  const isMac = useIsMac();
   const shortcut = isMac ? '⌘K' : 'Ctrl K';
 
   const detections = useMemo(() => detectInput(deferredQuery), [deferredQuery]);
