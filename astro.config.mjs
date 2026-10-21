@@ -1,0 +1,61 @@
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
+import react from '@astrojs/react';
+import AstroPWA from '@vite-pwa/astro';
+import { categoriesWithTools } from './src/lib/tools/registry.ts';
+
+const base = '/tletelieru';
+
+export default defineConfig({
+  site: 'https://tletelieru.github.io',
+  base,
+  integrations: [
+    starlight({
+      title: 'tletelieru',
+      description: 'Personal site and client-side dev toolbox. Nothing leaves your browser.',
+      logo: { src: './src/assets/logo.svg', replacesTitle: false },
+      favicon: '/favicon.svg',
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/tletelieru' }],
+      lastUpdated: false,
+      components: {
+        Head: './src/components/starlight/Head.astro',
+      },
+      customCss: ['./src/styles/custom.css'],
+      sidebar: [
+        { label: 'All tools', slug: 'tools' },
+        ...categoriesWithTools().map((category) => ({
+          label: category.label,
+          items: [{ autogenerate: { directory: `tools/${category.id}` } }],
+        })),
+      ],
+    }),
+    react(),
+    AstroPWA({
+      registerType: 'autoUpdate',
+      injectRegister: false,
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'tletelieru — dev toolbox',
+        short_name: 'tletelieru',
+        description: 'Client-side dev tools: IDs, SQL, time, text, JSON. Works offline.',
+        theme_color: '#17181c',
+        background_color: '#17181c',
+        display: 'standalone',
+        start_url: `${base}/`,
+        scope: `${base}/`,
+        icons: [
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        navigateFallback: null,
+        globPatterns: [
+          '**/*.{html,js,css,svg,png,ico,webp,woff,woff2,txt}',
+          'pagefind/**/*.{js,css,json,pagefind,pf_meta,pf_index,pf_fragment}',
+        ],
+      },
+    }),
+  ],
+});
