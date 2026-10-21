@@ -4,6 +4,7 @@ export interface SidebarShortcutsConfig {
   limit: number;
   favoritesKey: string;
   recentKey: string;
+  sectionsKey: string;
   event: string;
 }
 

@@ -17,6 +17,7 @@ const config = {
   limit: 8,
   favoritesKey: 'tl:favorites',
   recentKey: 'tl:recent',
+  sectionsKey: 'tl:sidebar-sections',
   event: STORE_CHANGE_EVENT,
 };
 
@@ -52,10 +53,11 @@ describe('mountSidebarShortcuts', () => {
     );
     const container = mount();
     expect(container.hidden).toBe(false);
-    const headings = [...container.querySelectorAll('h2')].map(
-      (heading) => heading.firstChild?.textContent,
+    const headings = [...container.querySelectorAll('.sidebar-shortcuts-title')].map(
+      (heading) => heading.textContent,
     );
     expect(headings).toEqual(['Favoritos', 'Recientes']);
+    expect([...container.querySelectorAll('details')].every((details) => details.open)).toBe(true);
     expect(container.querySelector('a')?.textContent).toBe('CPF <Brasil>');
     expect(container.querySelector('a[aria-current="page"]')?.textContent).toBe('RUT (Chile)');
   });
@@ -74,7 +76,35 @@ describe('mountSidebarShortcuts', () => {
     expect(container.querySelector('a')?.textContent).toBe('RUT (Chile)');
     window.localStorage.setItem('tl:recent', JSON.stringify([{ slug: 'cpf', at: 2 }]));
     window.dispatchEvent(new StorageEvent('storage', { key: 'tl:recent' }));
-    expect(container.querySelectorAll('section')).toHaveLength(2);
+    expect(container.querySelectorAll('details')).toHaveLength(2);
+  });
+
+  it('collapses a section and remembers it on the next render', () => {
+    window.localStorage.setItem('tl:recent', JSON.stringify([{ slug: 'rut', at: 1 }]));
+    const container = mount();
+    const recent = container.querySelector<HTMLDetailsElement>('details[data-section="recent"]');
+    if (!recent) throw new Error('missing section');
+    recent.open = false;
+    recent.dispatchEvent(new Event('toggle'));
+    expect(JSON.parse(window.localStorage.getItem('tl:sidebar-sections') ?? '{}')).toEqual({
+      recent: true,
+    });
+    document.body.innerHTML = '';
+    const again = mount();
+    expect(again.querySelector<HTMLDetailsElement>('details[data-section="recent"]')?.open).toBe(
+      false,
+    );
+  });
+
+  it('clearing recent does not toggle the section', () => {
+    window.localStorage.setItem('tl:recent', JSON.stringify([{ slug: 'rut', at: 1 }]));
+    window.localStorage.setItem('tl:favorites', JSON.stringify(['cpf']));
+    const container = mount();
+    const button = container.querySelector<HTMLButtonElement>('[data-clear-recent]');
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    button?.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(container.querySelector('details[data-section="recent"]')).toBeNull();
   });
 
   it('survives corrupt storage', () => {
