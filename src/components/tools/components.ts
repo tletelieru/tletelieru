@@ -1,25 +1,30 @@
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import type { ComponentType } from 'react';
+import { createModuleCache } from '../module-cache';
 
-export const toolComponents: Record<string, LazyExoticComponent<ComponentType>> = {
-  rut: lazy(() => import('./rut/RutTool')),
-  cpf: lazy(() => import('./cpf/CpfTool')),
-  cnpj: lazy(() => import('./cnpj/CnpjTool')),
-  'national-id': lazy(() => import('./national-id/NationalIdTool')),
-  'sql-in-text': lazy(() => import('./sql-in-text/SqlInTextTool')),
-  'sql-in-numbers': lazy(() => import('./sql-in-numbers/SqlInNumbersTool')),
-  'sql-like': lazy(() => import('./sql-like/SqlLikeTool')),
-  'sql-json': lazy(() => import('./sql-json/SqlJsonTool')),
-  'sql-list': lazy(() => import('./sql-list/SqlListTool')),
-  timezone: lazy(() => import('./timezone/TimezoneTool')),
-  unix: lazy(() => import('./unix/UnixTool')),
-  case: lazy(() => import('./case/CaseTool')),
-  json: lazy(() => import('./json/JsonTool')),
-  html: lazy(() => import('./html/HtmlTool')),
-  hash: lazy(() => import('./hash/HashTool')),
-  jwt: lazy(() => import('./jwt/JwtTool')),
-  uuid: lazy(() => import('./uuid/UuidTool')),
-  base64: lazy(() => import('./base64/Base64Tool')),
-  url: lazy(() => import('./url/UrlTool')),
-  'html-entities': lazy(() => import('./html-entities/HtmlEntitiesTool')),
-  'json-escape': lazy(() => import('./json-escape/JsonEscapeTool')),
+type ToolModule = { default: ComponentType };
+
+export const toolLoaders: Record<string, () => Promise<ToolModule>> = {
+  rut: () => import('./rut/RutTool'),
+  cpf: () => import('./cpf/CpfTool'),
+  cnpj: () => import('./cnpj/CnpjTool'),
+  'national-id': () => import('./national-id/NationalIdTool'),
+  'sql-in-text': () => import('./sql-in-text/SqlInTextTool'),
+  'sql-in-numbers': () => import('./sql-in-numbers/SqlInNumbersTool'),
+  'sql-like': () => import('./sql-like/SqlLikeTool'),
+  'sql-json': () => import('./sql-json/SqlJsonTool'),
+  'sql-list': () => import('./sql-list/SqlListTool'),
+  timezone: () => import('./timezone/TimezoneTool'),
+  unix: () => import('./unix/UnixTool'),
+  case: () => import('./case/CaseTool'),
+  json: () => import('./json/JsonTool'),
+  html: () => import('./html/HtmlTool'),
+  hash: () => import('./hash/HashTool'),
+  jwt: () => import('./jwt/JwtTool'),
+  uuid: () => import('./uuid/UuidTool'),
+  base64: () => import('./base64/Base64Tool'),
+  url: () => import('./url/UrlTool'),
+  'html-entities': () => import('./html-entities/HtmlEntitiesTool'),
+  'json-escape': () => import('./json-escape/JsonEscapeTool'),
 };
+
+export const toolModules = createModuleCache(toolLoaders);

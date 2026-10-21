@@ -1,26 +1,25 @@
-import { Suspense } from 'react';
 import Alert from '@mui/material/Alert';
-import LinearProgress from '@mui/material/LinearProgress';
 import { toLocale } from '~/i18n/locales';
 import { LocaleProvider } from '~/i18n/react';
-import { toolComponents } from './components';
+import { toolModules } from './components';
 import { sharedMessages } from './_shared/messages';
 import { ToolProvider } from './_shared/ToolContext';
 import { ToolFrame } from './_shared/ToolFrame';
 import { ToolRoot } from './_shared/ToolRoot';
 
+function LoadedTool({ slug }: { slug: string }) {
+  return toolModules.render(slug);
+}
+
 export default function ToolIsland({ slug, locale }: { slug: string; locale?: string }) {
   const lang = toLocale(locale);
-  const Tool = toolComponents[slug];
   return (
     <LocaleProvider locale={lang}>
       <ToolProvider slug={slug}>
         <ToolRoot>
           <ToolFrame>
-            {Tool ? (
-              <Suspense fallback={<LinearProgress />}>
-                <Tool />
-              </Suspense>
+            {toolModules.has(slug) ? (
+              <LoadedTool slug={slug} />
             ) : (
               <Alert severity="error">{sharedMessages[lang].unknownTool(slug)}</Alert>
             )}
