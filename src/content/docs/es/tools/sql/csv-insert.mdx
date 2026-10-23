@@ -1,0 +1,32 @@
+---
+title: CSV a SQL INSERT
+description: Convierte filas CSV en sentencias INSERT INTO, con varias filas o una por fila, lotes, NULL y valores tipados.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un CSV (o TSV) con fila de encabezado, escribe el nombre de la tabla y copia sentencias `INSERT` listas para ejecutar.
+
+<ToolEmbed slug="csv-insert" />
+
+## Opciones
+
+- **Tabla**: obligatoria; acepta `esquema.tabla` y nombres entre comillas.
+- **Separador**: se detecta desde la primera fila, o coma, punto y coma y tabulador.
+- **Sentencias**: un `INSERT ... VALUES (...), (...)` con varias filas o un `INSERT` por fila.
+- **Filas por INSERT**: divide el insert en lotes (0 = todo en una sentencia).
+- **Tipo de comillas** y **Escapar comillas**: cómo se citan los textos, `O'Brien` queda `'O''Brien'`.
+- **Comillas en columnas**: automático (solo los nombres que lo necesitan, con `"`), siempre `"col"`, siempre `` `col` `` o sin comillas.
+- **La primera fila es el encabezado**: sin encabezado se omite la lista de columnas.
+- **Números, booleanos y null sin comillas**: `42`, `1.5`, `true` y `null` se escriben como literales SQL. Los números con ceros a la izquierda como `007` siguen entre comillas.
+- **Celdas vacías como NULL**: si no, quedan como `''`.
+
+Las filas con menos celdas se completan, las celdas sobrantes se descartan y se informan los números de línea. El parser de CSV sigue RFC 4180: campos entre comillas, escapes `""` y saltos de línea dentro de comillas.
+
+## Ejemplos
+
+| CSV                 | Resultado                                         |
+| ------------------- | ------------------------------------------------- |
+| `id,name` / `1,Ana` | `INSERT INTO users (id, name) VALUES (1, 'Ana');` |
+| `id,name` / `2,`    | `INSERT INTO users (id, name) VALUES (2, NULL);`  |
+| `first name` / `Bo` | `INSERT INTO users ("first name") VALUES ('Bo');` |

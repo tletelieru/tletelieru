@@ -1,0 +1,27 @@
+---
+title: Number base & bytes
+description: Convert numbers between binary, octal, decimal, hex and base 36 with two's complement, and byte sizes between KB, MB, KiB and MiB.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type a number to see it in every base, or switch to byte sizes. Numbers use `BigInt`, so there is no size limit and no rounding.
+
+<ToolEmbed slug="number-base" />
+
+## Number bases
+
+- **Input base**: auto detects the `0x`, `0b` and `0o` prefixes (decimal otherwise), or pick 2, 8, 10, 16 or 36. Spaces, `_` and `'` separators are ignored and a leading `-` is allowed.
+- **Two's complement width**: 8, 16, 32 or 64 bits. The value is shown as raw bits and hex, and read back as signed and unsigned, so `-1` gives `0xffffffff` and `0xff` at 8 bits is `-1` signed. Values outside the range are flagged.
+
+## Byte sizes
+
+Type a size such as `1536`, `1.5 GiB` or `2MB`. Decimal units (KB, MB, GB, TB) use powers of 1000 and binary units (KiB, MiB, GiB, TiB) powers of 1024.
+
+## Examples
+
+| Input        | Result                                |
+| ------------ | ------------------------------------- |
+| `0xff`       | bin `1111 1111`, dec `255`, oct `377` |
+| `-1` (8-bit) | `11111111`, `0xff`, unsigned `255`    |
+| `1.5 GiB`    | `1610612736` B, `1.610612736` GB      |

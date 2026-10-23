@@ -18,6 +18,7 @@ interface SqlOptionsProps {
   escape?: boolean;
   layout?: boolean;
   batch?: boolean;
+  uppercase?: boolean;
 }
 
 export function SqlOptions({
@@ -27,6 +28,7 @@ export function SqlOptions({
   escape = true,
   layout = true,
   batch = true,
+  uppercase = true,
 }: SqlOptionsProps) {
   const t = useMessages(sqlMessages);
   const onSeparatorChange = useCallback(
@@ -147,10 +149,12 @@ export function SqlOptions({
           label={t.escapeQuotes}
         />
       )}
-      <FormControlLabel
-        control={<Switch checked={state.upper} onChange={onUpperChange} />}
-        label={t.uppercase}
-      />
+      {uppercase && (
+        <FormControlLabel
+          control={<Switch checked={state.upper} onChange={onUpperChange} />}
+          label={t.uppercase}
+        />
+      )}
     </>
   );
 }

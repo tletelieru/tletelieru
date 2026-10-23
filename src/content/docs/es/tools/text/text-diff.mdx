@@ -1,0 +1,24 @@
+---
+title: Comparador de texto
+description: Compara dos textos línea por línea, lado a lado o unificado, ignorando espacios o mayúsculas, con un diff unificado para copiar.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega el texto original a la izquierda y el modificado a la derecha. La comparación usa [jsdiff](https://github.com/kpdecker/jsdiff) y se ejecuta solo en tu navegador.
+
+<ToolEmbed slug="text-diff" />
+
+## Opciones
+
+- **Vista**: lado a lado (las líneas originales y modificadas en pares) o unificada (una columna con líneas `+` y `-`).
+- **Ignorar espacios**: las secuencias de espacios y tabuladores cuentan como un solo espacio y se ignoran los espacios al inicio y al final.
+- **Ignorar mayúsculas**: `Hola` y `hola` cuentan como iguales.
+
+El diff unificado bajo la vista usa el formato estándar `---` / `+++` / `@@` con 3 líneas de contexto, listo para pegar en una revisión o aplicar con `patch`. Los contadores muestran las líneas agregadas y eliminadas.
+
+## Ejemplo
+
+| Original               | Modificado                | Diff unificado         |
+| ---------------------- | ------------------------- | ---------------------- |
+| `apple` `banana` `fig` | `apple` `blueberry` `fig` | `-banana` `+blueberry` |

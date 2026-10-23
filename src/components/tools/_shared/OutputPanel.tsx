@@ -14,6 +14,7 @@ interface OutputPanelProps {
   value: string;
   label?: string;
   error?: string | null;
+  placeholder?: string;
   actions?: ReactNode;
   snippet?: boolean;
 }
@@ -22,6 +23,7 @@ export function OutputPanel({
   value,
   label: labelProp,
   error,
+  placeholder,
   actions,
   snippet = true,
 }: OutputPanelProps) {
@@ -44,7 +46,11 @@ export function OutputPanel({
         <CopyButton text={value} />
       </Stack>
       {error && <Alert severity="error">{error}</Alert>}
-      <CodeField value={value} slotProps={{ htmlInput: { readOnly: true, 'aria-label': label } }} />
+      <CodeField
+        value={value}
+        placeholder={placeholder}
+        slotProps={{ htmlInput: { readOnly: true, 'aria-label': label } }}
+      />
     </Stack>
   );
 }

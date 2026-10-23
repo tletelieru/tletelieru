@@ -53,3 +53,45 @@ describe('SqlJsonTool', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('SqlJsonTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlJsonTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('meta_data');
+    expect(placeholder).toContain('ref-001');
+  });
+});
+
+describe('SqlJsonTool MongoDB target', () => {
+  it('builds a dot-path $in filter', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/?target=mongo&mstyle=compact&path=nested.key&input=a%0Ab',
+    );
+    render(<SqlJsonTool />);
+    expect(output()).toBe('{ "meta_data.nested.key": { "$in": ["a", "b"] } }');
+    expect(screen.queryByRole('group', { name: 'Dialect' })).not.toBeInTheDocument();
+  });
+
+  it('uses equality for a single value and previews the placeholder', () => {
+    window.history.replaceState(null, '', '/?target=mongo&input=x');
+    render(<SqlJsonTool />);
+    expect(output()).toBe('{\n  "meta_data.reference": "x"\n}');
+    expect(screen.getByLabelText('Output').getAttribute('placeholder')).toBe(
+      '{\n  "meta_data.reference": {\n    "$in": ["ref-001", "ref-002"]\n  }\n}',
+    );
+  });
+
+  it('renders in Spanish', () => {
+    window.history.replaceState(null, '', '/?target=mongo');
+    render(
+      <LocaleProvider locale="es">
+        <SqlJsonTool />
+      </LocaleProvider>,
+    );
+    expect(screen.getByLabelText('Campo')).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Estilo JSON' })).toBeInTheDocument();
+  });
+});

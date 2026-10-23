@@ -7,6 +7,7 @@ import {
   type ResolvedSqlOptions,
   type SqlToolResult,
 } from './sql/format';
+import { mongoFieldError, mongoInFilters, serializeMongo, type MongoStyle } from './mongo/filter';
 import { parseValues } from './sql/values';
 
 export type JsonDialect = 'postgres' | 'mysql';
@@ -157,4 +158,42 @@ export function buildSqlJson(input: string, options: Partial<SqlJsonOptions> = {
       ? `${expression} = ${literals[0]}`
       : batchedInClause(literals, { column: expression, layout, batchSize, uppercase });
   return { output, error: null, stats };
+}
+
+export interface MongoJsonOptions {
+  column: string;
+  path: string;
+  parse: ResolvedSqlOptions['parse'];
+  batchSize: number;
+  style: MongoStyle;
+}
+
+export function buildMongoJson(
+  input: string,
+  options: Partial<MongoJsonOptions> = {},
+): SqlToolResult {
+  const { column, path, parse, batchSize, style } = {
+    column: 'meta_data',
+    path: 'reference',
+    parse: defaultSqlOptions.parse,
+    batchSize: 0,
+    style: 'pretty' as MongoStyle,
+    ...options,
+  };
+  const { values, stats } = parseValues(input, parse);
+  if (!values.length) return { output: '', error: null, stats };
+  const fieldError = mongoFieldError(column);
+  if (fieldError) return { output: '', error: fieldError, stats };
+  if (!path.trim()) return { output: '', error: { code: 'pathRequired' }, stats };
+  const segments = parseKeyPath(path);
+  if (!segments) return { output: '', error: { code: 'invalidPath', path: path.trim() }, stats };
+  const field = [column.trim(), ...segments].join('.');
+  if (values.length === 1) {
+    return { output: serializeMongo({ [field]: values[0] ?? '' }, style), error: null, stats };
+  }
+  return {
+    output: mongoInFilters(field, values, { not: false, batchSize, style }),
+    error: null,
+    stats,
+  };
 }

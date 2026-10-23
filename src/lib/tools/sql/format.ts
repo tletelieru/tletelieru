@@ -59,7 +59,9 @@ export type SqlToolError =
   | { code: 'invalidColumn'; column: string }
   | { code: 'pathRequired' }
   | { code: 'invalidPath'; path: string }
-  | { code: 'invalidNumbers'; values: string[] };
+  | { code: 'invalidNumbers'; values: string[] }
+  | { code: 'fieldRequired' }
+  | { code: 'invalidField'; field: string };
 
 export interface SqlToolResult {
   output: string;

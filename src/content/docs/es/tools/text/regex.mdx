@@ -1,0 +1,31 @@
+---
+title: Probador de regex
+description: Prueba expresiones regulares de JavaScript con flags, coincidencias resaltadas, grupos numerados y con nombre y vista previa del reemplazo.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe un patrón, activa los flags y pega el texto de prueba. La búsqueda se ejecuta en tu navegador con el motor `RegExp` de JavaScript.
+
+<ToolEmbed slug="regex" />
+
+## Opciones
+
+- **Patrón**: sintaxis de JavaScript, sin las barras. Los grupos con nombre usan `(?<nombre>...)`.
+- **Flags**: `g` global, `i` ignorar mayúsculas, `m` multilínea (`^` / `$` por línea), `s` el punto incluye saltos de línea, `u` unicode, `y` sticky.
+- **Reemplazar por**: muestra `text.replace(patrón, reemplazo)`; usa `$1`, `$<nombre>`, `$&` y `$$`.
+
+La lista muestra cada coincidencia con su índice de inicio y fin, los grupos numerados (`$1`, `$2`, ...) y los grupos con nombre (`$<nombre>`); los grupos sin coincidencia aparecen como `undefined`.
+
+## Límites de seguridad
+
+- Se listan como máximo 1.000 coincidencias y la búsqueda se detiene si pasan 250 ms entre coincidencias.
+- Los patrones que anidan cuantificadores, como `(a+)+` o `(\w*)*`, o que repiten una referencia pueden tardar un tiempo exponencial y congelar la pestaña. Se rechazan hasta que actives **Ejecutar el patrón riesgoso de todas formas**.
+
+## Ejemplos
+
+| Patrón                   | Texto            | Resultado                    |
+| ------------------------ | ---------------- | ---------------------------- |
+| `(?<y>\d{4})-(\d{2})`    | `2024-01`        | `$<y> = "2024"`, `$2 = "01"` |
+| `\b\w+@\w+\.\w+\b` + `g` | `a@b.cl, c@d.io` | 2 coincidencias              |
+| `(\d+)` → `[$1]`         | `a1 b22`         | `a[1] b[22]`                 |

@@ -24,6 +24,8 @@ type TimezoneMessages = (typeof timezoneMessages)['en'];
 
 const defaults = { input: '', from: 'America/Santiago', to: 'UTC' };
 
+const placeholder = '2026-01-15 09:30';
+
 function errorMessage(result: TimezoneConversion, t: TimezoneMessages): string | null {
   if (result.status === 'invalid-input') return t.invalidInput;
   if (result.status === 'invalid-zone') return t.invalidZone(result.zone);
@@ -58,6 +60,10 @@ export default function TimezoneTool() {
     [state.input, state.from, targets],
   );
   const output = useMemo(() => formatConversion(result, t), [result, t]);
+  const outputPlaceholder = useMemo(
+    () => formatConversion(convertTimeZones(placeholder, state.from, targets), t) || undefined,
+    [state.from, targets, t],
+  );
   const error = useMemo(() => errorMessage(result, t), [result, t]);
   const note = useMemo(() => noteMessage(result, t), [result, t]);
 
@@ -101,7 +107,7 @@ export default function TimezoneTool() {
         <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
           <TextField
             label={t.inputLabel}
-            placeholder="2026-01-15 09:30"
+            placeholder={placeholder}
             helperText={t.inputHelp}
             value={state.input}
             onChange={onInputChange}
@@ -130,7 +136,7 @@ export default function TimezoneTool() {
               {note}
             </Alert>
           )}
-          <OutputPanel value={output} error={error} />
+          <OutputPanel value={output} error={error} placeholder={outputPlaceholder} />
         </Stack>
       }
     />

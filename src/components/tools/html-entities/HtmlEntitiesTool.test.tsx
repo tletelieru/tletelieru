@@ -61,3 +61,11 @@ describe('HtmlEntitiesTool', () => {
     expect(screen.getByRole('button', { name: 'Copiar' })).toBeInTheDocument();
   });
 });
+
+describe('HtmlEntitiesTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<HtmlEntitiesTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('&lt;p&gt;Caf');
+  });
+});

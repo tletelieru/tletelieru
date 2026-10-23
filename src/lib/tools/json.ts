@@ -487,3 +487,11 @@ export function processJson(
     },
   };
 }
+
+export type JsonValueResult = { ok: true; value: unknown } | { ok: false; error: JsonError };
+
+export function parseJsonValue(input: string): JsonValueResult {
+  const parsed = parseJson(input);
+  if (!parsed.ok) return parsed;
+  return { ok: true, value: JSON.parse(stripBom(input)) as unknown };
+}

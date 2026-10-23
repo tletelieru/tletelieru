@@ -88,6 +88,14 @@ const shortcutsScript = `(${shortcutsSource.replace(/^export\s+/m, '').trim()})(
     if (event.target instanceof Element && event.target.closest('a[href]')) {
       saveSidebarScroll(scroller);
     }
+    const bounds = scroller.getBoundingClientRect();
+    const outside =
+      event.target === scroller &&
+      (event.clientX < bounds.left ||
+        event.clientX > bounds.right ||
+        event.clientY < bounds.top ||
+        event.clientY > bounds.bottom);
+    if (outside && scroller.matches(':popover-open')) scroller.hidePopover();
   });
   window.addEventListener('pagehide', () => {
     if (scroller) saveSidebarScroll(scroller);

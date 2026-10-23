@@ -30,3 +30,12 @@ Paste values separated by newlines, commas, tabs or semicolons and get a ready-t
 | `a, b, a`                                  | `IN ('a', 'b')`                                   |
 | `O'Brien`                                  | `IN ('O''Brien')`                                 |
 | `a b c` with column `id`, batch size 2     | `(id IN ('a', 'b') OR id IN ('c'))`               |
+
+## MongoDB
+
+Switch **Target** to MongoDB to get a filter for `find()` instead of SQL. The field is required, values are JSON-escaped, **NOT** uses `$nin`, and **Batch size** produces one filter per batch. **JSON style** picks pretty or single-line output. Quote style, escaping, layout and keyword case only apply to SQL.
+
+| Values   | Result                             |
+| -------- | ---------------------------------- |
+| `a`, `b` | `{ "ref": { "$in": ["a", "b"] } }` |
+| NOT, `a` | `{ "ref": { "$nin": ["a"] } }`     |

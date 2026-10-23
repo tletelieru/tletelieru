@@ -55,3 +55,49 @@ describe('SqlInTextTool', () => {
     expect(screen.getByText('3 valores · 2 únicos · 1 duplicados eliminados')).toBeInTheDocument();
   });
 });
+
+describe('SqlInTextTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlInTextTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain("transaction_id IN ('txn_ab8fcd54");
+  });
+});
+
+describe('SqlInTextTool MongoDB target', () => {
+  it('builds a $in filter and hides SQL-only options', async () => {
+    render(<SqlInTextTool />);
+    await userEvent.click(screen.getByRole('button', { name: 'MongoDB' }));
+    expect(screen.queryByRole('group', { name: 'Quote style' })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Uppercase keywords')).not.toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText('Field'), 'ref');
+    fireEvent.change(screen.getByLabelText('Values'), { target: { value: 'a\nb"c' } });
+    expect(output()).toBe('{\n  "ref": {\n    "$in": ["a", "b\\"c"]\n  }\n}');
+    await userEvent.click(screen.getByLabelText('NOT ($nin)'));
+    await userEvent.click(screen.getByRole('button', { name: 'Single line' }));
+    expect(output()).toBe('{ "ref": { "$nin": ["a", "b\\"c"] } }');
+  });
+
+  it('requires a field and previews the placeholder', () => {
+    window.history.replaceState(null, '', '/?target=mongo&mstyle=compact&input=a');
+    render(<SqlInTextTool />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Field name is required for MongoDB.');
+    expect(screen.getByLabelText('Output').getAttribute('placeholder')).toContain(
+      '{ "transaction_id": { "$in": ["txn_ab8fcd54',
+    );
+  });
+
+  it('renders in Spanish', () => {
+    window.history.replaceState(null, '', '/?target=mongo&input=a');
+    render(
+      <LocaleProvider locale="es">
+        <SqlInTextTool />
+      </LocaleProvider>,
+    );
+    expect(screen.getByLabelText('Campo')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Una línea' })).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'El nombre del campo es obligatorio para MongoDB.',
+    );
+  });
+});
