@@ -64,6 +64,10 @@ export function createLocalStore<T>({ key, initial, parse }: LocalStoreOptions<T
     if (event.key === key || event.key === null) emit();
   }
 
+  function onStoreChange(event: Event) {
+    if (event instanceof CustomEvent && event.detail === key) emit();
+  }
+
   return {
     key,
     initial,
@@ -73,15 +77,20 @@ export function createLocalStore<T>({ key, initial, parse }: LocalStoreOptions<T
       const raw = JSON.stringify(value);
       memoryOnly = !writeRaw(key, raw);
       cache = { raw, value };
-      emit();
       window.dispatchEvent(new CustomEvent(STORE_CHANGE_EVENT, { detail: key }));
     },
     subscribe(listener) {
       listeners.add(listener);
-      if (listeners.size === 1) window.addEventListener('storage', onStorage);
+      if (listeners.size === 1) {
+        window.addEventListener('storage', onStorage);
+        window.addEventListener(STORE_CHANGE_EVENT, onStoreChange);
+      }
       return () => {
         listeners.delete(listener);
-        if (listeners.size === 0) window.removeEventListener('storage', onStorage);
+        if (listeners.size === 0) {
+          window.removeEventListener('storage', onStorage);
+          window.removeEventListener(STORE_CHANGE_EVENT, onStoreChange);
+        }
       };
     },
   };
