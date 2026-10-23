@@ -1,0 +1,31 @@
+---
+title: Regex tester
+description: Test JavaScript regular expressions with flags, highlighted matches, numbered and named groups and a replace preview.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type a pattern, toggle the flags and paste the text to test. Matching runs in your browser with the JavaScript `RegExp` engine.
+
+<ToolEmbed slug="regex" />
+
+## Options
+
+- **Pattern**: JavaScript syntax, without the surrounding slashes. Named groups use `(?<name>...)`.
+- **Flags**: `g` global, `i` ignore case, `m` multiline (`^` / `$` per line), `s` dot matches newlines, `u` unicode, `y` sticky.
+- **Replace with**: shows `text.replace(pattern, replacement)`; use `$1`, `$<name>`, `$&` and `$$`.
+
+The match list shows each match with its start and end index, numbered groups (`$1`, `$2`, ...) and named groups (`$<name>`); unmatched groups are `undefined`.
+
+## Safety limits
+
+- At most 1,000 matches are listed, and matching stops after 250 ms between matches.
+- Patterns that nest quantifiers, like `(a+)+` or `(\w*)*`, or repeat a backreference can take exponential time and freeze the tab. They are refused until **Run risky pattern anyway** is switched on.
+
+## Examples
+
+| Pattern                  | Text             | Result                       |
+| ------------------------ | ---------------- | ---------------------------- |
+| `(?<y>\d{4})-(\d{2})`    | `2024-01`        | `$<y> = "2024"`, `$2 = "01"` |
+| `\b\w+@\w+\.\w+\b` + `g` | `a@b.cl, c@d.io` | 2 matches                    |
+| `(\d+)` → `[$1]`         | `a1 b22`         | `a[1] b[22]`                 |

@@ -27,10 +27,17 @@ can be shared as links, and the site works offline once installed.
 
 - **IDs & documents:** RUT, CPF, CNPJ (incl. alphanumeric), national IDs for AR, PE, CO, MX, UY,
   ES and EC, UUID / ULID / Nano ID.
-- **SQL:** `IN` lists, `LIKE` chains, JSON field queries for Postgres and MySQL, list formatter.
+- **SQL & MongoDB:** formatter (standard, PostgreSQL, MySQL), `IN` lists and `LIKE` chains with a
+  MongoDB `$in` / `$regex` target, Postgres `= ANY(ARRAY[...])`, CSV → `INSERT INTO`, JSON field
+  queries for Postgres, MySQL and MongoDB, list formatter.
+- **Data:** JSON formatter, JSON diff, CSV ↔ JSON, YAML ↔ JSON, JSON → TypeScript / Go / Zod
+  types, JSONPath tester.
 - **Encoding:** Base64, URL, hashes and HMAC, HTML entities, JSON string escape, JWT decoder.
-- **Time & text:** timezone and Unix timestamp converters, case converter, JSON formatter, HTML
-  preview.
+- **Text:** regex tester, text diff, case converter.
+- **Time:** timezone and Unix timestamp converters, cron explainer.
+- **HTTP & dev:** cURL → fetch / axios / Node / Python, number bases and byte sizes, password
+  generator.
+- **Web:** HTML preview, color converter with WCAG contrast.
 - **Workflow:** `Ctrl/⌘ + K` search, smart paste, pipelines, snippets, favorites and history.
 
 [Open the toolbox](https://tletelieru.github.io/tletelieru/en/tools/) ·

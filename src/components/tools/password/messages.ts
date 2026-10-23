@@ -1,0 +1,63 @@
+import { defineMessages } from '~/i18n/react';
+import type { Strength } from '~/lib/tools/password';
+
+export const passwordMessages = defineMessages({
+  en: {
+    mode: 'Type',
+    password: 'Password',
+    passphrase: 'Passphrase',
+    length: 'Length',
+    words: 'Words',
+    count: 'How many',
+    separator: 'Separator',
+    lower: 'a-z',
+    upper: 'A-Z',
+    digits: '0-9',
+    symbols: '!@#',
+    sets: 'Characters',
+    ambiguous: 'Exclude ambiguous (Il1O0o)',
+    capitalize: 'Capitalize words',
+    addNumber: 'Add a digit',
+    regenerate: 'Generate again',
+    outputLabel: 'Generated',
+    noCharsets: 'Pick at least one character set.',
+    privacy:
+      'Generated with crypto.getRandomValues in this tab. Passwords are never put in the URL, history or snippets.',
+    strength: {
+      weak: 'weak',
+      fair: 'fair',
+      strong: 'strong',
+      veryStrong: 'very strong',
+    } satisfies Record<Strength, string>,
+    entropy: (bits: number, label: string) => `${bits.toFixed(0)} bits of entropy · ${label}`,
+  },
+  es: {
+    mode: 'Tipo',
+    password: 'Contraseña',
+    passphrase: 'Frase de contraseña',
+    length: 'Largo',
+    words: 'Palabras',
+    count: 'Cantidad',
+    separator: 'Separador',
+    lower: 'a-z',
+    upper: 'A-Z',
+    digits: '0-9',
+    symbols: '!@#',
+    sets: 'Caracteres',
+    ambiguous: 'Excluir ambiguos (Il1O0o)',
+    capitalize: 'Palabras con mayúscula inicial',
+    addNumber: 'Agregar un dígito',
+    regenerate: 'Generar de nuevo',
+    outputLabel: 'Generadas',
+    noCharsets: 'Elige al menos un tipo de carácter.',
+    privacy:
+      'Se generan con crypto.getRandomValues en esta pestaña. Las contraseñas nunca van a la URL, el historial ni los snippets.',
+    strength: {
+      weak: 'débil',
+      fair: 'aceptable',
+      strong: 'fuerte',
+      veryStrong: 'muy fuerte',
+    } satisfies Record<Strength, string>,
+    entropy: (bits: number, label: string) => `${bits.toFixed(0)} bits de entropía · ${label}`,
+  },
+});

@@ -1,0 +1,29 @@
+---
+title: Color converter & contrast
+description: Convert colors between HEX, RGB(A), HSL and OKLCH with a swatch, and check WCAG contrast (AA / AAA) against a background.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type a color in any CSS notation to get the others, and compare it against a background for WCAG contrast.
+
+<ToolEmbed slug="color" />
+
+## Input
+
+`#369`, `#336699`, `#33669980`, `rgb(51 102 153)`, `rgba(51, 102, 153, 0.5)`, `hsl(210 50% 40%)`, `oklch(49.9% 0.099 250)` and common CSS names such as `rebeccapurple` all work. Hues accept `deg`, `rad`, `turn` and `grad`.
+
+## Output
+
+HEX, `rgb()`, `hsl()` and `oklch()` in modern space-separated syntax, with `/ alpha` when the color is translucent. Channels are rounded to 8-bit sRGB, and OKLCH colors outside sRGB are clipped.
+
+## Contrast
+
+The ratio follows WCAG 2.x relative luminance; translucent colors are blended over the background first (and the background over white).
+
+| Level | Normal text | Large text (24px, or 18.66px bold) |
+| ----- | ----------- | ---------------------------------- |
+| AA    | 4.5:1       | 3:1                                |
+| AAA   | 7:1         | 4.5:1                              |
+
+For example, `#777` on white is 4.48:1: it fails AA for normal text and passes AA for large text.
