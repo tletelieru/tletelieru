@@ -27,6 +27,7 @@ export default defineConfig({
         Head: './src/components/starlight/Head.astro',
         Search: './src/components/starlight/Search.astro',
         Sidebar: './src/components/starlight/Sidebar.astro',
+        PageTitle: './src/components/starlight/PageTitle.astro',
       },
       customCss: ['./src/styles/custom.css'],
       sidebar: [
