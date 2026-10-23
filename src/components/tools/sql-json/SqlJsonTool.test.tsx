@@ -53,3 +53,12 @@ describe('SqlJsonTool', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('SqlJsonTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlJsonTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('meta_data');
+    expect(placeholder).toContain('ref-001');
+  });
+});

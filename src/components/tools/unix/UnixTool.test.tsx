@@ -98,3 +98,11 @@ describe('UnixTool', () => {
     expect(output).toContain('nope  ✘ no es un timestamp ni una fecha');
   });
 });
+
+describe('UnixTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<UnixTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('2023-11-14T22:13:20.000Z');
+  });
+});

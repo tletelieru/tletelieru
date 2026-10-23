@@ -28,6 +28,9 @@ const defaults = { mode: 'encode', input: '', scope: 'minimal', format: 'named' 
 
 const MAX_ISSUES = 20;
 
+const encodePlaceholder = '<p>Café & "tea"</p>';
+const decodePlaceholder = 'caf&eacute; &amp; &#x1F600;';
+
 export default function HtmlEntitiesTool() {
   const t = useMessages(htmlEntitiesMessages);
   const [state, update] = useUrlState(defaults);
@@ -43,6 +46,14 @@ export default function HtmlEntitiesTool() {
   const output = useMemo(
     () => decoded?.output ?? encodeHtmlEntities(state.input, { scope, format }),
     [decoded, state.input, scope, format],
+  );
+
+  const outputPlaceholder = useMemo(
+    () =>
+      mode === 'decode'
+        ? decodeHtmlEntities(decodePlaceholder).output
+        : encodeHtmlEntities(encodePlaceholder, { scope, format }),
+    [mode, scope, format],
   );
 
   const issues = useMemo(
@@ -131,7 +142,7 @@ export default function HtmlEntitiesTool() {
       input={
         <InputPanel
           label={mode === 'decode' ? t.decodeInput : t.encodeInput}
-          placeholder={mode === 'decode' ? 'caf&eacute; &amp; &#x1F600;' : '<p>Café & "tea"</p>'}
+          placeholder={mode === 'decode' ? decodePlaceholder : encodePlaceholder}
           value={state.input}
           onChange={onInputChange}
         />
@@ -140,6 +151,7 @@ export default function HtmlEntitiesTool() {
         <>
           <OutputPanel
             value={output}
+            placeholder={outputPlaceholder}
             actions={
               decoded !== null &&
               state.input !== '' && (

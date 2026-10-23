@@ -41,6 +41,14 @@ interface PickedFile {
 const modes: Mode[] = ['encode', 'decode', 'file'];
 const fileOutputs: FileOutput[] = ['base64', 'dataUri'];
 
+const encodePlaceholder = 'Hello, ñandú ✓';
+const decodePlaceholder = 'SGVsbG8sIMOxYW5kw7og4pyT';
+
+function decodePreview(input: string): string | undefined {
+  const result = decodeInput(input);
+  return result.ok ? (bytesToUtf8(result.bytes) ?? undefined) : undefined;
+}
+
 const defaults = {
   mode: 'encode',
   input: '',
@@ -83,6 +91,12 @@ export default function Base64Tool() {
     if (fileOutput === 'dataUri') return toDataUri(encodeBytes(file.bytes), file.type);
     return encodeBytes(file.bytes, encodeOptions);
   }, [mode, state.input, encodeOptions, decodedText, file, fileOutput]);
+
+  const outputPlaceholder = useMemo(() => {
+    if (mode === 'encode') return encodeText(encodePlaceholder, encodeOptions);
+    if (mode === 'decode') return decodePreview(decodePlaceholder);
+    return undefined;
+  }, [mode, encodeOptions]);
 
   const error = useMemo(() => {
     if (!decoded) return null;
@@ -240,7 +254,7 @@ export default function Base64Tool() {
         ) : (
           <InputPanel
             label={mode === 'encode' ? t.encodeLabel : t.decodeLabel}
-            placeholder={mode === 'encode' ? 'Hello, ñandú ✓' : 'SGVsbG8sIMOxYW5kw7og4pyT'}
+            placeholder={mode === 'encode' ? encodePlaceholder : decodePlaceholder}
             value={state.input}
             onChange={onInputChange}
           />
@@ -250,6 +264,7 @@ export default function Base64Tool() {
         <OutputPanel
           value={output}
           error={error}
+          placeholder={outputPlaceholder}
           actions={
             <>
               {sizes && (

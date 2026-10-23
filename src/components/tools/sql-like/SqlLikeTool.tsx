@@ -13,6 +13,7 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
+import { useResolvedSqlOptions } from '../sql/useResolvedSqlOptions';
 import { sqlLikeMessages } from './messages';
 
 const defaults = {
@@ -26,6 +27,9 @@ const defaults = {
   wrap: true,
   ...sqlOptionDefaults,
 };
+
+const columnPlaceholder = 'email';
+const placeholder = 'gmail.com\nhotmail.com';
 
 export default function SqlLikeTool() {
   const t = useMessages(sqlMessages);
@@ -47,6 +51,22 @@ export default function SqlLikeTool() {
         wrap: state.wrap,
       }),
     [state, match, joiner],
+  );
+
+  const sqlOptions = useResolvedSqlOptions(state);
+  const outputPlaceholder = useMemo(
+    () =>
+      buildSqlLike(placeholder, {
+        ...sqlOptions,
+        column: state.column || columnPlaceholder,
+        match,
+        joiner,
+        not: state.not,
+        ilike: state.ilike,
+        escapeWildcards: state.wild,
+        wrap: state.wrap,
+      }).output,
+    [sqlOptions, state.column, match, joiner, state.not, state.ilike, state.wild, state.wrap],
   );
 
   const onColumnChange = useCallback(
@@ -97,7 +117,7 @@ export default function SqlLikeTool() {
         <>
           <TextField
             label={t.column}
-            placeholder="email"
+            placeholder={columnPlaceholder}
             value={state.column}
             sx={{ width: 220 }}
             fullWidth={false}
@@ -147,13 +167,19 @@ export default function SqlLikeTool() {
       input={
         <InputPanel
           label={t.values}
-          placeholder={'gmail.com\nhotmail.com'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
+      output={
+        <OutputPanel
+          value={result.output}
+          error={result.error && t.error(result.error)}
+          placeholder={outputPlaceholder}
+        />
+      }
     />
   );
 }

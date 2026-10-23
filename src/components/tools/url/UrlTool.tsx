@@ -52,6 +52,9 @@ const emptyRows: QueryRow[] = [{ key: '', value: '' }];
 
 const defaults = { mode: 'encode', input: '', scope: 'component', form: false, base: '', rows: '' };
 
+const parsePlaceholder = 'https://example.com:8080/path?q=hola%20mundo&tag=a&tag=b#top';
+const codecPlaceholder = 'a b&c=ñ';
+
 const mono = { fontFamily: 'var(--sl-font-mono, ui-monospace, monospace)', wordBreak: 'break-all' };
 
 function parseRows(json: string): QueryRow[] {
@@ -112,6 +115,19 @@ export default function UrlTool() {
     if (parsed) return parsedJson(parsed);
     return buildUrl(state.base, rows, { form: state.form });
   }, [codec, parsed, state.base, rows, state.form]);
+
+  const outputPlaceholder = useMemo(() => {
+    if (mode === 'encode') {
+      const preview = encodeUrlText(codecPlaceholder, { scope, form: state.form });
+      return preview.ok ? preview.value : undefined;
+    }
+    if (mode === 'decode') {
+      const preview = decodeUrlText(codecPlaceholder, { scope, form: state.form });
+      return preview.ok ? preview.value : undefined;
+    }
+    if (mode === 'parse') return parsedJson(parseUrl(parsePlaceholder));
+    return undefined;
+  }, [mode, scope, state.form]);
 
   const error = useMemo(() => {
     if (codec && !codec.ok) return describeIssue(codec.issue, t);
@@ -265,11 +281,7 @@ export default function UrlTool() {
           <Stack spacing={2}>
             <InputPanel
               label={t.inputLabel[mode]}
-              placeholder={
-                mode === 'parse'
-                  ? 'https://example.com:8080/path?q=hola%20mundo&tag=a&tag=b#top'
-                  : 'a b&c=ñ'
-              }
+              placeholder={mode === 'parse' ? parsePlaceholder : codecPlaceholder}
               value={state.input}
               onChange={onInputChange}
             />
@@ -335,7 +347,7 @@ export default function UrlTool() {
           </Stack>
         )
       }
-      output={<OutputPanel value={output} error={error} />}
+      output={<OutputPanel value={output} error={error} placeholder={outputPlaceholder} />}
     />
   );
 }

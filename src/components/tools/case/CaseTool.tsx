@@ -16,6 +16,8 @@ import { caseMessages } from './messages';
 
 const defaults = { input: '', to: 'snake', ascii: false };
 
+const placeholder = 'parseHTTPResponse\nÁrbol de Navidad\nuser_id';
+
 export default function CaseTool() {
   const t = useMessages(caseMessages);
   const [state, update] = useUrlState(defaults);
@@ -25,6 +27,10 @@ export default function CaseTool() {
   const output = useMemo(
     () => convertLines(state.input, target, options),
     [state.input, target, options],
+  );
+  const outputPlaceholder = useMemo(
+    () => convertLines(placeholder, target, options),
+    [target, options],
   );
   const allCases = useMemo(
     () =>
@@ -76,14 +82,18 @@ export default function CaseTool() {
       input={
         <InputPanel
           label={t.inputLabel}
-          placeholder={'parseHTTPResponse\nÁrbol de Navidad\nuser_id'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
         />
       }
       output={
         <Stack spacing={2}>
-          <OutputPanel value={output} label={t.output(t.cases[target])} />
+          <OutputPanel
+            value={output}
+            label={t.output(t.cases[target])}
+            placeholder={outputPlaceholder}
+          />
           {allCases && (
             <Stack spacing={1}>
               <Typography variant="subtitle2">{t.allCases}</Typography>

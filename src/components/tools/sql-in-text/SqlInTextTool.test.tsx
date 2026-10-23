@@ -55,3 +55,11 @@ describe('SqlInTextTool', () => {
     expect(screen.getByText('3 valores · 2 únicos · 1 duplicados eliminados')).toBeInTheDocument();
   });
 });
+
+describe('SqlInTextTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlInTextTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain("transaction_id IN ('txn_ab8fcd54");
+  });
+});
