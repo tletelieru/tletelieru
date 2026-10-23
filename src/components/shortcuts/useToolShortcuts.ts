@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
 import { useMessages } from '~/i18n/react';
+import { trackToolEvent } from '~/lib/analytics';
 import { matchShortcut } from '~/lib/shortcuts';
 import { useToolContext } from '../tools/_shared/ToolContext';
 import { shortcutMessages } from './messages';
@@ -13,7 +14,7 @@ export interface ToolShortcuts {
 }
 
 export function useToolShortcuts(): ToolShortcuts {
-  const { inputRef, outputRef } = useToolContext();
+  const { slug, inputRef, outputRef } = useToolContext();
   const t = useMessages(shortcutMessages);
   const [notice, setNotice] = useState<string | null>(null);
   const timerRef = useRef<number | undefined>(undefined);
@@ -45,7 +46,10 @@ export function useToolShortcuts(): ToolShortcuts {
         Promise.resolve()
           .then(() => navigator.clipboard.writeText(output))
           .then(
-            () => show(t.copied),
+            () => {
+              trackToolEvent('copied', slug);
+              show(t.copied);
+            },
             () => show(t.copyFailed),
           );
         return;
@@ -67,7 +71,7 @@ export function useToolShortcuts(): ToolShortcuts {
       input.set(output);
       show(t.swapped);
     },
-    [inputRef, outputRef, show, t],
+    [slug, inputRef, outputRef, show, t],
   );
 
   return { onKeyDown, notice, dismiss };
