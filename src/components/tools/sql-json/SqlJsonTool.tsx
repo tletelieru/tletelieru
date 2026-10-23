@@ -3,6 +3,13 @@ import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import {
+  mongoStyles,
+  queryTargets,
+  type MongoStyle,
+  type QueryTarget,
+} from '~/lib/tools/mongo/filter';
+import {
+  buildMongoJson,
   buildSqlJson,
   jsonDialects,
   resolveOperation,
@@ -16,11 +23,13 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
-import { useResolvedSqlOptions } from '../sql/useResolvedSqlOptions';
+import { MongoStyleToggle, TargetToggle } from '../sql/TargetToggle';
 import { sqlJsonMessages } from './messages';
 
 const defaults = {
   input: '',
+  target: 'sql',
+  mstyle: 'pretty',
   dialect: 'postgres',
   column: 'meta_data',
   path: 'reference',
@@ -43,30 +52,40 @@ export default function SqlJsonTool() {
   const dialect = pickOption(state.dialect, jsonDialects, 'postgres');
   const operation = resolveOperation(dialect, state.op);
 
-  const result = useMemo(
-    () =>
-      buildSqlJson(state.input, {
-        ...resolveSqlOptions(state),
-        dialect,
-        column: state.column,
-        path: state.path,
-        operation,
-      }),
-    [state, dialect, operation],
+  const target = pickOption(state.target, queryTargets, 'sql');
+  const style = pickOption(state.mstyle, mongoStyles, 'pretty');
+  const mongo = target === 'mongo';
+
+  const build = useCallback(
+    (input: string, column: string, path: string) => {
+      const options = resolveSqlOptions(state);
+      if (mongo) {
+        return buildMongoJson(input, {
+          column,
+          path,
+          parse: options.parse,
+          batchSize: options.batchSize,
+          style,
+        });
+      }
+      return buildSqlJson(input, { ...options, dialect, column, path, operation });
+    },
+    [state, mongo, style, dialect, operation],
   );
 
-  const sqlOptions = useResolvedSqlOptions(state);
-  const outputPlaceholder = useMemo(
-    () =>
-      buildSqlJson(placeholder, {
-        ...sqlOptions,
-        dialect,
-        column: state.column || defaults.column,
-        path: state.path || pathPlaceholder,
-        operation,
-      }).output,
-    [sqlOptions, dialect, state.column, state.path, operation],
+  const result = useMemo(
+    () => build(state.input, state.column, state.path),
+    [build, state.input, state.column, state.path],
   );
+
+  const outputPlaceholder = useMemo(
+    () => build(placeholder, state.column || defaults.column, state.path || pathPlaceholder).output,
+    [build, state.column, state.path],
+  );
+
+  const onTargetChange = useCallback((value: QueryTarget) => update({ target: value }), [update]);
+
+  const onStyleChange = useCallback((value: MongoStyle) => update({ mstyle: value }), [update]);
 
   const onDialectChange = useCallback(
     (_: unknown, value: string | null) => {
@@ -102,31 +121,37 @@ export default function SqlJsonTool() {
     <ToolLayout
       options={
         <>
-          <ToggleButtonGroup
-            exclusive
-            size="small"
-            value={dialect}
-            onChange={onDialectChange}
-            aria-label={m.dialect}
-          >
-            <ToggleButton value="postgres">Postgres (jsonb)</ToggleButton>
-            <ToggleButton value="mysql">MySQL (JSON)</ToggleButton>
-          </ToggleButtonGroup>
-          <ToggleButtonGroup
-            exclusive
-            size="small"
-            value={operation}
-            onChange={onOperationChange}
-            aria-label={m.operation}
-          >
-            {Object.entries(labels).map(([value, label]) => (
-              <ToggleButton key={value} value={value}>
-                {label || m.containment}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
+          <TargetToggle value={target} onChange={onTargetChange} />
+          {mongo && <MongoStyleToggle value={style} onChange={onStyleChange} />}
+          {!mongo && (
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={dialect}
+              onChange={onDialectChange}
+              aria-label={m.dialect}
+            >
+              <ToggleButton value="postgres">Postgres (jsonb)</ToggleButton>
+              <ToggleButton value="mysql">MySQL (JSON)</ToggleButton>
+            </ToggleButtonGroup>
+          )}
+          {!mongo && (
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={operation}
+              onChange={onOperationChange}
+              aria-label={m.operation}
+            >
+              {Object.entries(labels).map(([value, label]) => (
+                <ToggleButton key={value} value={value}>
+                  {label || m.containment}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          )}
           <TextField
-            label={t.column}
+            label={mongo ? t.field : t.column}
             value={state.column}
             sx={{ width: 180 }}
             fullWidth={false}
@@ -140,7 +165,14 @@ export default function SqlJsonTool() {
             fullWidth={false}
             onChange={onPathChange}
           />
-          <SqlOptions state={state} update={update} quoteStyle={false} escape={false} />
+          <SqlOptions
+            state={state}
+            update={update}
+            quoteStyle={false}
+            escape={false}
+            layout={!mongo}
+            uppercase={!mongo}
+          />
         </>
       }
       input={

@@ -28,3 +28,11 @@ Se aceptan enteros y decimales, con signo menos opcional: `42`, `-7`, `3.14`, `.
 | `10 -2 3.5` ordenado                | `IN (-2, 3.5, 10)`                     |
 | `1, abc, 2`                         | `IN (1, 2)` y un aviso sobre `abc`     |
 | `1 2 3` con `id`, NOT IN, lote de 2 | `(id NOT IN (1, 2) AND id NOT IN (3))` |
+
+## MongoDB
+
+Cambia **Destino** a MongoDB para obtener un filtro `$in` con números sin comillas (`.5` queda `0.5`). **NOT** usa `$nin`, **Tamaño de lote** genera un filtro por lote y **Estilo JSON** elige formato legible o una sola línea.
+
+| Valores       | Resultado                             |
+| ------------- | ------------------------------------- |
+| `1`, `2`, `3` | `{ "user_id": { "$in": [1, 2, 3] } }` |

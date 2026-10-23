@@ -30,6 +30,11 @@ export const sqlMessages = defineMessages({
     stripQuotes: 'Strip existing quotes',
     escapeQuotes: "Escape quotes (' → '')",
     uppercase: 'Uppercase keywords',
+    target: 'Target',
+    field: 'Field',
+    mongoStyle: 'JSON style',
+    pretty: 'Pretty',
+    compact: 'Single line',
     stats: ({ total, unique, duplicatesRemoved }: ValueStats) =>
       `${total} ${total === 1 ? 'value' : 'values'} · ${unique} unique · ${duplicatesRemoved} duplicates removed`,
     error: (error: SqlToolError): string => {
@@ -46,6 +51,10 @@ export const sqlMessages = defineMessages({
           return `Skipped ${error.values.length} invalid ${
             error.values.length === 1 ? 'value' : 'values'
           }: ${listed(error.values, 'and', 'more')}`;
+        case 'fieldRequired':
+          return 'Field name is required for MongoDB.';
+        case 'invalidField':
+          return `Invalid field name: ${error.field} (it cannot start with $ or have empty path segments)`;
       }
     },
   },
@@ -70,6 +79,11 @@ export const sqlMessages = defineMessages({
     stripQuotes: 'Quitar comillas existentes',
     escapeQuotes: "Escapar comillas (' → '')",
     uppercase: 'Palabras clave en mayúsculas',
+    target: 'Destino',
+    field: 'Campo',
+    mongoStyle: 'Estilo JSON',
+    pretty: 'Legible',
+    compact: 'Una línea',
     stats: ({ total, unique, duplicatesRemoved }: ValueStats) =>
       `${total} ${total === 1 ? 'valor' : 'valores'} · ${unique} únicos · ${duplicatesRemoved} duplicados eliminados`,
     error: (error: SqlToolError): string => {
@@ -86,6 +100,10 @@ export const sqlMessages = defineMessages({
           return `Se omitieron ${error.values.length} ${
             error.values.length === 1 ? 'valor inválido' : 'valores inválidos'
           }: ${listed(error.values, 'y', 'más')}`;
+        case 'fieldRequired':
+          return 'El nombre del campo es obligatorio para MongoDB.';
+        case 'invalidField':
+          return `Nombre de campo inválido: ${error.field} (no puede empezar con $ ni tener segmentos vacíos)`;
       }
     },
   },
