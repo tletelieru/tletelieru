@@ -56,3 +56,41 @@ describe('SqlLikeTool output placeholder', () => {
     expect(placeholder).toContain("email LIKE '%gmail.com%'");
   });
 });
+
+describe('SqlLikeTool MongoDB target', () => {
+  it('builds an $or of escaped regexes', async () => {
+    render(<SqlLikeTool />);
+    await userEvent.click(screen.getByRole('button', { name: 'MongoDB' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Single line' }));
+    expect(screen.queryByLabelText('Escape % and _')).not.toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText('Field'), 'email');
+    fireEvent.change(screen.getByLabelText('Values'), { target: { value: 'gmail.com\nyahoo' } });
+    await userEvent.click(screen.getByLabelText('Case-insensitive (i)'));
+    expect(output()).toBe(
+      '{ "$or": [{ "email": { "$regex": "gmail\\\\.com", "$options": "i" } }, { "email": { "$regex": "yahoo", "$options": "i" } }] }',
+    );
+  });
+
+  it('uses $not with anchors', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/?target=mongo&mstyle=compact&column=email&match=ends&not=1&input=.cl',
+    );
+    render(<SqlLikeTool />);
+    expect(output()).toBe('{ "email": { "$not": { "$regex": "\\\\.cl$" } } }');
+  });
+
+  it('previews the placeholder and renders in Spanish', () => {
+    window.history.replaceState(null, '', '/?target=mongo&mstyle=compact');
+    render(
+      <LocaleProvider locale="es">
+        <SqlLikeTool />
+      </LocaleProvider>,
+    );
+    expect(screen.getByLabelText('Sin distinguir mayúsculas (i)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Resultado').getAttribute('placeholder')).toBe(
+      '{ "$or": [{ "email": { "$regex": "gmail\\\\.com" } }, { "email": { "$regex": "hotmail\\\\.com" } }] }',
+    );
+  });
+});

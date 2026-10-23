@@ -8,6 +8,7 @@ import {
   type ResolvedSqlOptions,
   type SqlToolResult,
 } from './sql/format';
+import { mongoFieldError, mongoRegexFilters, type MongoStyle } from './mongo/filter';
 import { parseValues } from './sql/values';
 
 export type LikeMatch = 'contains' | 'starts' | 'ends' | 'exact';
@@ -82,4 +83,37 @@ export function buildSqlLike(input: string, options: Partial<SqlLikeOptions> = {
     combineClauses(group, { joiner: joinWord, layout, uppercase, wrap }),
   );
   return { output: groups.join('\n\n'), error: null, stats };
+}
+
+export interface MongoLikeOptions {
+  field: string;
+  match: LikeMatch;
+  joiner: LikeJoiner;
+  not: boolean;
+  caseInsensitive: boolean;
+  parse: ResolvedSqlOptions['parse'];
+  batchSize: number;
+  style: MongoStyle;
+}
+
+export function buildMongoLike(
+  input: string,
+  options: Partial<MongoLikeOptions> = {},
+): SqlToolResult {
+  const { field, parse, ...rest } = {
+    field: '',
+    match: 'contains' as LikeMatch,
+    joiner: 'or' as LikeJoiner,
+    not: false,
+    caseInsensitive: false,
+    parse: defaultSqlOptions.parse,
+    batchSize: 0,
+    style: 'pretty' as MongoStyle,
+    ...options,
+  };
+  const { values, stats } = parseValues(input, parse);
+  if (!values.length) return { output: '', error: null, stats };
+  const error = mongoFieldError(field);
+  if (error) return { output: '', error, stats };
+  return { output: mongoRegexFilters(field, values, rest), error: null, stats };
 }
