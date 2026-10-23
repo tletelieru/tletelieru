@@ -32,11 +32,27 @@ const defaults = { mode: 'validate', input: '', style: 'dots', upperK: true, cou
 
 const styleSample = { body: '12345678', dv: '5' };
 
+const placeholder = '12.345.678-5\n11111111-1\n10000013k';
+
+const placeholderLines = nonEmptyLines(placeholder);
+
 function describeLine(line: string, format: RutFormatOptions, t: RutMessages): string {
   const result = validateRut(line, format);
   if (result.valid) return t.valid(result.formatted);
   if (result.reason === 'dv') return t.wrongDv(line, result.expectedDv ?? '');
   return t.notRut(line);
+}
+
+function processLines(
+  mode: Mode,
+  lines: string[],
+  format: RutFormatOptions,
+  t: RutMessages,
+): string {
+  if (mode === 'format') {
+    return lines.map((line) => formatRut(line, format) ?? t.notRut(line)).join('\n');
+  }
+  return lines.map((line) => describeLine(line, format, t)).join('\n');
 }
 
 export default function RutTool() {
@@ -55,11 +71,13 @@ export default function RutTool() {
     if (mode === 'generate') {
       return generated.map((rut) => formatRut(rut, format) ?? rut).join('\n');
     }
-    if (mode === 'format') {
-      return lines.map((line) => formatRut(line, format) ?? t.notRut(line)).join('\n');
-    }
-    return lines.map((line) => describeLine(line, format, t)).join('\n');
+    return processLines(mode, lines, format, t);
   }, [mode, generated, lines, format, t]);
+
+  const outputPlaceholder = useMemo(
+    () => (mode === 'generate' ? undefined : processLines(mode, placeholderLines, format, t)),
+    [mode, format, t],
+  );
 
   const validCount = useMemo(
     () => (mode === 'validate' ? lines.filter((line) => validateRut(line).valid).length : 0),
@@ -163,7 +181,7 @@ export default function RutTool() {
         !(mode === 'generate') && (
           <InputPanel
             label={t.inputLabel}
-            placeholder={'12.345.678-5\n11111111-1\n10000013k'}
+            placeholder={placeholder}
             value={state.input}
             onChange={onInputChange}
           />
@@ -172,6 +190,7 @@ export default function RutTool() {
       output={
         <OutputPanel
           value={output}
+          placeholder={outputPlaceholder}
           actions={
             mode === 'validate' &&
             lines.length > 0 && (

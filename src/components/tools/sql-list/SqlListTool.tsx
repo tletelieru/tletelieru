@@ -10,9 +10,13 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
+import { useResolvedSqlOptions } from '../sql/useResolvedSqlOptions';
 import { sqlListMessages } from './messages';
 
 const defaults = { input: '', wrap: 'parens', column: '', ...sqlOptionDefaults };
+
+const columnPlaceholder = 'id';
+const placeholder = 'a\nb\nc';
 
 export default function SqlListTool() {
   const t = useMessages(sqlMessages);
@@ -28,6 +32,17 @@ export default function SqlListTool() {
         column: state.column,
       }),
     [state, wrapper],
+  );
+
+  const sqlOptions = useResolvedSqlOptions(state);
+  const outputPlaceholder = useMemo(
+    () =>
+      buildSqlList(placeholder, {
+        ...sqlOptions,
+        wrapper,
+        column: state.column || columnPlaceholder,
+      }).output,
+    [sqlOptions, wrapper, state.column],
   );
 
   const onWrapperChange = useCallback(
@@ -65,7 +80,7 @@ export default function SqlListTool() {
           {wrapper === 'any' && (
             <TextField
               label={t.columnOptional}
-              placeholder="id"
+              placeholder={columnPlaceholder}
               value={state.column}
               sx={{ width: 200 }}
               fullWidth={false}
@@ -83,13 +98,19 @@ export default function SqlListTool() {
       input={
         <InputPanel
           label={t.values}
-          placeholder={'a\nb\nc'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
+      output={
+        <OutputPanel
+          value={result.output}
+          error={result.error && t.error(result.error)}
+          placeholder={outputPlaceholder}
+        />
+      }
     />
   );
 }

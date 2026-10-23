@@ -1,0 +1,27 @@
+---
+title: Formateador SQL
+description: Formatea o minifica SQL estándar, PostgreSQL o MySQL con opciones de mayúsculas e indentación.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega una consulta para ordenarla o dejarla en una sola línea. El formato lo hace [sql-formatter](https://github.com/sql-formatter-org/sql-formatter) directamente en el navegador.
+
+<ToolEmbed slug="sql-format" />
+
+## Opciones
+
+- **Dialecto**: SQL estándar, PostgreSQL (`->>`, casts `::`, strings `$$`) o MySQL (identificadores con backticks).
+- **Mayúsculas en palabras clave**: `MAYÚSCULAS`, `minúsculas` o mantener lo que escribiste. Las funciones y los tipos de datos siguen la misma regla.
+- **Indentación**: 2 espacios, 4 espacios o tabuladores.
+- **Minificar**: una sola línea y sin comentarios; los strings e identificadores entre comillas se mantienen tal cual.
+
+Los errores de sintaxis muestran la línea y la columna donde el formateador se detuvo.
+
+## Ejemplos
+
+| Entrada                               | Resultado (minificar, MAYÚSCULAS)           |
+| ------------------------------------- | ------------------------------------------- |
+| `select a,b from t where x=1 -- nota` | `SELECT a, b FROM t WHERE x = 1`            |
+| `select data->>'k' from t` (Postgres) | `SELECT data ->> 'k' FROM t`                |
+| `select (a from`                      | Línea 1, columna 15: no se pudo interpretar |

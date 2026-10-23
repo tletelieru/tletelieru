@@ -1,0 +1,28 @@
+---
+title: CSV ↔ JSON
+description: Convierte CSV a JSON y JSON a CSV con detección de separador, fila de encabezado, inferencia de tipos y comillas RFC 4180.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un CSV para obtener JSON, o cambia la dirección para convertir JSON en CSV. El parser sigue RFC 4180: campos entre comillas, escapes `""` y saltos de línea dentro de comillas.
+
+<ToolEmbed slug="csv-json" />
+
+## Opciones
+
+- **Dirección**: CSV → JSON o JSON → CSV.
+- **Separador**: detección automática (coma, punto y coma o tabulador) o fijo. JSON → CSV usa coma salvo que elijas otro.
+- **La primera fila es el encabezado**: CSV → JSON entrega un arreglo de objetos; sin encabezado, un arreglo de arreglos. JSON → CSV escribe el encabezado con la unión de todas las claves.
+- **Inferir tipos**: `42`, `1.5`, `true`, `false` y `null` pasan a valores JSON. `007` y los enteros sobre 2^53 siguen como strings para no perder nada.
+- **Formato legible**: JSON con 2 espacios o en una sola línea.
+
+JSON → CSV acepta un objeto, un arreglo de objetos o un arreglo de arreglos. Los valores anidados se escriben como texto JSON, y los campos con el separador, comillas, saltos de línea o espacios en los bordes van entre comillas.
+
+## Ejemplos
+
+| Entrada                  | Resultado                                |
+| ------------------------ | ---------------------------------------- |
+| `id;name` / `1;"Ana; B"` | `[{"id": 1, "name": "Ana; B"}]`          |
+| `[{"a":1},{"b":"x,y"}]`  | `a,b` / `1,` / `,"x,y"`                  |
+| `"open`                  | Línea 1: campo entre comillas sin cerrar |

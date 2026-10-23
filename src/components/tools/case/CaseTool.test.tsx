@@ -72,3 +72,12 @@ describe('CaseTool', () => {
     expect(within(list).getAllByRole('button', { name: 'Copiar' })).toHaveLength(11);
   });
 });
+
+describe('CaseTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<CaseTool />);
+    const placeholder = screen.getByLabelText('Output (snake_case)').getAttribute('placeholder');
+    expect(placeholder).toContain('parse_http_response');
+    expect(placeholder).toContain('user_id');
+  });
+});

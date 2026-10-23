@@ -1,0 +1,32 @@
+---
+title: CSV to SQL INSERT
+description: Turn CSV rows into INSERT INTO statements, multi-row or one per row, with batching, NULLs and typed values.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste CSV (or TSV) with a header row, set the table name and copy ready-to-run `INSERT` statements.
+
+<ToolEmbed slug="csv-insert" />
+
+## Options
+
+- **Table**: required; `schema.table` and quoted names are accepted.
+- **Delimiter**: auto-detected from the first row, or comma, semicolon and tab.
+- **Statements**: one multi-row `INSERT ... VALUES (...), (...)` or one `INSERT` per row.
+- **Rows per INSERT**: splits a multi-row insert into batches (0 = everything in one statement).
+- **Quote style** and **Escape quotes**: how text values are quoted, `O'Brien` becomes `'O''Brien'`.
+- **Column quoting**: auto (only names that need it, with `"`), always `"col"`, always `` `col` `` or none.
+- **First row is a header**: without a header the column list is omitted.
+- **Unquote numbers, booleans and null**: `42`, `1.5`, `true` and `null` are written as SQL literals. Numbers with leading zeros such as `007` stay quoted.
+- **Empty cells as NULL**: otherwise they become `''`.
+
+Rows with fewer cells are padded, extra cells are dropped, and the line numbers are reported. The CSV parser follows RFC 4180: quoted fields, `""` escapes and line breaks inside quotes.
+
+## Examples
+
+| CSV                 | Result                                            |
+| ------------------- | ------------------------------------------------- |
+| `id,name` / `1,Ana` | `INSERT INTO users (id, name) VALUES (1, 'Ana');` |
+| `id,name` / `2,`    | `INSERT INTO users (id, name) VALUES (2, NULL);`  |
+| `first name` / `Bo` | `INSERT INTO users ("first name") VALUES ('Bo');` |

@@ -1,0 +1,24 @@
+---
+title: Text diff
+description: Compare two texts line by line, side by side or unified, ignoring whitespace or case, with a copyable unified diff.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste the original text on the left and the changed text on the right. The comparison uses [jsdiff](https://github.com/kpdecker/jsdiff) and runs only in your browser.
+
+<ToolEmbed slug="text-diff" />
+
+## Options
+
+- **View**: side by side (original and changed lines paired up) or unified (one column with `+` and `-` lines).
+- **Ignore whitespace**: runs of spaces and tabs count as one space, and leading or trailing spaces are ignored.
+- **Ignore case**: `Hello` and `hello` count as equal.
+
+The unified diff below the view uses the standard `---` / `+++` / `@@` format with 3 lines of context, ready to paste into a review or apply with `patch`. The counters show added and removed lines.
+
+## Example
+
+| Original               | Changed                   | Unified diff           |
+| ---------------------- | ------------------------- | ---------------------- |
+| `apple` `banana` `fig` | `apple` `blueberry` `fig` | `-banana` `+blueberry` |

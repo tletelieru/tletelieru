@@ -30,3 +30,12 @@ Pega valores separados por saltos de línea, comas, tabulaciones o punto y coma 
 | `a, b, a`                                  | `IN ('a', 'b')`                                   |
 | `O'Brien`                                  | `IN ('O''Brien')`                                 |
 | `a b c` con columna `id`, lote de 2        | `(id IN ('a', 'b') OR id IN ('c'))`               |
+
+## MongoDB
+
+Cambia **Destino** a MongoDB para obtener un filtro para `find()` en vez de SQL. El campo es obligatorio, los valores se escapan como JSON, **NOT** usa `$nin` y **Tamaño de lote** genera un filtro por lote. **Estilo JSON** elige formato legible o una sola línea. El tipo de comillas, el escape, el diseño y las mayúsculas solo aplican a SQL.
+
+| Valores  | Resultado                          |
+| -------- | ---------------------------------- |
+| `a`, `b` | `{ "ref": { "$in": ["a", "b"] } }` |
+| NOT, `a` | `{ "ref": { "$nin": ["a"] } }`     |

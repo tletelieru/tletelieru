@@ -53,6 +53,8 @@ function sqlResult(result: SqlToolResult): StepResult {
       });
     case 'pathRequired':
     case 'invalidPath':
+    case 'fieldRequired':
+    case 'invalidField':
       return fail('sql-invalid');
   }
 }

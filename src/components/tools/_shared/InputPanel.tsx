@@ -10,6 +10,7 @@ import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMessages } from '~/i18n/react';
+import { trackToolEvent } from '~/lib/analytics';
 import { addHistory } from '~/lib/user-data/history';
 import { HistoryMenu } from '../../history/HistoryMenu';
 import { CodeField } from './CodeField';
@@ -60,8 +61,9 @@ export function InputPanel({
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       onChange(event.target.value);
       record(event.target.value, HISTORY_DELAY_MS);
+      trackToolEvent('used', slug);
     },
-    [onChange, record],
+    [onChange, record, slug],
   );
 
   const onPaste = useCallback(
@@ -69,8 +71,9 @@ export function InputPanel({
       setDenied(false);
       onChange(text);
       record(text, 0);
+      trackToolEvent('used', slug);
     },
-    [onChange, record],
+    [onChange, record, slug],
   );
 
   const onDenied = useCallback(() => setDenied(true), []);

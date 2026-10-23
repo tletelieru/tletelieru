@@ -28,3 +28,12 @@ Enter a column and paste values to get `col LIKE '%a%' OR col LIKE '%b%'`.
 | `gmail.com` | ends, NOT, ILIKE | `email NOT ILIKE '%gmail.com'`         |
 | `O'Brien`   | exact            | `last_name LIKE 'O''Brien'`            |
 | `txn_1`     | escape wildcards | `id LIKE '%txn!_1%' ESCAPE '!'`        |
+
+## MongoDB
+
+Switch **Target** to MongoDB to get `$regex` filters. Values are regex-escaped and the match mode adds anchors: contains has none, starts with `^`, ends with `$`, exact with both. **OR** / **AND** become `$or` / `$and`, **NOT** wraps each regex in `$not`, and the case-insensitive switch adds `"$options": "i"`. A single value gives the condition alone.
+
+| Values                | Result                                                       |
+| --------------------- | ------------------------------------------------------------ |
+| `gmail.com` (ends, i) | `{ "email": { "$regex": "gmail\\.com$", "$options": "i" } }` |
+| `a`, `b`              | `{ "$or": [{ "email": { "$regex": "a" } }, ...] }`           |

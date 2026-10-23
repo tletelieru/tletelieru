@@ -60,3 +60,12 @@ describe('CnpjTool', () => {
     expect(screen.getByLabelText('Cantidad')).toBeInTheDocument();
   });
 });
+
+describe('CnpjTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<CnpjTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('11.222.333/0001-81');
+    expect(placeholder).toContain('✔');
+  });
+});

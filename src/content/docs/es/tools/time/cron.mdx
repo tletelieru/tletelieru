@@ -1,0 +1,38 @@
+---
+title: Explicador de cron
+description: Explica expresiones cron de 5 y 6 campos en español o inglés y lista las próximas ejecuciones en cualquier zona horaria.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega una expresión cron para leerla en palabras simples y ver cuándo se ejecuta. El parser es [croner](https://github.com/Hexagon/croner) y las descripciones vienen de [cronstrue](https://github.com/bradymholt/cRonstrue).
+
+<ToolEmbed slug="cron" />
+
+## Formato
+
+| Campo         | Valores                               |
+| ------------- | ------------------------------------- |
+| segundos      | `0-59` (solo con 6 campos)            |
+| minuto        | `0-59`                                |
+| hora          | `0-23`                                |
+| día del mes   | `1-31`, `L`                           |
+| mes           | `1-12` o `JAN-DEC`                    |
+| día de semana | `0-7` (0 y 7 son domingo) o `SUN-SAT` |
+
+Se admiten listas (`1,15`), rangos (`9-17`), pasos (`*/15`) y alias como `@daily` o `@hourly`.
+
+## Opciones
+
+- **Zona horaria**: las próximas ejecuciones se calculan y muestran en esta zona (America/Santiago por defecto), incluidos los cambios de horario.
+- **Cantidad de ejecuciones**: de 1 a 50.
+- **Recalcular desde ahora**: las ejecuciones parten desde que cargó la página o cambió la expresión; usa el botón para actualizarlas.
+
+## Ejemplos
+
+| Expresión           | Significado                                                      |
+| ------------------- | ---------------------------------------------------------------- |
+| `0 9 * * 1-5`       | A las 09:00, de lunes a viernes                                  |
+| `*/15 9-18 * * 1-5` | Cada 15 minutos, entre las 09:00 y las 18:59, de lunes a viernes |
+| `0 0 1 * *`         | A las 00:00, el día 1 del mes                                    |
+| `30 0 * * * *`      | A los 30 segundos del minuto, en el minuto 0 de la hora          |

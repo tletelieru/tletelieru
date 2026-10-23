@@ -104,3 +104,11 @@ describe('TimezoneTool', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('TimezoneTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<TimezoneTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('UTC               2026-01-15 12:30:00');
+  });
+});

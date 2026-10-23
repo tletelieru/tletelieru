@@ -1,0 +1,25 @@
+---
+title: JSON diff
+description: Compare two JSON documents semantically (key order ignored) and list added, removed and changed paths.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste two JSON documents to see what changed. Key order and formatting are ignored; only values matter.
+
+<ToolEmbed slug="json-diff" />
+
+## Options
+
+- **Arrays by index**: element `0` is compared with element `0`, and so on; extra elements are added or removed.
+- **Arrays as sets**: order is ignored and elements are matched by value (objects compared with sorted keys), so only elements present on one side are listed.
+
+Each line is a JSONPath: `+` added, `-` removed, `~` changed with `old → new`. A change of type (for example an array that became an object) is reported on the parent path. Invalid JSON shows which side failed and the exact line and column.
+
+## Examples
+
+| Original             | Changed              | Result                      |
+| -------------------- | -------------------- | --------------------------- |
+| `{"a":1,"b":2}`      | `{"b":3,"a":1}`      | `~ $.b: 2 → 3`              |
+| `{"tags":["x","y"]}` | `{"tags":["y","x"]}` | nothing with arrays as sets |
+| `{"user":{"id":1}}`  | `{"user":{}}`        | `- $.user.id: 1`            |

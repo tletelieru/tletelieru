@@ -6,6 +6,7 @@ import {
   type ResolvedSqlOptions,
   type SqlToolResult,
 } from './sql/format';
+import { mongoFieldError, mongoInFilters, type MongoStyle } from './mongo/filter';
 import { parseValues } from './sql/values';
 
 export interface SqlInTextOptions extends ResolvedSqlOptions {
@@ -33,4 +34,31 @@ export function buildSqlInText(
     error: null,
     stats,
   };
+}
+
+export interface MongoInTextOptions {
+  field: string;
+  not: boolean;
+  parse: ResolvedSqlOptions['parse'];
+  batchSize: number;
+  style: MongoStyle;
+}
+
+export function buildMongoInText(
+  input: string,
+  options: Partial<MongoInTextOptions> = {},
+): SqlToolResult {
+  const { field, not, parse, batchSize, style } = {
+    field: '',
+    not: false,
+    parse: defaultSqlOptions.parse,
+    batchSize: 0,
+    style: 'pretty' as MongoStyle,
+    ...options,
+  };
+  const { values, stats } = parseValues(input, parse);
+  if (!values.length) return { output: '', error: null, stats };
+  const error = mongoFieldError(field);
+  if (error) return { output: '', error, stats };
+  return { output: mongoInFilters(field, values, { not, batchSize, style }), error: null, stats };
 }
