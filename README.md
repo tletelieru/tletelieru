@@ -30,7 +30,7 @@ can be shared as links, and the site works offline once installed.
 - **SQL & MongoDB:** formatter (standard, PostgreSQL, MySQL), `IN` lists and `LIKE` chains with a
   MongoDB `$in` / `$regex` target, Postgres `= ANY(ARRAY[...])`, CSV → `INSERT INTO`, JSON field
   queries for Postgres, MySQL and MongoDB, list formatter.
-- **Data:** JSON formatter, JSON diff, CSV ↔ JSON, YAML ↔ JSON, JSON → TypeScript / Go / Zod
+- **Data:** JSON formatter, JSON diff, CSV ↔ JSON, CSV → text table for Slack, YAML ↔ JSON, JSON → TypeScript / Go / Zod
   types, JSONPath tester.
 - **Encoding:** Base64, URL, hashes and HMAC, HTML entities, JSON string escape, JWT decoder.
 - **Text:** regex tester, text diff, case converter.

@@ -1,0 +1,32 @@
+---
+title: CSV → text table (Slack)
+description: Turn CSV into an aligned text table to paste in Slack, a terminal or Markdown, with box, ASCII or Markdown borders.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste CSV (for example, a query result exported from your SQL client) and copy an aligned table. Slack doesn't render Markdown tables, so the default output is a box-drawn table inside a code block, which Slack shows in a monospace font.
+
+<ToolEmbed slug="csv-table" />
+
+## Options
+
+- **Table style**: box (`┌─┬─┐`), ASCII (`+-+`), Markdown (`| --- |`, for GitHub, Notion or docs) or tabs.
+- **Wrap in a code block**: adds the ` ``` ` fences Slack needs to keep the columns aligned.
+- **Tabs (TSV)**: one row per line with columns separated by tabs, ready to paste into Google Sheets, Excel or a SQL client.
+- **Drop trailing zeros**: `927.5000` becomes `927.5` and `92509.000000` becomes `92509`, in any style.
+- **Right-align numbers**: columns where every value is a number are aligned to the right; Markdown marks them with `---:`.
+- **Delimiter** and **first row is a header** work like in [CSV ↔ JSON](/tletelieru/en/tools/data/csv-json/).
+
+Line breaks inside cells become spaces, and empty rows are skipped.
+
+## Example
+
+```txt
+┌───────┬──────────┬──────────┐
+│ id    │ currency │ spot     │
+├───────┼──────────┼──────────┤
+│ 32188 │ USDCLP   │ 927.5000 │
+│ 31847 │ BOBCLP   │  90.6768 │
+└───────┴──────────┴──────────┘
+```
