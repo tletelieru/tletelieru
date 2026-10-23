@@ -1,0 +1,29 @@
+---
+title: Conversor de color y contraste
+description: Convierte colores entre HEX, RGB(A), HSL y OKLCH con una muestra, y revisa el contraste WCAG (AA / AAA) contra un fondo.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe un color en cualquier notación CSS para obtener las demás, y compáralo contra un fondo para revisar el contraste WCAG.
+
+<ToolEmbed slug="color" />
+
+## Entrada
+
+Funcionan `#369`, `#336699`, `#33669980`, `rgb(51 102 153)`, `rgba(51, 102, 153, 0.5)`, `hsl(210 50% 40%)`, `oklch(49.9% 0.099 250)` y nombres CSS comunes como `rebeccapurple`. Los tonos aceptan `deg`, `rad`, `turn` y `grad`.
+
+## Resultado
+
+HEX, `rgb()`, `hsl()` y `oklch()` con la sintaxis moderna separada por espacios, con `/ alfa` cuando el color es translúcido. Los canales se redondean a sRGB de 8 bits y los colores OKLCH fuera de sRGB se recortan.
+
+## Contraste
+
+La razón sigue la luminancia relativa de WCAG 2.x; los colores translúcidos se mezclan primero sobre el fondo (y el fondo sobre blanco).
+
+| Nivel | Texto normal | Texto grande (24px, o 18,66px en negrita) |
+| ----- | ------------ | ----------------------------------------- |
+| AA    | 4,5:1        | 3:1                                       |
+| AAA   | 7:1          | 4,5:1                                     |
+
+Por ejemplo, `#777` sobre blanco da 4,48:1: no cumple AA para texto normal y sí cumple AA para texto grande.

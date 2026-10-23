@@ -88,6 +88,7 @@ export function useUrlState<T extends UrlStateShape>(
       if (!sync) return;
       window.clearTimeout(timerRef.current);
       timerRef.current = window.setTimeout(() => {
+        if (typeof window === 'undefined') return;
         const query = writeParams(next, initialDefaults, window.location.search);
         const url = `${window.location.pathname}${query}${window.location.hash}`;
         window.history.replaceState(window.history.state, '', url);

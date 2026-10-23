@@ -23,6 +23,8 @@ const defaults = { mode: 'format', indent: '2', sortKeys: false, input: '' };
 const modes: JsonMode[] = ['format', 'minify', 'validate'];
 const indents: JsonIndent[] = ['2', '4', 'tab'];
 
+const placeholder = '{"name": "tletelieru", "tools": [1, 2, 3]}';
+
 function describeSize(stats: JsonStats, mode: JsonMode): string {
   return mode === 'validate'
     ? formatBytes(stats.inputBytes)
@@ -52,6 +54,12 @@ export default function JsonTool() {
     if (!result.ok) return result.error.excerpt;
     return mode === 'validate' ? t.valid : result.output;
   }, [result, mode, t]);
+
+  const outputPlaceholder = useMemo(() => {
+    const preview = processJson(placeholder, { mode, indent, sortKeys: state.sortKeys });
+    if (!preview.ok) return undefined;
+    return mode === 'validate' ? t.valid : preview.output;
+  }, [mode, indent, state.sortKeys, t]);
 
   const onModeChange = useCallback(
     (_: unknown, value: JsonMode | null) => {
@@ -113,7 +121,7 @@ export default function JsonTool() {
       input={
         <InputPanel
           label={t.inputLabel}
-          placeholder={'{"name": "tletelieru", "tools": [1, 2, 3]}'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
         />
@@ -121,6 +129,7 @@ export default function JsonTool() {
       output={
         <OutputPanel
           value={output}
+          placeholder={outputPlaceholder}
           error={
             result && !result.ok
               ? t.error(result.error.line, result.error.column, result.error)

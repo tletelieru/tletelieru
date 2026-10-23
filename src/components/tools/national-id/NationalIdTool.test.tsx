@@ -68,3 +68,11 @@ describe('NationalIdTool', () => {
     expect(within(screen.getByRole('listbox')).getByText('España')).toBeInTheDocument();
   });
 });
+
+describe('NationalIdTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<NationalIdTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('✔');
+  });
+});

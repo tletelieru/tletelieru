@@ -32,3 +32,12 @@ Un solo valor usa `=` y varios usan `IN (...)`. La contención arma una condici�
 | MySQL    | extract   | `reference`  | `JSON_UNQUOTE(JSON_EXTRACT(meta_data, '$.reference')) IN ('a', 'b')` |
 | MySQL    | `->>`     | `reference`  | `meta_data->>'$.reference' = 'a'`                                    |
 | MySQL    | contains  | `reference`  | `JSON_CONTAINS(meta_data, '"a"', '$.reference')`                     |
+
+## MongoDB
+
+Cambia **Destino** a MongoDB para consultar la ruta JSON con notación de puntos: un valor entrega un filtro de igualdad, varios entregan `$in`, y **Tamaño de lote** genera un filtro por lote.
+
+| Valores  | Resultado                                           |
+| -------- | --------------------------------------------------- |
+| `x`      | `{ "meta_data.nested.key": "x" }`                   |
+| `a`, `b` | `{ "meta_data.nested.key": { "$in": ["a", "b"] } }` |

@@ -1,0 +1,27 @@
+---
+title: Bases numéricas y bytes
+description: Convierte números entre binario, octal, decimal, hexadecimal y base 36 con complemento a dos, y tamaños entre KB, MB, KiB y MiB.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe un número para verlo en todas las bases, o cambia a tamaños en bytes. Los números usan `BigInt`, así que no hay límite de tamaño ni redondeo.
+
+<ToolEmbed slug="number-base" />
+
+## Bases numéricas
+
+- **Base de entrada**: la opción automática detecta los prefijos `0x`, `0b` y `0o` (decimal si no hay prefijo), o elige 2, 8, 10, 16 o 36. Se ignoran los espacios y los separadores `_` y `'`, y se acepta un `-` inicial.
+- **Ancho del complemento a dos**: 8, 16, 32 o 64 bits. El valor se muestra como bits y hexadecimal, y se vuelve a leer con y sin signo: `-1` da `0xffffffff` y `0xff` en 8 bits es `-1` con signo. Los valores fuera de rango se marcan.
+
+## Tamaños en bytes
+
+Escribe un tamaño como `1536`, `1.5 GiB` o `2MB`. Las unidades decimales (KB, MB, GB, TB) usan potencias de 1000 y las binarias (KiB, MiB, GiB, TiB) potencias de 1024.
+
+## Ejemplos
+
+| Entrada       | Resultado                             |
+| ------------- | ------------------------------------- |
+| `0xff`        | bin `1111 1111`, dec `255`, oct `377` |
+| `-1` (8 bits) | `11111111`, `0xff`, sin signo `255`   |
+| `1.5 GiB`     | `1610612736` B, `1.610612736` GB      |

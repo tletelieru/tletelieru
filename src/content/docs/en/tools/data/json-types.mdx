@@ -1,0 +1,28 @@
+---
+title: JSON to types
+description: Generate TypeScript interfaces, Go structs with json tags or Zod schemas from a JSON sample.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a JSON sample, such as an API response, and copy the types.
+
+<ToolEmbed slug="json-types" />
+
+## Options
+
+- **Language**: TypeScript interfaces, Go structs with `json` tags (aligned like `gofmt`) or a Zod schema with `z.infer` types.
+- **Root type name**: `Root` by default. Nested objects are named after their key and array items get the singular (`items` → `Item`); repeated names get a number.
+
+## How shapes are merged
+
+- Every element of an array is merged into one shape, so keys missing from some elements become optional (`key?:`, `omitempty`, `.optional()`).
+- A `null` seen anywhere makes the field nullable (`| null`, a pointer in Go, `.nullable()`).
+- Mixed types become unions in TypeScript and Zod, and `any` in Go. Empty arrays are `unknown[]` or `[]any`.
+- Integers map to `int64` in Go and `z.number().int()` in Zod; any decimal makes the field `float64` or `z.number()`.
+
+## Example
+
+| Input                            | TypeScript                                    |
+| -------------------------------- | --------------------------------------------- |
+| `[{"id":1},{"id":2,"tag":null}]` | `export interface RootItem` with `tag?: null` |

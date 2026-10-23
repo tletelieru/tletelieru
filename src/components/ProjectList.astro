@@ -4,7 +4,7 @@ import { Badge, Card, CardGrid, LinkButton } from '@astrojs/starlight/components
 import { toLocale } from '~/i18n/locales';
 
 const locale = toLocale(Astro.locals.starlightRoute.locale);
-const projects = (await getCollection('projects')).sort(
+const projects = (await getCollection('projects', ({ data }) => !data.hidden)).sort(
   (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
 );
 ---

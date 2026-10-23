@@ -1,0 +1,26 @@
+---
+title: Probador de JSONPath
+description: Ejecuta expresiones JSONPath sobre un JSON y lista los valores encontrados, rutas normalizadas y JSON Pointers.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un JSON, escribe una expresión JSONPath y revisa lo que selecciona. La evaluación usa [JSONPath Plus](https://github.com/JSONPath-Plus/JSONPath) con su evaluador seguro, así que los filtros nunca ejecutan código arbitrario.
+
+<ToolEmbed slug="json-path" />
+
+## Opciones
+
+- **JSONPath**: debe empezar con `$`. Los corchetes, paréntesis o comillas sin cerrar se informan con su posición.
+- **Mostrar**: los valores encontrados como arreglo JSON, las rutas normalizadas (`$['a'][0]`) o JSON Pointers (`/a/0`).
+
+## Sintaxis
+
+| Expresión                  | Selecciona                            |
+| -------------------------- | ------------------------------------- |
+| `$.store.book[*].title`    | todos los títulos                     |
+| `$..price`                 | cada `price`, a cualquier profundidad |
+| `$.store.book[0,2]`        | el primer y el tercer libro           |
+| `$.store.book[-1:]`        | el último libro                       |
+| `$..book[?(@.price < 10)]` | libros de menos de 10                 |
+| `$..book[?(@.isbn)]`       | libros que tienen `isbn`              |

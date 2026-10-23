@@ -28,3 +28,11 @@ Integers and decimals are accepted, with an optional leading minus: `42`, `-7`, 
 | `10 -2 3.5` sorted                 | `IN (-2, 3.5, 10)`                     |
 | `1, abc, 2`                        | `IN (1, 2)` and a warning about `abc`  |
 | `1 2 3` with `id`, NOT IN, batch 2 | `(id NOT IN (1, 2) AND id NOT IN (3))` |
+
+## MongoDB
+
+Switch **Target** to MongoDB to get a `$in` filter with unquoted numbers (`.5` becomes `0.5`). **NOT** uses `$nin`, **Batch size** produces one filter per batch and **JSON style** picks pretty or single-line output.
+
+| Values        | Result                                |
+| ------------- | ------------------------------------- |
+| `1`, `2`, `3` | `{ "user_id": { "$in": [1, 2, 3] } }` |

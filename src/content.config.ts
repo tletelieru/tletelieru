@@ -15,6 +15,7 @@ export const collections = {
       demo: z.url().optional(),
       tags: z.array(z.string()).default([]),
       order: z.number().default(0),
+      hidden: z.boolean().default(false),
     }),
   }),
 };

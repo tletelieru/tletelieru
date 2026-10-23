@@ -1,0 +1,28 @@
+---
+title: Postgres ANY array
+description: Turn a list into a Postgres = ANY(ARRAY[...]) or ANY('{...}'::type[]) condition with text, int, bigint or uuid elements.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+`col = ANY(...)` takes a single array, so it works well with prepared statements and long lists. Paste the values and pick the element type.
+
+<ToolEmbed slug="sql-any" />
+
+## Options
+
+- **Column**: optional; with a column, batches are joined with `OR` (or `AND` for NOT).
+- **Array style**: `ARRAY[...]` constructor or a typed array literal such as `'{a,b}'::text[]`.
+- **Element type**: `text`, `int` (32-bit), `bigint` (64-bit) or `uuid`. Values that do not fit the type are skipped and listed. Integers are normalized (`02` becomes `2`) and UUIDs lowercased.
+- **NOT**: `col <> ALL(...)` instead of `= ANY(...)`.
+- **Split on**, **Remove duplicates**, **Strip existing quotes**, **Escape quotes**, **Layout**, **Batch size** and **Uppercase keywords** work as in the other SQL tools.
+
+## Examples
+
+| Type   | Style   | Result                               |
+| ------ | ------- | ------------------------------------ |
+| text   | ARRAY   | `status = ANY(ARRAY['new', 'paid'])` |
+| int    | ARRAY   | `id = ANY(ARRAY[1, 2, 3])`           |
+| bigint | ARRAY   | `id = ANY(ARRAY[1, 2]::bigint[])`    |
+| uuid   | literal | `id = ANY('{0f8fad5b-...}'::uuid[])` |
+| text   | NOT     | `status <> ALL(ARRAY['void'])`       |

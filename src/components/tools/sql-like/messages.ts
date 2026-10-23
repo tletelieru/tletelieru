@@ -11,6 +11,7 @@ export const sqlLikeMessages = defineMessages({
     ilike: 'ILIKE (Postgres)',
     escapeWildcards: 'Escape % and _',
     wrap: 'Wrap in parentheses',
+    caseInsensitive: 'Case-insensitive (i)',
   },
   es: {
     match: 'Coincidencia',
@@ -22,5 +23,6 @@ export const sqlLikeMessages = defineMessages({
     ilike: 'ILIKE (Postgres)',
     escapeWildcards: 'Escapar % y _',
     wrap: 'Envolver en paréntesis',
+    caseInsensitive: 'Sin distinguir mayúsculas (i)',
   },
 });

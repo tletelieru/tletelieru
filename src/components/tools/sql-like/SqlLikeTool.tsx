@@ -4,7 +4,13 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { buildSqlLike, likeJoiners, likeMatches } from '~/lib/tools/sql-like';
+import { buildMongoLike, buildSqlLike, likeJoiners, likeMatches } from '~/lib/tools/sql-like';
+import {
+  mongoStyles,
+  queryTargets,
+  type MongoStyle,
+  type QueryTarget,
+} from '~/lib/tools/mongo/filter';
 import { pickOption, resolveSqlOptions, sqlOptionDefaults } from '~/lib/tools/sql/format';
 import { useMessages } from '~/i18n/react';
 import { useUrlState } from '~/lib/url-state';
@@ -13,10 +19,13 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
+import { MongoStyleToggle, TargetToggle } from '../sql/TargetToggle';
 import { sqlLikeMessages } from './messages';
 
 const defaults = {
   input: '',
+  target: 'sql',
+  mstyle: 'pretty',
   column: '',
   match: 'contains',
   joiner: 'or',
@@ -27,6 +36,9 @@ const defaults = {
   ...sqlOptionDefaults,
 };
 
+const columnPlaceholder = 'email';
+const placeholder = 'gmail.com\nhotmail.com';
+
 export default function SqlLikeTool() {
   const t = useMessages(sqlMessages);
   const m = useMessages(sqlLikeMessages);
@@ -34,20 +46,52 @@ export default function SqlLikeTool() {
   const match = pickOption(state.match, likeMatches, 'contains');
   const joiner = pickOption(state.joiner, likeJoiners, 'or');
 
-  const result = useMemo(
-    () =>
-      buildSqlLike(state.input, {
-        ...resolveSqlOptions(state),
-        column: state.column,
+  const target = pickOption(state.target, queryTargets, 'sql');
+  const style = pickOption(state.mstyle, mongoStyles, 'pretty');
+  const mongo = target === 'mongo';
+
+  const build = useCallback(
+    (input: string, column: string) => {
+      const options = resolveSqlOptions(state);
+      if (mongo) {
+        return buildMongoLike(input, {
+          field: column,
+          match,
+          joiner,
+          not: state.not,
+          caseInsensitive: state.ilike,
+          parse: options.parse,
+          batchSize: options.batchSize,
+          style,
+        });
+      }
+      return buildSqlLike(input, {
+        ...options,
+        column,
         match,
         joiner,
         not: state.not,
         ilike: state.ilike,
         escapeWildcards: state.wild,
         wrap: state.wrap,
-      }),
-    [state, match, joiner],
+      });
+    },
+    [state, mongo, style, match, joiner],
   );
+
+  const result = useMemo(
+    () => build(state.input, state.column),
+    [build, state.input, state.column],
+  );
+
+  const outputPlaceholder = useMemo(
+    () => build(placeholder, state.column || columnPlaceholder).output,
+    [build, state.column],
+  );
+
+  const onTargetChange = useCallback((value: QueryTarget) => update({ target: value }), [update]);
+
+  const onStyleChange = useCallback((value: MongoStyle) => update({ mstyle: value }), [update]);
 
   const onColumnChange = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -95,9 +139,11 @@ export default function SqlLikeTool() {
     <ToolLayout
       options={
         <>
+          <TargetToggle value={target} onChange={onTargetChange} />
+          {mongo && <MongoStyleToggle value={style} onChange={onStyleChange} />}
           <TextField
-            label={t.column}
-            placeholder="email"
+            label={mongo ? t.field : t.column}
+            placeholder={columnPlaceholder}
             value={state.column}
             sx={{ width: 220 }}
             fullWidth={false}
@@ -127,33 +173,50 @@ export default function SqlLikeTool() {
           </ToggleButtonGroup>
           <FormControlLabel
             control={<Switch checked={state.not} onChange={onNotChange} />}
-            label="NOT LIKE"
+            label={mongo ? 'NOT ($not)' : 'NOT LIKE'}
           />
           <FormControlLabel
             control={<Switch checked={state.ilike} onChange={onIlikeChange} />}
-            label={m.ilike}
+            label={mongo ? m.caseInsensitive : m.ilike}
           />
-          <FormControlLabel
-            control={<Switch checked={state.wild} onChange={onWildChange} />}
-            label={m.escapeWildcards}
+          {!mongo && (
+            <FormControlLabel
+              control={<Switch checked={state.wild} onChange={onWildChange} />}
+              label={m.escapeWildcards}
+            />
+          )}
+          {!mongo && (
+            <FormControlLabel
+              control={<Switch checked={state.wrap} onChange={onWrapChange} />}
+              label={m.wrap}
+            />
+          )}
+          <SqlOptions
+            state={state}
+            update={update}
+            quoteStyle={false}
+            escape={!mongo}
+            layout={!mongo}
+            uppercase={!mongo}
           />
-          <FormControlLabel
-            control={<Switch checked={state.wrap} onChange={onWrapChange} />}
-            label={m.wrap}
-          />
-          <SqlOptions state={state} update={update} quoteStyle={false} />
         </>
       }
       input={
         <InputPanel
           label={t.values}
-          placeholder={'gmail.com\nhotmail.com'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
+      output={
+        <OutputPanel
+          value={result.output}
+          error={result.error && t.error(result.error)}
+          placeholder={outputPlaceholder}
+        />
+      }
     />
   );
 }
