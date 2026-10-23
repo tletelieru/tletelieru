@@ -1,0 +1,25 @@
+---
+title: cURL converter
+description: Convert a cURL command to fetch, axios, Node https or Python requests code. Nothing is executed or stored.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a cURL command, for example from the browser's "Copy as cURL", and pick the language. The command is only parsed: nothing is sent, and it is kept out of the URL, history and snippets because it often carries tokens.
+
+<ToolEmbed slug="curl-convert" />
+
+## Supported options
+
+- `-X` / `--request`, the URL (or `--url`) and its query string.
+- `-H` / `--header`, `-A` / `--user-agent`, `-e` / `--referer`, `-b` / `--cookie`.
+- `-d`, `--data`, `--data-raw`, `--data-binary`, `--data-ascii`, `--data-urlencode` (joined with `&`), `--json`, and `-G` to move the data into the query string.
+- `-F` / `--form` multipart fields, with `@file` uploads.
+- `-u` / `--user` basic auth (an explicit `Authorization` header wins), `--compressed`, `-k` / `--insecure`, `-L` / `--location`, `-I` / `--head`.
+- Quoting: single and double quotes, `$'...'`, backslash escapes and `\` line continuations.
+
+Other options such as `-v` or `-o` are listed as ignored. With data and no method the request becomes `POST`; JSON bodies are rewritten as objects for axios and as `json=` for Python requests.
+
+## Example
+
+`curl -X POST https://api.example.com/orders -H 'Content-Type: application/json' -d '{"qty":2}'` becomes a `fetch(url, { method: "POST", headers, body: JSON.stringify(...) })` call.

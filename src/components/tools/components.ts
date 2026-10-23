@@ -25,6 +25,21 @@ export const toolLoaders: Record<string, () => Promise<ToolModule>> = {
   url: () => import('./url/UrlTool'),
   'html-entities': () => import('./html-entities/HtmlEntitiesTool'),
   'json-escape': () => import('./json-escape/JsonEscapeTool'),
+  'sql-format': () => import('./sql-format/SqlFormatTool'),
+  'csv-insert': () => import('./csv-insert/CsvInsertTool'),
+  'sql-any': () => import('./sql-any/SqlAnyTool'),
+  'csv-json': () => import('./csv-json/CsvJsonTool'),
+  'json-types': () => import('./json-types/JsonTypesTool'),
+  'json-path': () => import('./json-path/JsonPathTool'),
+  'yaml-json': () => import('./yaml-json/YamlJsonTool'),
+  regex: () => import('./regex/RegexTool'),
+  'text-diff': () => import('./text-diff/TextDiffTool'),
+  'json-diff': () => import('./json-diff/JsonDiffTool'),
+  cron: () => import('./cron/CronTool'),
+  'curl-convert': () => import('./curl-convert/CurlConvertTool'),
+  'number-base': () => import('./number-base/NumberBaseTool'),
+  password: () => import('./password/PasswordTool'),
+  color: () => import('./color/ColorTool'),
 };
 
 export const toolModules = createModuleCache(toolLoaders);
