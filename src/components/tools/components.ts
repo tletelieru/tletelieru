@@ -29,6 +29,7 @@ export const toolLoaders: Record<string, () => Promise<ToolModule>> = {
   'csv-insert': () => import('./csv-insert/CsvInsertTool'),
   'sql-any': () => import('./sql-any/SqlAnyTool'),
   'csv-json': () => import('./csv-json/CsvJsonTool'),
+  'csv-table': () => import('./csv-table/CsvTableTool'),
   'json-types': () => import('./json-types/JsonTypesTool'),
   'json-path': () => import('./json-path/JsonPathTool'),
   'yaml-json': () => import('./yaml-json/YamlJsonTool'),

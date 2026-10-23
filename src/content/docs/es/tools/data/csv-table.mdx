@@ -1,0 +1,32 @@
+---
+title: CSV → tabla de texto (Slack)
+description: Convierte un CSV en una tabla de texto alineada para pegar en Slack, una terminal o Markdown, con bordes de cuadro, ASCII o Markdown.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un CSV (por ejemplo, el resultado de una query exportado desde tu cliente SQL) y copia una tabla alineada. Slack no muestra tablas Markdown, así que la salida por defecto es una tabla con bordes de cuadro dentro de un bloque de código, que Slack muestra en fuente monoespaciada.
+
+<ToolEmbed slug="csv-table" />
+
+## Opciones
+
+- **Estilo de tabla**: cuadro (`┌─┬─┐`), ASCII (`+-+`), Markdown (`| --- |`, para GitHub, Notion o documentación) o tabulaciones.
+- **Envolver en bloque de código**: agrega las marcas ` ``` ` que Slack necesita para mantener las columnas alineadas.
+- **Tabulaciones (TSV)**: una fila por línea con las columnas separadas por tabulaciones, lista para pegar en Google Sheets, Excel o un cliente SQL.
+- **Quitar ceros finales**: `927.5000` queda como `927.5` y `92509.000000` como `92509`, en cualquier estilo.
+- **Alinear números a la derecha**: las columnas donde todos los valores son números se alinean a la derecha; en Markdown se marcan con `---:`.
+- **Separador** y **la primera fila es el encabezado** funcionan igual que en [CSV ↔ JSON](/tletelieru/es/tools/data/csv-json/).
+
+Los saltos de línea dentro de una celda se convierten en espacios y las filas vacías se omiten.
+
+## Ejemplo
+
+```txt
+┌───────┬──────────┬──────────┐
+│ id    │ currency │ spot     │
+├───────┼──────────┼──────────┤
+│ 32188 │ USDCLP   │ 927.5000 │
+│ 31847 │ BOBCLP   │  90.6768 │
+└───────┴──────────┴──────────┘
+```
