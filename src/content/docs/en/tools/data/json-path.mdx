@@ -1,0 +1,26 @@
+---
+title: JSONPath tester
+description: Run JSONPath expressions against JSON and list the matched values, normalized paths and JSON Pointers.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste JSON, type a JSONPath expression and see what it selects. Evaluation uses [JSONPath Plus](https://github.com/JSONPath-Plus/JSONPath) with its safe evaluator, so filter expressions never run arbitrary code.
+
+<ToolEmbed slug="json-path" />
+
+## Options
+
+- **JSONPath**: must start with `$`. Unbalanced brackets, parentheses or quotes are reported with their position.
+- **Show**: the matched values as a JSON array, the normalized paths (`$['a'][0]`) or JSON Pointers (`/a/0`).
+
+## Syntax
+
+| Expression                 | Selects                     |
+| -------------------------- | --------------------------- |
+| `$.store.book[*].title`    | every book title            |
+| `$..price`                 | every `price`, at any depth |
+| `$.store.book[0,2]`        | the first and third books   |
+| `$.store.book[-1:]`        | the last book               |
+| `$..book[?(@.price < 10)]` | books cheaper than 10       |
+| `$..book[?(@.isbn)]`       | books that have an `isbn`   |
