@@ -1,0 +1,40 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { toLocale } from '~/i18n/locales';
+import { favoriteStarLabels, favoriteStarsScript } from '~/lib/favorite-stars';
+import { toolPath, tools } from '~/lib/tools/registry';
+
+const locale = toLocale(Astro.locals.starlightRoute.locale);
+const id = Astro.locals.starlightRoute.id.replace(/\/+$/, '');
+const tool = tools.find((candidate) => toolPath(candidate, locale).replace(/\/+$/, '') === id);
+const script = favoriteStarsScript({
+  root: "document.querySelector('.page-title-row')",
+  locale,
+});
+---
+
+{tool ? (
+  <div class="page-title-row">
+    <Default />
+    <button
+      type="button"
+      class="favorite-star favorite-star-title"
+      data-favorite-star={tool.slug}
+      aria-pressed="false"
+      aria-label={favoriteStarLabels[locale].add}
+      title={favoriteStarLabels[locale].add}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          d="M12 2.8l2.84 5.75 6.35.92-4.6 4.48 1.09 6.32L12 17.29l-5.68 2.98 1.09-6.32-4.6-4.48 6.35-.92L12 2.8z"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+    <script is:inline set:html={script} />
+  </div>
+) : (
+  <Default />
+)}
