@@ -2,7 +2,7 @@
 
 Fullstack developer\
 🎓 Software Engineer, USM\
-📍 Cartagena, Chile
+📍 San Antonio, Chile
 
 I develop in React and React Native on the frontend; TypeScript, Go and Rust on the backend.
 
@@ -10,13 +10,15 @@ I develop in React and React Native on the frontend; TypeScript, Go and Rust on 
 
 ## Stack
 
-| Area      | Tools                                |
-| --------- | ------------------------------------ |
-| Frontend  | React, TypeScript                    |
-| Mobile    | React Native, Expo                   |
-| Backend   | Go, Rust, Node.js (Nest), PHP        |
-| Databases | PostgreSQL, MySQL, MongoDB, DynamoDB |
-| Other     | Docker, Git                          |
+| Area                | Tools                                                                                                                                                      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend            | React, TypeScript, Next.js, TanStack Query, Astro, PHP (Yii)                                                                                               |
+| Mobile              | React Native, Expo                                                                                                                                         |
+| Backend             | TypeScript (NestJS, Express), Go (Fiber), Rust (Axum, async-graphql), PHP (Yii)                                                                            |
+| Databases           | PostgreSQL, MySQL, MongoDB, DynamoDB                                                                                                                       |
+| Cloud               | AWS (Lambda, DynamoDB), SST, Railway, Supabase, Docker                                                                                                     |
+| APIs & integrations | Novu, Resonate, Svix, Blnk Finance, HubSpot, Compliance Tracker, OpenAI API, Typesense, Slack, Sentry, Google Analytics, Etpay, Xero, bank APIs, SFTP (Go) |
+| Other               | Git, GitHub Actions                                                                                                                                        |
 
 ## Dev toolbox
 
