@@ -1,0 +1,28 @@
+---
+title: CSV ↔ JSON
+description: Convert CSV to JSON and JSON to CSV with delimiter detection, header row, type inference and RFC 4180 quoting.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste CSV to get JSON, or switch direction to turn JSON into CSV. Parsing follows RFC 4180: quoted fields, `""` escapes and line breaks inside quotes.
+
+<ToolEmbed slug="csv-json" />
+
+## Options
+
+- **Direction**: CSV → JSON or JSON → CSV.
+- **Delimiter**: auto-detected (comma, semicolon or tab) or fixed. JSON → CSV uses a comma unless another one is chosen.
+- **First row is a header**: CSV → JSON gives an array of objects; without a header, an array of arrays. JSON → CSV writes the header row from the union of all keys.
+- **Infer types**: `42`, `1.5`, `true`, `false` and `null` become JSON values. `007` and integers beyond 2^53 stay strings so nothing is lost.
+- **Pretty print**: 2-space JSON or a single line.
+
+JSON → CSV accepts an object, an array of objects or an array of arrays. Nested values are written as JSON text, and fields with the delimiter, quotes, line breaks or surrounding spaces are quoted.
+
+## Examples
+
+| Input                    | Result                            |
+| ------------------------ | --------------------------------- |
+| `id;name` / `1;"Ana; B"` | `[{"id": 1, "name": "Ana; B"}]`   |
+| `[{"a":1},{"b":"x,y"}]`  | `a,b` / `1,` / `,"x,y"`           |
+| `"open`                  | Line 1: quoted field never closed |
