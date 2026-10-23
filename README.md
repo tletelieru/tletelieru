@@ -22,8 +22,10 @@ I develop in React and React Native on the frontend; TypeScript, Go and Rust on 
 
 ## Dev toolbox
 
-Dev tools that run only in the browser, in English and Spanish. Nothing is sent anywhere, results
-can be shared as links, and the site works offline once installed.
+Dev tools that run only in the browser, in English and Spanish. What you paste never leaves the
+browser, results can be shared as links, and the site works offline once installed. Anonymous visit
+and tool-usage counts go to [GoatCounter](https://www.goatcounter.com/) (no cookies, no tool
+content).
 
 - **IDs & documents:** RUT, CPF, CNPJ (incl. alphanumeric), national IDs for AR, PE, CO, MX, UY,
   ES and EC, UUID / ULID / Nano ID.

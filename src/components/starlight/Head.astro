@@ -2,6 +2,7 @@
 import Default from '@astrojs/starlight/components/Head.astro';
 import { pwaInfo } from 'virtual:pwa-info';
 import { preferredLocaleKey, toLocale } from '~/i18n/locales';
+import { GOATCOUNTER_ENDPOINT } from '~/lib/analytics';
 
 const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
 const locale = toLocale(Astro.locals.starlightRoute.locale);
@@ -36,3 +37,9 @@ const locale = toLocale(Astro.locals.starlightRoute.locale);
 <meta name="theme-color" content="#17181c" />
 {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
 <script src="../../pwa.ts"></script>
+<script
+  is:inline
+  data-goatcounter={GOATCOUNTER_ENDPOINT}
+  async
+  src="https://gc.zgo.at/count.js"
+></script>
