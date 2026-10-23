@@ -28,6 +28,21 @@ function describeLine(
   return t.notA(line, noun);
 }
 
+function processLines(
+  mode: IdMode,
+  lines: string[],
+  style: FormatStyle,
+  validate: (line: string) => IdValidation,
+  format: (line: string, style: FormatStyle) => string | null,
+  noun: string,
+  t: IdLinesMessages,
+): string {
+  if (mode === 'format') {
+    return lines.map((line) => format(line, style) ?? t.notA(line, noun)).join('\n');
+  }
+  return lines.map((line) => describeLine(line, validate(line), noun, t)).join('\n');
+}
+
 export type IdMode = 'validate' | 'format' | 'generate';
 
 export type IdLinesState = {
@@ -89,11 +104,16 @@ export function IdLinesTool({
     if (mode === 'generate') {
       return generated.map((value) => format(value, style) ?? value).join('\n');
     }
-    if (mode === 'format') {
-      return lines.map((line) => format(line, style) ?? t.notA(line, noun)).join('\n');
-    }
-    return lines.map((line) => describeLine(line, validate(line), noun, t)).join('\n');
+    return processLines(mode, lines, style, validate, format, noun, t);
   }, [mode, generated, lines, style, format, validate, noun, t]);
+
+  const outputPlaceholder = useMemo(
+    () =>
+      mode === 'generate'
+        ? undefined
+        : processLines(mode, nonEmptyLines(placeholder), style, validate, format, noun, t),
+    [mode, placeholder, style, validate, format, noun, t],
+  );
 
   const validCount = useMemo(
     () => (mode === 'validate' ? lines.filter((line) => validate(line).valid).length : 0),
@@ -197,6 +217,7 @@ export function IdLinesTool({
       output={
         <OutputPanel
           value={output}
+          placeholder={outputPlaceholder}
           actions={
             mode === 'validate' &&
             lines.length > 0 && (

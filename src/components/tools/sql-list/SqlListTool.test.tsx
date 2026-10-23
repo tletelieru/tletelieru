@@ -43,3 +43,11 @@ describe('SqlListTool', () => {
     expect((screen.getByLabelText('Resultado') as HTMLTextAreaElement).value).toBe("('a', 'b')");
   });
 });
+
+describe('SqlListTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlListTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain("'a', 'b', 'c'");
+  });
+});

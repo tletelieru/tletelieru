@@ -16,6 +16,7 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
+import { useResolvedSqlOptions } from '../sql/useResolvedSqlOptions';
 import { sqlJsonMessages } from './messages';
 
 const defaults = {
@@ -26,6 +27,9 @@ const defaults = {
   op: 'arrow',
   ...sqlOptionDefaults,
 };
+
+const pathPlaceholder = 'nested.key';
+const placeholder = 'ref-001\nref-002';
 
 const operationLabels: Record<'postgres' | 'mysql', Partial<Record<JsonOperation, string>>> = {
   postgres: { arrow: "->> 'key'", path: "#>> '{path}'", contains: '' },
@@ -49,6 +53,19 @@ export default function SqlJsonTool() {
         operation,
       }),
     [state, dialect, operation],
+  );
+
+  const sqlOptions = useResolvedSqlOptions(state);
+  const outputPlaceholder = useMemo(
+    () =>
+      buildSqlJson(placeholder, {
+        ...sqlOptions,
+        dialect,
+        column: state.column || defaults.column,
+        path: state.path || pathPlaceholder,
+        operation,
+      }).output,
+    [sqlOptions, dialect, state.column, state.path, operation],
   );
 
   const onDialectChange = useCallback(
@@ -117,7 +134,7 @@ export default function SqlJsonTool() {
           />
           <TextField
             label={m.keyPath}
-            placeholder="nested.key"
+            placeholder={pathPlaceholder}
             value={state.path}
             sx={{ width: 180 }}
             fullWidth={false}
@@ -129,13 +146,19 @@ export default function SqlJsonTool() {
       input={
         <InputPanel
           label={t.values}
-          placeholder={'ref-001\nref-002'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
+      output={
+        <OutputPanel
+          value={result.output}
+          error={result.error && t.error(result.error)}
+          placeholder={outputPlaceholder}
+        />
+      }
     />
   );
 }

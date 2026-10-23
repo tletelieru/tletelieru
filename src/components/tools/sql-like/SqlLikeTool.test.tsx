@@ -48,3 +48,11 @@ describe('SqlLikeTool', () => {
     expect(screen.getByText('El nombre de la columna es obligatorio.')).toBeInTheDocument();
   });
 });
+
+describe('SqlLikeTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlLikeTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain("email LIKE '%gmail.com%'");
+  });
+});

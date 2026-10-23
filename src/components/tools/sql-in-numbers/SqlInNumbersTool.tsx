@@ -11,9 +11,13 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
+import { useResolvedSqlOptions } from '../sql/useResolvedSqlOptions';
 import { sqlInNumbersMessages } from './messages';
 
 const defaults = { input: '', column: '', not: false, sort: false, ...sqlOptionDefaults };
+
+const columnPlaceholder = 'user_id';
+const placeholder = '1\n2\n3.5\n-4';
 
 export default function SqlInNumbersTool() {
   const t = useMessages(sqlMessages);
@@ -29,6 +33,18 @@ export default function SqlInNumbersTool() {
         sort: state.sort,
       }),
     [state],
+  );
+
+  const sqlOptions = useResolvedSqlOptions(state);
+  const outputPlaceholder = useMemo(
+    () =>
+      buildSqlInNumbers(placeholder, {
+        ...sqlOptions,
+        column: state.column || columnPlaceholder,
+        not: state.not,
+        sort: state.sort,
+      }).output,
+    [sqlOptions, state.column, state.not, state.sort],
   );
 
   const onColumnChange = useCallback(
@@ -55,7 +71,7 @@ export default function SqlInNumbersTool() {
         <>
           <TextField
             label={t.columnOptional}
-            placeholder="user_id"
+            placeholder={columnPlaceholder}
             value={state.column}
             sx={{ width: 220 }}
             fullWidth={false}
@@ -75,13 +91,19 @@ export default function SqlInNumbersTool() {
       input={
         <InputPanel
           label={m.numbers}
-          placeholder={'1\n2\n3.5\n-4'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
+      output={
+        <OutputPanel
+          value={result.output}
+          error={result.error && t.error(result.error)}
+          placeholder={outputPlaceholder}
+        />
+      }
     />
   );
 }

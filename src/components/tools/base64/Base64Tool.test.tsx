@@ -90,3 +90,11 @@ describe('Base64Tool', () => {
     expect(screen.getByRole('button', { name: 'Copiar' })).toBeInTheDocument();
   });
 });
+
+describe('Base64Tool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<Base64Tool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('SGVsbG8sIMOxYW5kw7og4pyT');
+  });
+});

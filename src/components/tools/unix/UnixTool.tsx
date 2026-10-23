@@ -11,6 +11,7 @@ import {
   unixFields,
   type UnitOption,
   type UnixField,
+  type UnixLine,
 } from '~/lib/tools/unix';
 import { useUrlState } from '~/lib/url-state';
 import { InputPanel } from '../_shared/InputPanel';
@@ -20,6 +21,12 @@ import { ZonePicker } from '../time/ZonePicker';
 import { unixMessages } from './messages';
 
 const defaults = { input: '', zone: 'America/Santiago', unit: 'auto', field: 'all' };
+
+const placeholder = '1700000000\n1700000000123\n2026-01-15T09:30:00-03:00';
+
+function withoutRelative(line: UnixLine): UnixLine {
+  return line.ok ? { ...line, details: { ...line.details, relative: '—' } } : line;
+}
 
 function isUnit(value: string): value is UnitOption {
   return value === 'auto' || (timestampUnits as readonly string[]).includes(value);
@@ -45,6 +52,10 @@ export default function UnixTool() {
     () => formatUnixOutput(lines, field, state.zone, t),
     [lines, field, state.zone, t],
   );
+  const outputPlaceholder = useMemo(() => {
+    const preview = convertUnix(placeholder, { unit, zone: state.zone, now: 0, locale });
+    return formatUnixOutput(preview.map(withoutRelative), field, state.zone, t);
+  }, [unit, state.zone, locale, field, t]);
   const validCount = useMemo(() => lines.filter((line) => line.ok).length, [lines]);
 
   const onInputChange = useCallback(
@@ -110,7 +121,7 @@ export default function UnixTool() {
       input={
         <InputPanel
           label={t.inputLabel}
-          placeholder={'1700000000\n1700000000123\n2026-01-15T09:30:00-03:00'}
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
         />
@@ -118,6 +129,7 @@ export default function UnixTool() {
       output={
         <OutputPanel
           value={output}
+          placeholder={outputPlaceholder}
           actions={
             lines.length > 0 && (
               <Typography variant="body2" color="text.secondary">

@@ -47,3 +47,11 @@ describe('SqlInNumbersTool', () => {
     expect((screen.getByLabelText('Resultado') as HTMLTextAreaElement).value).toBe('IN (1)');
   });
 });
+
+describe('SqlInNumbersTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlInNumbersTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('user_id IN (1, 2, 3.5, -4)');
+  });
+});

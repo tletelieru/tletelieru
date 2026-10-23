@@ -18,6 +18,16 @@ type Mode = 'escape' | 'unescape';
 
 const defaults = { mode: 'escape', input: '', quotes: false, ascii: false, pretty: false };
 
+const escapePlaceholder = 'Line 1\n"quoted" é';
+const unescapePlaceholder = '"{\\"name\\":\\"caf\\u00e9\\"}"';
+
+function unescapePreview(input: string, pretty: boolean): string | undefined {
+  const result = unescapeJsonString(input);
+  if (!result.ok) return undefined;
+  const embedded = prettyEmbeddedJson(result.text);
+  return pretty && embedded !== null ? embedded : result.text;
+}
+
 export default function JsonEscapeTool() {
   const t = useMessages(jsonEscapeMessages);
   const [state, update] = useUrlState(defaults);
@@ -40,6 +50,14 @@ export default function JsonEscapeTool() {
     if (!unescaped?.ok) return '';
     return state.pretty && embedded !== null ? embedded : unescaped.text;
   }, [mode, state.input, state.quotes, state.ascii, state.pretty, unescaped, embedded]);
+
+  const outputPlaceholder = useMemo(
+    () =>
+      mode === 'escape'
+        ? escapeJsonString(escapePlaceholder, { quotes: state.quotes, asciiOnly: state.ascii })
+        : unescapePreview(unescapePlaceholder, state.pretty),
+    [mode, state.quotes, state.ascii, state.pretty],
+  );
 
   const error = useMemo(() => {
     if (!unescaped || unescaped.ok) return null;
@@ -103,9 +121,7 @@ export default function JsonEscapeTool() {
       input={
         <InputPanel
           label={mode === 'unescape' ? t.unescapeInput : t.escapeInput}
-          placeholder={
-            mode === 'unescape' ? '"{\\"name\\":\\"caf\\u00e9\\"}"' : 'Line 1\n"quoted" é'
-          }
+          placeholder={mode === 'unescape' ? unescapePlaceholder : escapePlaceholder}
           value={state.input}
           onChange={onInputChange}
         />
@@ -114,6 +130,7 @@ export default function JsonEscapeTool() {
         <OutputPanel
           value={output}
           error={error}
+          placeholder={outputPlaceholder}
           actions={
             <>
               {unescaped?.ok && (

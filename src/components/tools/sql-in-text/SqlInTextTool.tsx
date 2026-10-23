@@ -11,8 +11,13 @@ import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { sqlMessages } from '../sql/messages';
 import { SqlOptions, ValueStatsText } from '../sql/SqlOptions';
+import { useResolvedSqlOptions } from '../sql/useResolvedSqlOptions';
 
 const defaults = { input: '', column: '', not: false, ...sqlOptionDefaults };
+
+const columnPlaceholder = 'transaction_id';
+const placeholder =
+  'txn_ab8fcd54-7491-4a31-8066-cf805be27871\ntxn_a34e722a-1c2b-4d3e-9f80-1234567890ab';
 
 export default function SqlInTextTool() {
   const t = useMessages(sqlMessages);
@@ -26,6 +31,17 @@ export default function SqlInTextTool() {
         not: state.not,
       }),
     [state],
+  );
+
+  const sqlOptions = useResolvedSqlOptions(state);
+  const outputPlaceholder = useMemo(
+    () =>
+      buildSqlInText(placeholder, {
+        ...sqlOptions,
+        column: state.column || columnPlaceholder,
+        not: state.not,
+      }).output,
+    [sqlOptions, state.column, state.not],
   );
 
   const onColumnChange = useCallback(
@@ -47,7 +63,7 @@ export default function SqlInTextTool() {
         <>
           <TextField
             label={t.columnOptional}
-            placeholder="transaction_id"
+            placeholder={columnPlaceholder}
             value={state.column}
             sx={{ width: 220 }}
             fullWidth={false}
@@ -63,15 +79,19 @@ export default function SqlInTextTool() {
       input={
         <InputPanel
           label={t.values}
-          placeholder={
-            'txn_ab8fcd54-7491-4a31-8066-cf805be27871\ntxn_a34e722a-1c2b-4d3e-9f80-1234567890ab'
-          }
+          placeholder={placeholder}
           value={state.input}
           onChange={onInputChange}
           actions={<ValueStatsText stats={result.stats} />}
         />
       }
-      output={<OutputPanel value={result.output} error={result.error && t.error(result.error)} />}
+      output={
+        <OutputPanel
+          value={result.output}
+          error={result.error && t.error(result.error)}
+          placeholder={outputPlaceholder}
+        />
+      }
     />
   );
 }

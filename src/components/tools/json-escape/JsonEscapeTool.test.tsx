@@ -72,3 +72,12 @@ describe('JsonEscapeTool', () => {
     expect(screen.getByLabelText('Resultado')).toBeInTheDocument();
   });
 });
+
+describe('JsonEscapeTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<JsonEscapeTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('Line 1');
+    expect(placeholder).toContain('quoted');
+  });
+});

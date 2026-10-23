@@ -98,3 +98,11 @@ describe('UrlTool', () => {
     expect(screen.getByRole('button', { name: 'Copiar' })).toBeInTheDocument();
   });
 });
+
+describe('UrlTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<UrlTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('a%20b%26c%3D%C3%B1');
+  });
+});
