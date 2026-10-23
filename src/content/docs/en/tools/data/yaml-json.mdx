@@ -1,0 +1,26 @@
+---
+title: YAML ↔ JSON
+description: Convert YAML to JSON and JSON to YAML with exact error lines, anchors, multiple documents and indent options.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste YAML (Kubernetes manifests, Compose files, CI configs) to get JSON, or switch direction. Parsing uses the [yaml](https://eemeli.org/yaml/) package with the YAML 1.2 core schema.
+
+<ToolEmbed slug="yaml-json" />
+
+## Options
+
+- **Direction**: YAML → JSON or JSON → YAML.
+- **Indent**: 2 or 4 spaces for the output.
+
+Errors show the line, column and a caret under the problem (bad indentation, tabs, duplicate keys, unclosed quotes). Anchors and aliases are resolved, with a limit of 100 aliases to stop "billion laughs" inputs. Several documents separated by `---` become a JSON array. Dates such as `2026-01-01` stay strings.
+
+## Examples
+
+| Input               | Result                                    |
+| ------------------- | ----------------------------------------- |
+| `tags: [a, b]`      | `{"tags": ["a", "b"]}`                    |
+| `a: &x 1` / `b: *x` | `{"a": 1, "b": 1}`                        |
+| `{"s": "a\nb"}`     | a `s: \|-` block scalar                   |
+| `a: 1` / `a: 2`     | Line 2, column 1: map keys must be unique |

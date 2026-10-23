@@ -32,3 +32,12 @@ A single value uses `=`, several use `IN (...)`. Containment builds one conditio
 | MySQL    | extract   | `reference`  | `JSON_UNQUOTE(JSON_EXTRACT(meta_data, '$.reference')) IN ('a', 'b')` |
 | MySQL    | `->>`     | `reference`  | `meta_data->>'$.reference' = 'a'`                                    |
 | MySQL    | contains  | `reference`  | `JSON_CONTAINS(meta_data, '"a"', '$.reference')`                     |
+
+## MongoDB
+
+Switch **Target** to MongoDB to query the JSON path with dot notation: one value gives an equality filter, several give `$in`, and **Batch size** produces one filter per batch.
+
+| Values   | Result                                              |
+| -------- | --------------------------------------------------- |
+| `x`      | `{ "meta_data.nested.key": "x" }`                   |
+| `a`, `b` | `{ "meta_data.nested.key": { "$in": ["a", "b"] } }` |

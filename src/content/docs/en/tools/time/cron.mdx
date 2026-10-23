@@ -1,0 +1,38 @@
+---
+title: Cron explainer
+description: Explain 5- and 6-field cron expressions in plain English or Spanish and list the next runs in any time zone.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a cron expression to read it in plain words and see when it fires next. Parsing uses [croner](https://github.com/Hexagon/croner) and descriptions come from [cronstrue](https://github.com/bradymholt/cRonstrue).
+
+<ToolEmbed slug="cron" />
+
+## Format
+
+| Field        | Values                                  |
+| ------------ | --------------------------------------- |
+| seconds      | `0-59` (only with 6 fields)             |
+| minute       | `0-59`                                  |
+| hour         | `0-23`                                  |
+| day of month | `1-31`, `L`                             |
+| month        | `1-12` or `JAN-DEC`                     |
+| day of week  | `0-7` (0 and 7 are Sunday) or `SUN-SAT` |
+
+Lists (`1,15`), ranges (`9-17`), steps (`*/15`) and nicknames such as `@daily` or `@hourly` are supported.
+
+## Options
+
+- **Time zone**: next runs are computed and shown in this zone (America/Santiago by default), including daylight-saving changes.
+- **Number of runs**: 1 to 50.
+- **Recalculate from now**: next runs start at the moment the page loaded or the expression changed; use the button to refresh them.
+
+## Examples
+
+| Expression          | Meaning                                                          |
+| ------------------- | ---------------------------------------------------------------- |
+| `0 9 * * 1-5`       | At 09:00, Monday through Friday                                  |
+| `*/15 9-18 * * 1-5` | Every 15 minutes, between 09:00 and 18:59, Monday through Friday |
+| `0 0 1 * *`         | At 00:00, on day 1 of the month                                  |
+| `30 0 * * * *`      | At 30 seconds past the minute, at 0 minutes past the hour        |

@@ -57,3 +57,17 @@ describe('RutTool', () => {
     expect(screen.getByRole('button', { name: 'Copiar' })).toBeInTheDocument();
   });
 });
+
+describe('RutTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<RutTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('12.345.678-5  ✔ valid');
+  });
+
+  it('has no output placeholder without an input box', () => {
+    window.history.replaceState(null, '', '/?mode=generate');
+    render(<RutTool />);
+    expect(screen.getByLabelText('Output')).not.toHaveAttribute('placeholder');
+  });
+});

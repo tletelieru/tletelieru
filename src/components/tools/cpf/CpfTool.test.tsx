@@ -74,3 +74,12 @@ describe('CpfTool', () => {
     expect(screen.getByText('1 / 3 válidos')).toBeInTheDocument();
   });
 });
+
+describe('CpfTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<CpfTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('529.982.247-25');
+    expect(placeholder).toContain('✔');
+  });
+});

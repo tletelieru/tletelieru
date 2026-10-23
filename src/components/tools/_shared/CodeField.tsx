@@ -1,17 +1,23 @@
 import TextField, { type TextFieldProps } from '@mui/material/TextField';
 
-export function CodeField({ slotProps, ...props }: TextFieldProps) {
+type CodeFieldProps = Omit<TextFieldProps, 'rows' | 'maxRows'> & { minRows?: number };
+
+export function CodeField({ slotProps, minRows = 8, ...props }: CodeFieldProps) {
   return (
     <TextField
       multiline
-      minRows={6}
-      maxRows={24}
+      rows={minRows}
       {...props}
       slotProps={{
         ...slotProps,
+        input: { inputComponent: 'textarea', ...(slotProps?.input as object | undefined) },
         htmlInput: {
           spellCheck: false,
-          style: { fontFamily: 'var(--sl-font-mono, ui-monospace, monospace)', fontSize: 14 },
+          style: {
+            fontFamily: 'var(--sl-font-mono, ui-monospace, monospace)',
+            fontSize: 14,
+            resize: 'vertical',
+          },
           ...(slotProps?.htmlInput as object | undefined),
         },
       }}

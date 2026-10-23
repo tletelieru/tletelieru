@@ -79,3 +79,11 @@ describe('JsonTool', () => {
     expect(screen.getByText('7 B · profundidad 1 · 1 clave')).toBeInTheDocument();
   });
 });
+
+describe('JsonTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<JsonTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('"name": "tletelieru"');
+  });
+});

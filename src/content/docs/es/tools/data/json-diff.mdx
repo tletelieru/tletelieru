@@ -1,0 +1,25 @@
+---
+title: Comparador de JSON
+description: Compara dos documentos JSON de forma semántica (sin importar el orden de las claves) y lista las rutas agregadas, eliminadas y modificadas.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega dos documentos JSON para ver qué cambió. Se ignoran el orden de las claves y el formato; solo importan los valores.
+
+<ToolEmbed slug="json-diff" />
+
+## Opciones
+
+- **Arreglos por índice**: el elemento `0` se compara con el `0`, y así sucesivamente; los elementos sobrantes se informan como agregados o eliminados.
+- **Arreglos como conjuntos**: se ignora el orden y los elementos se emparejan por valor (los objetos se comparan con claves ordenadas), así que solo se listan los que están en un solo lado.
+
+Cada línea es una ruta JSONPath: `+` agregado, `-` eliminado, `~` modificado con `antes → después`. Un cambio de tipo (por ejemplo, un arreglo que pasó a ser objeto) se informa en la ruta del padre. Si un JSON es inválido se indica qué lado falló y la línea y columna exactas.
+
+## Ejemplos
+
+| Original             | Modificado           | Resultado                        |
+| -------------------- | -------------------- | -------------------------------- |
+| `{"a":1,"b":2}`      | `{"b":3,"a":1}`      | `~ $.b: 2 → 3`                   |
+| `{"tags":["x","y"]}` | `{"tags":["y","x"]}` | nada con arreglos como conjuntos |
+| `{"user":{"id":1}}`  | `{"user":{}}`        | `- $.user.id: 1`                 |

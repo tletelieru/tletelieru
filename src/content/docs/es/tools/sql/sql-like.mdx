@@ -28,3 +28,12 @@ Escribe una columna y pega los valores para obtener `col LIKE '%a%' OR col LIKE 
 | `gmail.com` | termina, NOT, ILIKE | `email NOT ILIKE '%gmail.com'`         |
 | `O'Brien`   | exacta              | `last_name LIKE 'O''Brien'`            |
 | `txn_1`     | escapar comodines   | `id LIKE '%txn!_1%' ESCAPE '!'`        |
+
+## MongoDB
+
+Cambia **Destino** a MongoDB para obtener filtros `$regex`. Los valores se escapan para regex y el modo de coincidencia agrega anclas: contiene no lleva, empieza usa `^`, termina usa `$` y exacta usa ambas. **OR** / **AND** pasan a `$or` / `$and`, **NOT** envuelve cada regex en `$not` y la opción sin distinguir mayúsculas agrega `"$options": "i"`. Un solo valor entrega la condición sola.
+
+| Valores                  | Resultado                                                    |
+| ------------------------ | ------------------------------------------------------------ |
+| `gmail.com` (termina, i) | `{ "email": { "$regex": "gmail\\.com$", "$options": "i" } }` |
+| `a`, `b`                 | `{ "$or": [{ "email": { "$regex": "a" } }, ...] }`           |

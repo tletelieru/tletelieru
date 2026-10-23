@@ -226,7 +226,6 @@ export function StepCard({
               <CodeField
                 value={output}
                 minRows={2}
-                maxRows={12}
                 slotProps={{ htmlInput: { readOnly: true, 'aria-label': t.stepOutput(position) } }}
               />
             )}

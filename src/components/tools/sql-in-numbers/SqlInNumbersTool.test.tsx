@@ -47,3 +47,36 @@ describe('SqlInNumbersTool', () => {
     expect((screen.getByLabelText('Resultado') as HTMLTextAreaElement).value).toBe('IN (1)');
   });
 });
+
+describe('SqlInNumbersTool output placeholder', () => {
+  it('previews the result of the input placeholder', () => {
+    render(<SqlInNumbersTool />);
+    const placeholder = screen.getByLabelText('Output').getAttribute('placeholder');
+    expect(placeholder).toContain('user_id IN (1, 2, 3.5, -4)');
+  });
+});
+
+describe('SqlInNumbersTool MongoDB target', () => {
+  it('builds a numeric $in filter', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/?target=mongo&mstyle=compact&column=user_id&batch=2&input=1%0A2%0A3',
+    );
+    render(<SqlInNumbersTool />);
+    expect(output()).toBe('{ "user_id": { "$in": [1, 2] } }\n\n{ "user_id": { "$in": [3] } }');
+  });
+
+  it('previews the placeholder and renders in Spanish', () => {
+    window.history.replaceState(null, '', '/?target=mongo&mstyle=compact');
+    render(
+      <LocaleProvider locale="es">
+        <SqlInNumbersTool />
+      </LocaleProvider>,
+    );
+    expect(screen.getByLabelText('Campo')).toBeInTheDocument();
+    expect(screen.getByLabelText('Resultado').getAttribute('placeholder')).toBe(
+      '{ "user_id": { "$in": [1, 2, 3.5, -4] } }',
+    );
+  });
+});

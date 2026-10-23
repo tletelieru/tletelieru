@@ -1,0 +1,27 @@
+---
+title: SQL formatter
+description: Format or minify SQL for standard SQL, PostgreSQL or MySQL with keyword case and indent options.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a query to beautify it or squeeze it onto one line. Formatting is done by [sql-formatter](https://github.com/sql-formatter-org/sql-formatter) right in the browser.
+
+<ToolEmbed slug="sql-format" />
+
+## Options
+
+- **Dialect**: standard SQL, PostgreSQL (`->>`, `::` casts, `$$` strings) or MySQL (backtick identifiers).
+- **Keyword case**: `UPPER`, `lower` or preserve what you typed. Function names and data types follow the same case.
+- **Indent**: 2 spaces, 4 spaces or tabs.
+- **Minify**: one line, comments removed; strings and quoted identifiers are kept as written.
+
+Parse errors show the line and column where the formatter gave up.
+
+## Examples
+
+| Input                                 | Result (minify, UPPER)             |
+| ------------------------------------- | ---------------------------------- |
+| `select a,b from t where x=1 -- note` | `SELECT a, b FROM t WHERE x = 1`   |
+| `select data->>'k' from t` (Postgres) | `SELECT data ->> 'k' FROM t`       |
+| `select (a from`                      | Line 1, column 15: could not parse |
