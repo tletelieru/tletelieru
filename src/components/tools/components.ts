@@ -37,6 +37,7 @@ export const toolLoaders: Record<string, () => Promise<ToolModule>> = {
   'text-diff': () => import('./text-diff/TextDiffTool'),
   'json-diff': () => import('./json-diff/JsonDiffTool'),
   cron: () => import('./cron/CronTool'),
+  totp: () => import('./totp/TotpTool'),
   'curl-convert': () => import('./curl-convert/CurlConvertTool'),
   'number-base': () => import('./number-base/NumberBaseTool'),
   password: () => import('./password/PasswordTool'),

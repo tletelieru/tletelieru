@@ -37,7 +37,7 @@ content).
 - **Encoding:** Base64, URL, hashes and HMAC, HTML entities, JSON string escape, JWT decoder.
 - **Text:** regex tester, text diff, case converter.
 - **Time:** timezone and Unix timestamp converters, cron explainer.
-- **HTTP & dev:** cURL → fetch / axios / Node / Python, number bases and byte sizes, password
+- **HTTP & dev:** cURL → fetch / axios / Node / Python, TOTP / HOTP authenticator, number bases and byte sizes, password
   generator.
 - **Web:** HTML preview, color converter with WCAG contrast.
 - **Workflow:** `Ctrl/⌘ + K` search, smart paste, pipelines, snippets, favorites and history.
