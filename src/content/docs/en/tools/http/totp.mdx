@@ -1,0 +1,30 @@
+---
+title: Authenticator (TOTP / HOTP)
+description: Generate 2FA codes from a base32 secret or an otpauth:// URI, like Google Authenticator. TOTP and HOTP with SHA-1, SHA-256 or SHA-512.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste the base32 secret (the "setup key" a site shows next to its QR code) or the full `otpauth://` URI, and get the same codes an authenticator app shows. Useful to test a 2FA login flow or to check the codes a backend expects.
+
+<ToolEmbed slug="totp" />
+
+## Options
+
+- **TOTP / HOTP**: time-based codes (RFC 6238) or counter-based codes (RFC 4226).
+- **Algorithm**: SHA-1 (what most apps use), SHA-256 or SHA-512.
+- **Digits**: 6, 7 or 8.
+- **Period**: seconds per TOTP code, 30 by default.
+- **Counter**: the HOTP counter; **Next counter** moves it forward.
+
+An `otpauth://` URI sets the type, algorithm, digits, period and counter from its parameters, and shows the issuer and account name. The previous and next codes are listed too, since servers usually accept one step of clock drift.
+
+The secret is computed with the browser's Web Crypto API and never leaves the tab: it is not written to the URL, the input history or snippets, and it is gone when the page closes. Treat any real 2FA secret as a password.
+
+## Examples
+
+| Secret                                                         | Settings                                   | Result                       |
+| -------------------------------------------------------------- | ------------------------------------------ | ---------------------------- |
+| `GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ`                             | HOTP, counter 0                            | `755 224`                    |
+| `GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ`                             | TOTP, 8 digits, at 2009-02-13 23:31:30 UTC | `8900 5924`                  |
+| `otpauth://totp/ACME:jane?secret=JBSWY3DPEHPK3PXP&issuer=ACME` | from the URI                               | current code for ACME · jane |

@@ -1,0 +1,30 @@
+---
+title: Autenticador (TOTP / HOTP)
+description: Genera códigos 2FA a partir de un secreto base32 o una URI otpauth://, como Google Authenticator. TOTP y HOTP con SHA-1, SHA-256 o SHA-512.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega el secreto base32 (la "clave de configuración" que un sitio muestra junto al código QR) o la URI `otpauth://` completa, y obtén los mismos códigos que muestra una app de autenticación. Sirve para probar un flujo de login con 2FA o para revisar qué códigos espera un backend.
+
+<ToolEmbed slug="totp" />
+
+## Opciones
+
+- **TOTP / HOTP**: códigos por tiempo (RFC 6238) o por contador (RFC 4226).
+- **Algoritmo**: SHA-1 (el que usa la mayoría de las apps), SHA-256 o SHA-512.
+- **Dígitos**: 6, 7 u 8.
+- **Periodo**: segundos por código TOTP, 30 por defecto.
+- **Contador**: el contador HOTP; **Siguiente contador** lo avanza.
+
+Una URI `otpauth://` define el tipo, algoritmo, dígitos, periodo y contador a partir de sus parámetros, y muestra el emisor y la cuenta. También se listan el código anterior y el siguiente, porque los servidores suelen aceptar un paso de desfase de reloj.
+
+El código se calcula con la Web Crypto API del navegador y el secreto nunca sale de la pestaña: no se guarda en la URL, el historial ni los snippets, y desaparece al cerrar la página. Cualquier secreto 2FA real se debe tratar como una contraseña.
+
+## Ejemplos
+
+| Secreto                                                        | Configuración                               | Resultado                    |
+| -------------------------------------------------------------- | ------------------------------------------- | ---------------------------- |
+| `GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ`                             | HOTP, contador 0                            | `755 224`                    |
+| `GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ`                             | TOTP, 8 dígitos, el 2009-02-13 23:31:30 UTC | `8900 5924`                  |
+| `otpauth://totp/ACME:jane?secret=JBSWY3DPEHPK3PXP&issuer=ACME` | desde la URI                                | código actual de ACME · jane |
