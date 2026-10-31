@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LocaleProvider } from '~/i18n/react';
@@ -64,8 +64,8 @@ describe('TotpTool', () => {
     await act(async () => {
       vi.advanceTimersByTime(1000);
     });
+    await waitFor(() => expect(code()).not.toBe('–'));
     expect(window.location.search).not.toContain(SECRET);
-    expect(code()).not.toBe('–');
   });
 
   it('explains invalid secrets', () => {
