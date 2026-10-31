@@ -1,0 +1,18 @@
+---
+title: Minor units converter
+description: Convert amounts to minor units (cents) and back for any ISO 4217 currency, with exact decimal arithmetic.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Ledgers and payment APIs store money as integers in the currency's minor unit: `1234.56` USD is `123456`, `1500` CLP stays `1500` and `1.234` KWD is `1234`. Paste one value per line; the math runs on `BigInt`, never on binary floats, so `1.15` becomes `115` and not `114`.
+
+<ToolEmbed slug="minor-units" />
+
+## Options
+
+- **Direction**: amount to minor units, or back.
+- **Currency**: any ISO 4217 currency with defined decimals. The decimals come from the [ISO 4217 table](/tletelieru/en/tools/money/iso-4217/).
+- **Extra decimals**: what to do with `1.005` USD. **Reject** flags the line; the other modes round it.
+
+Amounts use a dot for decimals and no thousands separator. Use [number formats](/tletelieru/en/tools/money/number-locale/) to read `1.234,56` first.

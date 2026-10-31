@@ -1,0 +1,18 @@
+---
+title: Luhn y tarjetas de prueba
+description: Valida números Luhn, calcula el dígito verificador, detecta la marca de la tarjeta y lista tarjetas de prueba documentadas.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Luhn (mod 10) es la verificación que usan las tarjetas de pago y muchos otros identificadores. Detecta errores de tipeo: no dice nada sobre si una tarjeta existe.
+
+<ToolEmbed slug="luhn" />
+
+## Modos
+
+- **Validar**: un número por línea; muestra el dígito esperado cuando falla y la marca según el prefijo.
+- **Dígito verificador**: pega un número sin su último dígito para obtener el número completo.
+- **Tarjetas de prueba**: números públicos de sandbox de la [documentación de pruebas de Stripe](https://docs.stripe.com/testing), más el clásico número de prueba Visa.
+
+La herramienta no crea números de tarjeta aleatorios. Solo lista números de prueba documentados, que funcionan en sandbox y no tienen fondos.

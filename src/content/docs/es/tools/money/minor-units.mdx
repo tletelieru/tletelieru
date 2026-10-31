@@ -1,0 +1,18 @@
+---
+title: Conversor de unidades menores
+description: Convierte montos a unidades menores (centavos) y de vuelta para cualquier moneda ISO 4217, con aritmética decimal exacta.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Los ledgers y las APIs de pago guardan el dinero como enteros en la unidad menor de la moneda: `1234.56` USD es `123456`, `1500` CLP sigue siendo `1500` y `1.234` KWD es `1234`. Pega un valor por línea; el cálculo usa `BigInt`, nunca flotantes binarios, así que `1.15` da `115` y no `114`.
+
+<ToolEmbed slug="minor-units" />
+
+## Opciones
+
+- **Dirección**: de monto a unidades menores, o al revés.
+- **Moneda**: cualquier moneda ISO 4217 con decimales definidos. Los decimales salen de la [tabla ISO 4217](/tletelieru/es/tools/money/iso-4217/).
+- **Decimales de más**: qué hacer con `1.005` USD. **Rechazar** marca la línea; los otros modos la redondean.
+
+Los montos usan punto para los decimales y no llevan separador de miles. Usa [formatos numéricos](/tletelieru/es/tools/money/number-locale/) para leer antes `1.234,56`.

@@ -1,0 +1,18 @@
+---
+title: Validador de cuentas bancarias
+description: Valida IBAN (mod 97 y largo por país), CLABE mexicana y CBU y CVU argentinos, con salida formateada.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega una cuenta por línea. En **Automático**, dos letras iniciales indican IBAN, 18 dígitos CLABE y 22 dígitos CBU o CVU.
+
+<ToolEmbed slug="bank-account" />
+
+## Qué se revisa
+
+- **IBAN**: mod 97 de ISO 13616 y el largo registrado para el país. No se revisa la estructura interna del país (BBAN).
+- **CLABE**: 18 dígitos y el dígito de control con pesos 3, 7, 1. Muestra banco, plaza y cuenta.
+- **CBU / CVU**: 22 dígitos y ambos dígitos verificadores. Un número que empieza con `000` se trata como CVU.
+
+Un dígito de control correcto solo prueba que el número está bien formado: no prueba que la cuenta exista. Los nombres de bancos cubren una lista de instituciones comunes; un código fuera de la lista no es un error.
