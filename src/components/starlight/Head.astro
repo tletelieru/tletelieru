@@ -24,6 +24,27 @@ const locale = toLocale(Astro.locals.starlightRoute.locale);
     document.documentElement.removeAttribute('data-sidebar-collapsed');
   }
 </script>
+<style is:inline>
+  :root {
+    color-scheme: dark;
+    background: #17181c;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+    background: #fff;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+      navigation: auto;
+    }
+
+    ::view-transition-group(root) {
+      animation-duration: 120ms;
+    }
+  }
+</style>
 <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
 <meta name="theme-color" content="#17181c" />
 {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}

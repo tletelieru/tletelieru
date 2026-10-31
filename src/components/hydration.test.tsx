@@ -102,6 +102,26 @@ describe('features render at build time and hydrate without mismatches', () => {
   });
 });
 
+describe('theme stays under Starlight control', () => {
+  it('leaves the saved data-theme untouched after hydrating a tool', async () => {
+    document.documentElement.dataset.theme = 'light';
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({
+        matches: true,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+      })),
+    );
+    await hydrate(() => <ToolIsland slug="rut" locale="en" />, { cache: toolModules, key: 'rut' });
+    expect(document.documentElement.dataset.theme).toBe('light');
+    delete document.documentElement.dataset.theme;
+    vi.unstubAllGlobals();
+  });
+});
+
 describe('URL params apply right after hydration', () => {
   it('renders defaults at build time and the URL state once hydrated', async () => {
     window.history.replaceState(null, '', '/?mode=format&style=dash&input=12.345.678-5');
