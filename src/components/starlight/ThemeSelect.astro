@@ -37,7 +37,6 @@ const labels = {
     transition: background-color 150ms;
   }
 
-  .theme-toggle:hover,
   .theme-toggle:focus-visible {
     background: var(--sl-color-gray-6);
   }
@@ -60,9 +59,18 @@ const labels = {
     transition: opacity 150ms;
   }
 
-  .theme-toggle:hover::after,
   .theme-toggle:focus-visible::after {
     opacity: 1;
+  }
+
+  @media (hover: hover) {
+    .theme-toggle:hover {
+      background: var(--sl-color-gray-6);
+    }
+
+    .theme-toggle:hover::after {
+      opacity: 1;
+    }
   }
 
   .theme-toggle-sun,
