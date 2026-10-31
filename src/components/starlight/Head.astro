@@ -17,6 +17,9 @@ const locale = toLocale(Astro.locals.starlightRoute.locale);
     if (localStorage.getItem('sl-sidebar-collapsed') === '1') {
       document.documentElement.setAttribute('data-sidebar-collapsed', '');
     }
+    if (localStorage.getItem('tl:navbar-position') === 'bottom') {
+      document.documentElement.dataset.navbar = 'bottom';
+    }
   } catch {
     document.documentElement.removeAttribute('data-sidebar-collapsed');
   }

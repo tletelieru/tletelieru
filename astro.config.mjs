@@ -25,6 +25,7 @@ export default defineConfig({
       pagefind: false,
       components: {
         Head: './src/components/starlight/Head.astro',
+        MobileMenuFooter: './src/components/starlight/MobileMenuFooter.astro',
         LanguageSelect: './src/components/starlight/LanguageSelect.astro',
         ThemeSelect: './src/components/starlight/ThemeSelect.astro',
         Search: './src/components/starlight/Search.astro',
