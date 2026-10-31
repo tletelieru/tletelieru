@@ -1,0 +1,18 @@
+---
+title: FX calculator
+description: Compute client buy and sell amounts from a rate you enter, with spread, fee and inverse rate.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Enter the mid rate yourself: the tool makes no network calls and fetches no quotes.
+
+<ToolEmbed slug="fx-calc" />
+
+## How it computes
+
+- **Client buys** the base currency: effective rate = mid × (1 + spread) and the client pays gross + fee.
+- **Client sells** the base currency: effective rate = mid × (1 − spread) and the client receives gross − fee.
+- Spread cost is the difference against the mid rate.
+
+Amounts round half up to the quote currency's decimals (`CLP` 0, `USD` 2). Inverse rates show 8 decimals. All math is exact decimal.

@@ -1,0 +1,18 @@
+---
+title: SWIFT/BIC, ABA y sort codes
+description: Valida formato y país de SWIFT/BIC, suma de control de ABA y formato de sort code del Reino Unido.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un código por línea. El tipo se detecta por su forma.
+
+<ToolEmbed slug="bank-codes" />
+
+## Qué se revisa
+
+- **SWIFT/BIC**: 8 u 11 caracteres y un país ISO 3166. Marca los BIC de prueba (segundo carácter de ubicación `0`) y las oficinas principales.
+- **ABA routing**: 9 dígitos, un prefijo válido de la Reserva Federal y la suma de control 3-7-1.
+- **Sort code UK**: seis dígitos, como `12-34-56` o `123456`. Los sort codes no tienen dígito de control, así que solo se revisa el formato.
+
+Un resultado válido solo significa que el código está bien formado: ninguno se consulta en un registro.

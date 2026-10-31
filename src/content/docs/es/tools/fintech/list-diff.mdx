@@ -1,0 +1,18 @@
+---
+title: Conciliación de listas
+description: 'Compara dos listas de IDs o id,monto: solo en A, solo en B, en ambas y montos distintos.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega dos listas, por ejemplo tu ledger y un archivo del banco, y revisa qué falta en cada lado y qué montos difieren.
+
+<ToolEmbed slug="list-diff" />
+
+## Notas
+
+- Las columnas se pueden separar con coma, punto y coma, tabulación o espacios.
+- Los montos se comparan como decimales exactos, así que `10.10` es igual a `10.1`, y `1.234,50` también funciona.
+- Una primera fila sin monto válido se trata como encabezado.
+- Los IDs repetidos se suman y se listan.
+- Sin montos, la línea completa es el ID.

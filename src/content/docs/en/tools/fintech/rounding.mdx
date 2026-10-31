@@ -1,0 +1,20 @@
+---
+title: Rounding modes tester
+description: "Compare half up, half even (banker's), ceiling, floor and other rounding modes side by side."
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste values and compare every rounding mode at N decimals. It uses decimal strings, so `1.005` really is `1.005`: in JavaScript, `(1.005).toFixed(2)` gives `1.00` because of binary floats.
+
+<ToolEmbed slug="rounding" />
+
+## Modes
+
+- **Half up**: ties go away from zero. `2.5` → `3`, `-2.5` → `-3`.
+- **Half down**: ties go toward zero. `2.5` → `2`.
+- **Half even** (banker's): ties go to the even digit. `2.5` → `2`, `3.5` → `4`.
+- **Up**: always away from zero.
+- **Down**: always toward zero (truncate).
+- **Ceiling**: toward positive infinity.
+- **Floor**: toward negative infinity.
