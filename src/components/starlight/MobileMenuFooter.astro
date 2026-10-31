@@ -14,6 +14,25 @@ const label = {
   <input type="checkbox" role="switch" />
 </label>
 
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const pane = document.getElementById('starlight__sidebar');
+    try {
+      if (sessionStorage.getItem('tl:drawer-open') !== '1') return;
+      sessionStorage.removeItem('tl:drawer-open');
+    } catch {
+      return;
+    }
+    if (!pane || matchMedia('(min-width: 50rem)').matches) return;
+    root.setAttribute('data-drawer-restored', '');
+    pane.showPopover();
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => root.removeAttribute('data-drawer-restored')),
+    );
+  })();
+</script>
+
 <style>
   .navbar-position {
     display: flex;
