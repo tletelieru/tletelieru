@@ -1,0 +1,17 @@
+---
+title: Formateador XML ISO 20022
+description: Formatea o minifica XML ISO 20022, con errores de buena formación y detección del tipo de mensaje.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un `pain.001`, `pacs.008`, `camt.053` o cualquier otro XML para indentarlo o compactarlo.
+
+<ToolEmbed slug="iso20022" />
+
+## Notas
+
+- Los errores muestran línea y columna: etiquetas que no cierran, atributos mal formados, `&` sin escapar y más.
+- El tipo de mensaje sale del espacio de nombres `xmlns`, o del primer elemento conocido si no hay uno.
+- El texto y los CDATA se mantienen tal cual. Minificar quita comentarios y espacios entre elementos.
+- Esto revisa que el XML esté bien formado. No lo valida contra los esquemas XSD de ISO 20022.

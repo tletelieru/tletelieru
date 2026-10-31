@@ -22,3 +22,18 @@ export const sharedMessages = defineMessages({
     unknownFeature: (name: string) => `Función desconocida: ${name}`,
   },
 });
+
+export const numberFormatMessages = defineMessages({
+  en: {
+    label: 'Number format',
+    formats: { auto: 'Auto', comma: '1.234,56', dot: '1,234.56' },
+    ambiguous:
+      'The separators are ambiguous here (1.234 could be either format). Pick the number format to be sure.',
+  },
+  es: {
+    label: 'Formato numérico',
+    formats: { auto: 'Automático', comma: '1.234,56', dot: '1,234.56' },
+    ambiguous:
+      'Los separadores son ambiguos aquí (1.234 puede ser cualquiera de los dos formatos). Elige el formato numérico para asegurarte.',
+  },
+});

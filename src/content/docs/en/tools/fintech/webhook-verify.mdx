@@ -1,0 +1,21 @@
+---
+title: Webhook signature verifier
+description: Verify HMAC webhook signatures from Stripe, GitHub, Svix or a generic hex or base64 scheme.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Check why a webhook signature fails: the tool shows the signature it expected and the exact text that was signed.
+
+<ToolEmbed slug="webhook-verify" />
+
+## Schemes
+
+- **Stripe**: `Stripe-Signature` with `t=` and `v1=`. Signs `timestamp.body` with the full `whsec_` secret.
+- **GitHub**: `X-Hub-Signature-256` with `sha256=`. Signs the body.
+- **Svix**: `svix-id`, `svix-timestamp` and `svix-signature`. Signs `id.timestamp.body` with the base64 part of the secret.
+- **Generic**: HMAC of the body in SHA-256, SHA-1 or SHA-512, in hex or base64.
+
+Paste the **raw** body: reformatting the JSON changes the signature. The tolerance check uses your clock and only runs in the browser.
+
+Secrets and payloads stay in this tab. They are not written to the URL, history or snippets, and nothing is sent anywhere.

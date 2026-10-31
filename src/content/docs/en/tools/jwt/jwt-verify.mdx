@@ -1,0 +1,32 @@
+---
+title: 'JWT verifier'
+description: 'Verify HS, RS, PS and ES JWT signatures with a shared secret, PEM public key, JWK or pasted JWKS. Fails closed on alg or key mismatches.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a token and the key that should have signed it. The tool picks the kind of key from what you
+paste: a shared secret (text, hex or Base64), a PEM public key, a JWK or a JWKS. Everything runs with
+Web Crypto in your browser: the token and key are not stored, and a JWKS is pasted, never fetched.
+
+<ToolEmbed slug="jwt-verify" />
+
+## Algorithms
+
+HS256/384/512, RS256/384/512, PS256/384/512 and ES256/384/512. For a JWKS the key is chosen by `kid`;
+without a `kid` exactly one key must fit the algorithm, otherwise the tool refuses to guess.
+
+## It fails closed
+
+The result is only "valid" when everything fits. These are always rejected:
+
+- `alg: none` in any casing, a missing `alg` or an unknown one.
+- A token whose `alg` differs from the expected algorithm you pinned.
+- A key that does not fit the algorithm: a public key offered for HS (the classic alg confusion
+  attack), a secret for RS/PS/ES, or the wrong EC curve.
+- A key whose `alg`, `use` or `key_ops` forbid the operation, and RSA keys under 2048 bits.
+- ECDSA signatures in DER: JWS uses the raw `r||s` form, with a fixed length per curve.
+- Any unknown `crit` header, and non-canonical base64url signatures.
+
+A valid signature says nothing about the claims: check `exp`, `aud` and `iss` with the
+[claims checker](/tletelieru/en/tools/jwt/jwt-claims/).
