@@ -1,0 +1,122 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import { toLocale } from '~/i18n/locales';
+
+const labels = {
+  en: { light: 'Switch to light mode', dark: 'Switch to dark mode' },
+  es: { light: 'Cambiar a modo claro', dark: 'Cambiar a modo oscuro' },
+}[toLocale(Astro.locals.starlightRoute.locale)];
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  aria-label={labels.dark}
+  data-label-light={labels.light}
+  data-label-dark={labels.dark}
+  data-tooltip={labels.dark}
+>
+  <Icon name="sun" class="theme-toggle-sun" size="1.25rem" />
+  <Icon name="moon" class="theme-toggle-moon" size="1.25rem" />
+</button>
+
+<style>
+  .theme-toggle {
+    position: relative;
+    order: 1;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    color: var(--sl-color-gray-1);
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 150ms;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    background: var(--sl-color-gray-6);
+  }
+
+  .theme-toggle::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 10;
+    padding: 0.25rem 0.625rem;
+    font-size: var(--sl-text-xs);
+    font-weight: 600;
+    white-space: nowrap;
+    color: #fff;
+    background: rgba(60, 60, 64, 0.92);
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+  }
+
+  .theme-toggle:hover::after,
+  .theme-toggle:focus-visible::after {
+    opacity: 1;
+  }
+
+  .theme-toggle-sun,
+  .theme-toggle-moon {
+    grid-area: 1 / 1;
+  }
+
+  :global([data-theme='dark']) .theme-toggle-moon,
+  :global([data-theme='light']) .theme-toggle-sun {
+    display: none;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'starlight-theme';
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.theme-toggle');
+
+  function sync() {
+    const dark = root.dataset.theme === 'dark';
+    for (const button of buttons) {
+      const label = (dark ? button.dataset.labelLight : button.dataset.labelDark) ?? '';
+      button.setAttribute('aria-label', label);
+      button.dataset.tooltip = label;
+    }
+  }
+
+  function stored() {
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        return;
+      } finally {
+        sync();
+      }
+    });
+  }
+
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', (event) => {
+    if (stored()) return;
+    root.dataset.theme = event.matches ? 'light' : 'dark';
+    sync();
+  });
+
+  sync();
+</script>
