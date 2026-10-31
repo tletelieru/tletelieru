@@ -56,3 +56,17 @@ const pathFor = (locale: string) => `${base}/${locale}${rest}`;
     background: var(--sl-color-gray-5);
   }
 </style>
+
+<script>
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('.lang-toggle a')) {
+    link.addEventListener('click', () => {
+      link.search = location.search;
+      if (!document.getElementById('starlight__sidebar')?.matches(':popover-open')) return;
+      try {
+        sessionStorage.setItem('tl:drawer-open', '1');
+      } catch {
+        return;
+      }
+    });
+  }
+</script>
