@@ -1,0 +1,18 @@
+---
+title: BR Code Pix
+description: Interpreta y genera BR Codes Pix EMV con CRC16, y valida llaves Pix.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Trabaja con la cadena "copia e cola" que hay detrás de un QR Pix.
+
+<ToolEmbed slug="pix" />
+
+## Modos
+
+- **Interpretar**: lee los campos EMV TLV y revisa el CRC16-CCITT de la etiqueta 63.
+- **Generar**: arma un BR Code estático desde una llave, receptor y ciudad. El nombre y la ciudad pierden los acentos y se cortan a 25 y 15 caracteres, como pide el estándar.
+- **Validar llave**: CPF y CNPJ (con dígitos verificadores, incluido el CNPJ alfanumérico), correo, teléfono `+55` y llaves aleatorias EVP.
+
+Un código generado sigue el formato del Banco Central do Brasil, pero solo una app Pix real o un PSP confirma que la llave existe. Los cobros dinámicos se interpretan, pero no se generan.

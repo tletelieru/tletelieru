@@ -1,0 +1,18 @@
+---
+title: Calculadora de cambio de divisas
+description: Calcula compra y venta del cliente con un tipo de cambio ingresado, con spread, comisión e inverso.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Ingresa tú el tipo de cambio medio: la herramienta no usa la red ni consulta cotizaciones.
+
+<ToolEmbed slug="fx-calc" />
+
+## Cómo calcula
+
+- **Cliente compra** la moneda base: tipo efectivo = medio × (1 + spread) y el cliente paga bruto + comisión.
+- **Cliente vende** la moneda base: tipo efectivo = medio × (1 − spread) y el cliente recibe bruto − comisión.
+- El costo del spread es la diferencia contra el tipo medio.
+
+Los montos se redondean mitad hacia arriba a los decimales de la moneda cotizada (`CLP` 0, `USD` 2). Los inversos muestran 8 decimales. Todo el cálculo usa decimales exactos.

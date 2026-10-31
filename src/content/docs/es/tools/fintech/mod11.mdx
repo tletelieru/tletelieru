@@ -1,0 +1,19 @@
+---
+title: Dígito verificador módulo 11
+description: Calcula dígitos verificadores módulo 11 con pesos y dirección configurables, paso a paso.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Mira cómo se arma un dígito verificador módulo 11: cada dígito por su peso, la suma, el resto y el dígito final.
+
+<ToolEmbed slug="mod11" />
+
+## Opciones
+
+- **Pesos**: separados por coma. Se repiten si el número es más largo que la lista.
+- **Dirección**: empieza desde el dígito de la derecha o de la izquierda.
+- **Resultado**: `11 − resto`, o el resto mismo.
+- **Si da 10 / Si da 11**: el símbolo para esos resultados, como `K` y `0` en un RUT chileno.
+
+Los botones **RUT**, **CPF** e **ISBN-10** completan esas reglas. En CPF calculan el primer dígito; para el segundo, agrégalo al número y usa pesos que parten en 11.

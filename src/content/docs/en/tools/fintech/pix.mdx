@@ -1,0 +1,18 @@
+---
+title: Pix BR Code
+description: Parse and generate Pix EMV BR Codes with CRC16, and validate Pix keys.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Work with the "copy and paste" string behind a Pix QR code.
+
+<ToolEmbed slug="pix" />
+
+## Modes
+
+- **Parse**: reads the EMV TLV fields and checks the CRC16-CCITT in tag 63.
+- **Generate**: builds a static BR Code from a key, receiver and city. Name and city lose accents and are cut to 25 and 15 characters, as the standard asks.
+- **Validate key**: CPF and CNPJ (with check digits, including alphanumeric CNPJ), email, `+55` phone and random EVP keys.
+
+A generated code follows the Banco Central do Brasil format, but only a real Pix app or PSP confirms that a key exists. Dynamic charges are parsed but not generated.

@@ -1,0 +1,16 @@
+---
+title: Estadísticas de una lista
+description: Suma, cantidad, promedio, mediana, mínimo, máximo y desviación estándar de una lista pegada, con decimales exactos.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega una columna de una planilla o una query. La suma es exacta: `0.1 + 0.2` da `0.3`.
+
+<ToolEmbed slug="stats" />
+
+## Formatos numéricos
+
+**Automático** lee los separadores de cada valor: `1.234,56` es es-CL y `1,234.56` es en-US. Un valor como `1.234` puede ser cualquiera de los dos, así que la herramienta avisa y lo lee con punto decimal, salvo que otros valores lo aclaren. Elige el formato para asegurarte.
+
+Los valores van uno por línea, o separados por tabulaciones o punto y coma. Las comas nunca separan valores. El promedio y las desviaciones se redondean a los decimales elegidos.

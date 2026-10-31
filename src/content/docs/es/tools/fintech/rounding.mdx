@@ -1,0 +1,20 @@
+---
+title: Comparador de redondeos
+description: Compara mitad arriba, mitad al par (bancario), techo, piso y otros modos de redondeo lado a lado.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega valores y compara todos los modos de redondeo a N decimales. Usa cadenas decimales, así que `1.005` es de verdad `1.005`: en JavaScript, `(1.005).toFixed(2)` da `1.00` por los flotantes binarios.
+
+<ToolEmbed slug="rounding" />
+
+## Modos
+
+- **Mitad arriba**: los empates se alejan del cero. `2.5` → `3`, `-2.5` → `-3`.
+- **Mitad abajo**: los empates van hacia el cero. `2.5` → `2`.
+- **Mitad al par** (bancario): los empates van al dígito par. `2.5` → `2`, `3.5` → `4`.
+- **Lejos del cero**: siempre se aleja del cero.
+- **Hacia cero**: siempre va hacia el cero (trunca).
+- **Techo**: hacia infinito positivo.
+- **Piso**: hacia infinito negativo.

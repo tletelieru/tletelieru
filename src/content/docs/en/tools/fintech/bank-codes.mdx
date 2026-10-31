@@ -1,0 +1,18 @@
+---
+title: SWIFT/BIC, ABA and sort codes
+description: Validate SWIFT/BIC format and country, ABA routing checksums and UK sort code format.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one code per line. The type is detected from its shape.
+
+<ToolEmbed slug="bank-codes" />
+
+## What gets checked
+
+- **SWIFT/BIC**: 8 or 11 characters and an ISO 3166 country. Flags test BICs (second location character `0`) and primary offices.
+- **ABA routing**: 9 digits, a valid Federal Reserve prefix and the 3-7-1 checksum.
+- **UK sort code**: six digits, as `12-34-56` or `123456`. Sort codes have no checksum, so only the format is checked.
+
+A valid result only means the code is well formed: none of these are looked up in a registry.
