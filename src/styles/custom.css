@@ -358,3 +358,21 @@ button.favorite-star[aria-pressed='true'] svg {
     opacity: 1;
   }
 }
+
+@media (max-width: 49.9999rem) {
+  .sidebar-content > .md\:sl-hidden {
+    order: -1;
+  }
+
+  .sidebar-content .mobile-preferences {
+    align-items: center;
+    flex-wrap: nowrap;
+    border-top: 0;
+    border-bottom: 1px solid var(--sl-color-gray-6);
+    padding: 0 0 0.5rem;
+  }
+
+  .sidebar-content .mobile-preferences .social-icons {
+    padding-block: 0;
+  }
+}
