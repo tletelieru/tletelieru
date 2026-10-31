@@ -24,6 +24,8 @@ const pathFor = (locale: string) => `${base}/${locale}${rest}`;
 <style>
   .lang-toggle {
     display: inline-flex;
+    align-self: center;
+    flex-shrink: 0;
     overflow: hidden;
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 0.625rem;
@@ -51,6 +53,6 @@ const pathFor = (locale: string) => `${base}/${locale}${rest}`;
 
   .lang-toggle a[aria-current='true'] {
     color: var(--sl-color-white);
-    background: var(--sl-color-gray-6);
+    background: var(--sl-color-gray-5);
   }
 </style>
