@@ -1,0 +1,55 @@
+---
+import Default from '@astrojs/starlight/components/MobileMenuFooter.astro';
+import { toLocale } from '~/i18n/locales';
+
+const label = {
+  en: 'Navigation bar at the bottom',
+  es: 'Barra de navegación abajo',
+}[toLocale(Astro.locals.starlightRoute.locale)];
+---
+
+<Default />
+<label class="navbar-position">
+  <span>{label}</span>
+  <input type="checkbox" role="switch" />
+</label>
+
+<style>
+  .navbar-position {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+    border-bottom: 1px solid var(--sl-color-gray-6);
+    cursor: pointer;
+  }
+
+  .navbar-position input {
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0;
+    accent-color: var(--sl-color-text-accent);
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'tl:navbar-position';
+  const root = document.documentElement;
+
+  for (const input of document.querySelectorAll<HTMLInputElement>('.navbar-position input')) {
+    input.checked = root.dataset.navbar === 'bottom';
+    input.addEventListener('change', () => {
+      if (input.checked) root.dataset.navbar = 'bottom';
+      else delete root.dataset.navbar;
+      try {
+        localStorage.setItem(STORAGE_KEY, input.checked ? 'bottom' : 'top');
+      } catch {
+        return;
+      }
+    });
+  }
+</script>
