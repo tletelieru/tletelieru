@@ -1,0 +1,18 @@
+---
+title: Luhn and card test numbers
+description: Validate Luhn numbers, compute the check digit, detect the card brand and list documented test cards.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Luhn (mod 10) is the check used by payment cards and many other identifiers. It catches typos: it says nothing about whether a card exists.
+
+<ToolEmbed slug="luhn" />
+
+## Modes
+
+- **Validate**: one number per line; shows the expected digit when it fails and the brand from the prefix.
+- **Check digit**: paste a number without its last digit to get the complete one.
+- **Test cards**: public sandbox numbers from [Stripe's testing docs](https://docs.stripe.com/testing), plus the classic Visa test number.
+
+The tool does not create random card numbers. It only lists documented test numbers, which work in sandboxes and hold no funds.

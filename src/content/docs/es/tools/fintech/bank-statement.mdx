@@ -1,0 +1,19 @@
+---
+title: Normalizador de cartolas
+description: Normaliza una cartola bancaria CSV a fecha, descripción, cargo, abono y saldo.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Cada banco exporta un CSV distinto. Pega uno y obtén las mismas cinco columnas, en CSV o JSON.
+
+<ToolEmbed slug="bank-statement" />
+
+## Cómo lee tu archivo
+
+- **Columnas**: se encuentran por nombre en español o inglés (`Fecha`, `Glosa`, `Cargo`, `Abono`, `Saldo`, `Amount`…). Usa el mapeo de columnas para corregirlas.
+- **Monto con signo**: una columna `Monto` o `Amount` se separa, con los negativos como cargos.
+- **Números**: el formato se detecta con todas las celdas. Si sigue siendo ambiguo, se lee como es-CL y aparece un aviso.
+- **Fechas**: `DD/MM/AAAA`, `MM/DD/AAAA` y `AAAA-MM-DD` pasan a ISO. Los archivos ambiguos se leen con el día primero. No se admiten nombres de meses.
+
+Los montos quedan como cadenas decimales, incluso en JSON, así no se pierde precisión. Las celdas ilegibles se informan por fila.

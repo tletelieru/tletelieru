@@ -1,0 +1,19 @@
+---
+title: Bank statement normalizer
+description: Normalize a bank statement CSV to date, description, debit, credit and balance.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Every bank exports a different CSV. Paste one and get the same five columns, as CSV or JSON.
+
+<ToolEmbed slug="bank-statement" />
+
+## How it reads your file
+
+- **Columns**: found by name in Spanish or English (`Fecha`, `Glosa`, `Cargo`, `Abono`, `Saldo`, `Amount`…). Use the column mapping to fix them.
+- **Signed amount**: one `Monto` or `Amount` column is split, with negatives as debits.
+- **Numbers**: format detected from all the cells. If it stays ambiguous, it reads as es-CL and warns you.
+- **Dates**: `DD/MM/YYYY`, `MM/DD/YYYY` and `YYYY-MM-DD` become ISO. Ambiguous files read as day first. Month names are not supported.
+
+Amounts stay as decimal strings, even in JSON, so no precision is lost. Cells that cannot be read are reported by row.

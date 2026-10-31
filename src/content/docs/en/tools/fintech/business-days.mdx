@@ -1,0 +1,26 @@
+---
+title: Business days (Chile, Brazil)
+description: Add or subtract business days and count them between dates, with Chilean and Brazilian holidays.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Saturdays, Sundays and national holidays are skipped. The output names the holidays that affected each result.
+
+<ToolEmbed slug="business-days" />
+
+## Covered years
+
+**2021 to 2035.** Holidays are computed from the rules in force, not fetched from any official source.
+
+- **Chile**: fixed holidays, Good Friday and Holy Saturday, the Indigenous Peoples Day solstice date, June 29 and October 12 moved to Monday, October 31 and its moved cases, and Fiestas Patrias bridge days.
+- **Brazil**: national holidays, plus Carnival (Monday and Tuesday) and Corpus Christi, which are optional days off but closed for banks. November 20 counts from 2024.
+
+## Review before relying on it
+
+- Chile: **interferiado** and **irrenunciable** cases may need review. An irrenunciable holiday only changes retail work rules, not this count. A one-off holiday passed by law, like September 16, 2022, is only here if it was added by hand, and future ones are not.
+- Chile: election days are not included, nor are regional holidays such as June 7 in Arica or August 20 in Chillán. December 31 is a bank holiday that this tool does not count.
+- The Indigenous Peoples Day dates are set by decree each year: 2027 onward are astronomical estimates.
+- Brazil: state and municipal holidays are not included.
+
+Dates are plain calendar dates, independent of your time zone. In **Add**, the start date never counts. In **Count**, the start date is excluded unless you turn on the switch.

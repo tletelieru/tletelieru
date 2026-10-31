@@ -1,0 +1,16 @@
+---
+title: Number list statistics
+description: Sum, count, mean, median, min, max and standard deviation of a pasted list, with exact decimals.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a column from a spreadsheet or a query. The sum is exact: `0.1 + 0.2` gives `0.3`.
+
+<ToolEmbed slug="stats" />
+
+## Number formats
+
+**Auto** reads each value's separators: `1.234,56` is es-CL and `1,234.56` is en-US. A value like `1.234` could be either, so the tool warns you and reads it with a dot as the decimal mark unless other values settle it. Pick the format to be sure.
+
+Values go one per line, or separated by tabs or semicolons. Commas never split values. Mean and standard deviations round to the chosen decimals.

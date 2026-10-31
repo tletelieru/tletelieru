@@ -1,0 +1,28 @@
+---
+title: 'JWT keys (PEM ↔ JWK)'
+description: 'Convert RSA and EC keys between PEM and JWK, and generate RSA, EC and HMAC keys for testing.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Convert keys in both directions, or create a pair for tests. Nothing leaves this tab, and keys are
+not added to the URL, history or snippets.
+
+<ToolEmbed slug="jwt-keys" />
+
+## Convert
+
+Paste a PEM key, a JWK or a JWKS. The tool shows both forms and, for a private key, its public half.
+
+- **Reads**: `PUBLIC KEY`, `PRIVATE KEY`, `RSA PUBLIC KEY`, `RSA PRIVATE KEY` and `EC PRIVATE KEY`.
+- **Writes**: SPKI for public keys and PKCS#8 for private ones.
+- **Curves**: P-256, P-384 and P-521.
+
+Encrypted PEM files, certificates and Ed25519 keys are reported as unsupported. Symmetric `oct` keys
+have no PEM form.
+
+## Generate
+
+Creates RSA 2048/3072/4096, EC P-256/384/521 or HMAC 256/384/512 keys with Web Crypto when you press
+the button. **They are for testing only**: for production, generate keys in your secrets manager or
+HSM. RSA 4096 can take a few seconds.

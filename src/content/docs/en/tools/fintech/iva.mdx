@@ -1,0 +1,18 @@
+---
+title: IVA Chile (net ↔ gross)
+description: Compute Chilean IVA for facturas and boletas, with a configurable rate and exact CLP rounding.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one amount per line. The default rate is 19 %, and whole pesos are the default rounding.
+
+<ToolEmbed slug="iva" />
+
+## How it computes
+
+- **Factura**: IVA = net × rate, rounded half up, and total = net + IVA.
+- **Boleta**: net = total ÷ (1 + rate), rounded half up, and IVA = total − net, so the parts always add up.
+- The **Total** row recomputes IVA on the summed base, as a document with several lines does. It can differ by a peso from adding the rows.
+
+`1.190.000` reads as es-CL. A value like `1.000` is ambiguous and is read as one thousand, with a warning.

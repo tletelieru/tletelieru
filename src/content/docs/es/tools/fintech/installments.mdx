@@ -1,0 +1,18 @@
+---
+title: Simulador de cuotas
+description: Simula un crédito con amortización francesa, con tabla de desarrollo y costo anual estilo CAE.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Amortización francesa: la misma cuota cada mes, con interés sobre el saldo pendiente.
+
+<ToolEmbed slug="installments" />
+
+## Notas
+
+- Una tasa anual se trata como nominal y se divide por 12.
+- La última cuota absorbe el redondeo, así que el saldo termina exactamente en cero.
+- **Costo anual estilo CAE** es la TIR mensual de los flujos, descontados los gastos iniciales, multiplicada por 12. **Costo anual efectivo** capitaliza esa TIR.
+
+Es una estimación para comparar ofertas. La CAE oficial de un crédito chileno también incluye seguros y otros costos según su propia normativa, así que puede diferir de esta cifra.

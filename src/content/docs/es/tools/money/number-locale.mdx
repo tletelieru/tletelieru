@@ -1,0 +1,17 @@
+---
+title: Formatos numéricos por país
+description: Formatea números para es-CL, en-US, pt-BR, de-DE y más como simples, moneda, porcentaje o compactos, e interprétalos de vuelta.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+**Formatear** convierte `1234.56` en `1.234,56` (es-CL), `1,234.56` (en-US) o `R$ 1.234,56` (pt-BR). **Interpretar** hace lo contrario y devuelve un decimal simple, listo para código o una base de datos.
+
+<ToolEmbed slug="number-locale" />
+
+## Notas
+
+- Los valores llegan a `Intl.NumberFormat` como cadenas decimales exactas, así que se conservan los dígitos más allá de 15.
+- Porcentaje multiplica por 100: `0.1234` se muestra como `12,34 %`.
+- Al interpretar se aceptan símbolos y códigos de moneda y `%`, pero no formas compactas como `1,2 M`.
+- Los resultados dependen de los datos regionales de tu navegador.
