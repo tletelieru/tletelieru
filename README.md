@@ -34,11 +34,20 @@ content).
   queries for Postgres, MySQL and MongoDB, list formatter.
 - **Data:** JSON formatter, JSON diff, CSV ↔ JSON, CSV → text table for Slack, YAML ↔ JSON, JSON → TypeScript / Go / Zod
   types, JSONPath tester.
-- **Encoding:** Base64, URL, hashes and HMAC, HTML entities, JSON string escape, JWT decoder.
+- **Encoding:** Base64, URL, hashes and HMAC, HTML entities, JSON string escape.
+- **JWT:** decoder, signature verifier (HS, RS, PS, ES with secret, PEM, JWK or pasted JWKS), claims
+  checker, signer, linter, token diff, PEM ↔ JWK keys and test key generation, JWE inspector and
+  decrypter.
 - **Text:** regex tester, text diff, case converter.
 - **Time:** timezone and Unix timestamp converters, cron explainer.
 - **HTTP & dev:** cURL → fetch / axios / Node / Python, TOTP / HOTP authenticator, number bases and byte sizes, password
   generator.
+- **Money:** minor units, ISO 4217 table, number formats by locale, IBAN / CLABE / CBU / CVU
+  validation, Luhn and documented test cards.
+- **Fintech:** reconciliation list diff, exact-decimal statistics, FX calculator, business days for
+  Chile and Brazil, SWIFT/BIC / ABA / sort codes, Pix BR Code, webhook signatures (Stripe, GitHub,
+  Svix), ISO 20022 XML, Blnk payloads, Chilean IVA, installment simulator, rounding modes, MT103 /
+  MT940 parser, bank statement normalizer, mod 11 calculator.
 - **Web:** HTML preview, color converter with WCAG contrast.
 - **Workflow:** `Ctrl/⌘ + K` search, smart paste, pipelines, snippets, favorites and history.
 

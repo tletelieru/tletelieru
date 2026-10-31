@@ -1,0 +1,23 @@
+---
+title: 'JWT linter'
+description: 'Find risks in a token: alg none, alg/key confusion, missing or long expiry, weak keys, sensitive claims and jku, x5u, jwk or kid header issues.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a token, and optionally its key, to get a list of risks sorted by severity. These are
+heuristics that help a review; the signature is not checked here. Token and key stay in this tab.
+
+<ToolEmbed slug="jwt-lint" />
+
+## What it looks for
+
+- **Algorithm**: `alg: none`, a missing or unknown `alg`.
+- **Algorithm and key**: a public key offered for an HS token (alg confusion), a secret for RS, PS or
+  ES, and a reminder to pin the algorithm for HS tokens.
+- **Key strength**: HS keys shorter than the hash and RSA keys under 2048 bits.
+- **Lifetime**: no `exp`, more than 30 days, `exp` before `iat`, `nbf` after `exp`, `iat` in the
+  future, non-numeric dates.
+- **Sensitive claims**: names such as `password`, `secret` or `card`.
+- **Risky headers**: `jku` and `x5u` (keys from a URL the token picks), `jwk` and `x5c` (the token
+  brings its own key), `crit`, and a `kid` that looks like a path traversal, an injection or a URL.

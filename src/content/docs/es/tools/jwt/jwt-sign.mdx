@@ -1,0 +1,32 @@
+---
+title: 'Firmador JWT'
+description: 'Crea JWTs desde JSON de header y payload con un secreto, clave privada PEM o JWK. Ayudas para iat y exp, y una opción explícita sin firma.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe el header y el payload como JSON, elige el algoritmo y pega la clave. La firma corre con Web
+Crypto en esta pestaña; la clave y el token no se guardan, y la firma se calcula mientras escribes.
+
+<ToolEmbed slug="jwt-sign" />
+
+## Claves
+
+- **HS256/384/512**: secreto compartido (texto, hex o Base64) o un JWK `oct`. Los secretos más
+  cortos que el hash reciben una advertencia.
+- **RS, PS y ES**: clave privada PEM (PKCS#8, PKCS#1 o SEC1) o JWK privado. Las claves públicas se
+  rechazan y la curva EC debe corresponder al algoritmo.
+
+Un header vacío se convierte en `{"alg": ..., "typ": "JWT"}`. El algoritmo elegido siempre manda: si
+el header dice otra cosa, la herramienta avisa y lo reemplaza.
+
+## iat y exp
+
+Los botones escriben la hora actual en el JSON del payload al presionarlos. Nada cambia solo, así que
+el token solo cambia cuando lo pides.
+
+## Tokens sin firma
+
+`alg: none` solo está disponible con su propio interruptor y con una advertencia. Úsalo para probar
+que tu servicio rechaza esos tokens: ningún verificador debería aceptarlos, y el
+[verificador](/tletelieru/es/tools/jwt/jwt-verify/) de aquí nunca lo hace.

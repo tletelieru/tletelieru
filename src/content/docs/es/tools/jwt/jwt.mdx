@@ -30,7 +30,16 @@ guarda en la URL, en el historial local ni en los snippets.
 ## Firma
 
 Esta herramienta **no verifica la firma**. Que un token se decodifique no significa que sea
-confiable; verifícalo con la clave del emisor en el servidor.
+confiable: usa el [verificador](/tletelieru/es/tools/jwt/jwt-verify/) con la clave del emisor.
 
 Los tokens cifrados (JWE, cinco partes) no se pueden decodificar sin la clave y se informan como
-tales.
+tales: ábrelos con el [inspector JWE](/tletelieru/es/tools/jwt/jwe/).
+
+## Más herramientas JWT
+
+- [Verificador](/tletelieru/es/tools/jwt/jwt-verify/): comprueba la firma.
+- [Revisor de claims](/tletelieru/es/tools/jwt/jwt-claims/): revisa `exp`, `aud`, `iss` y otros.
+- [Firmador](/tletelieru/es/tools/jwt/jwt-sign/): crea tokens de prueba.
+- [Linter](/tletelieru/es/tools/jwt/jwt-lint/): encuentra riesgos en un token.
+- [Comparador](/tletelieru/es/tools/jwt/jwt-diff/): compara dos tokens.
+- [Claves](/tletelieru/es/tools/jwt/jwt-keys/): convierte PEM ↔ JWK y crea claves de prueba.

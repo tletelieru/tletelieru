@@ -1,0 +1,21 @@
+---
+title: 'JWT diff'
+description: 'Compare the header and payload of two JWTs, with exp, iat and nbf changes shown as dates.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste two tokens to see what changed. The comparison uses the same engine as the
+[JSON diff](/tletelieru/en/tools/data/json-diff/), so each change shows its path and both values.
+The tokens stay in this tab and are not verified.
+
+<ToolEmbed slug="jwt-diff" />
+
+## Output
+
+- **Header** and **payload** changes (`+` added, `-` removed, `~` changed).
+- **Dates**: changed `exp`, `iat` and `nbf` as UTC and in the selected zone, with the difference
+  in seconds.
+- Whether the **signature** differs.
+
+Compare arrays by position, or as sets when the order of `aud` or scopes does not matter.

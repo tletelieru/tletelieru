@@ -1,0 +1,31 @@
+---
+title: 'Revisor de claims JWT'
+description: 'Revisa exp, nbf, iat, iss, aud, sub y jti contra valores esperados, con tolerancia de reloj y un momento de evaluación fijo.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un token y lo que esperas de él. Cada claim recibe un resultado, usando la hora actual o un
+momento fijo. El token y los valores esperados se quedan en esta pestaña; solo la tolerancia, el
+momento de evaluación y la zona van en la URL.
+
+<ToolEmbed slug="jwt-claims" />
+
+## Reglas
+
+- **`exp`**: falla cuando `ahora >= exp + tolerancia`. Si solo se acepta por la tolerancia, se
+  muestra como advertencia.
+- **`nbf`**: falla cuando `ahora < nbf - tolerancia`.
+- **`iat`**: falla si está en el futuro por más que la tolerancia.
+- **`iss`, `sub`, `jti`**: coincidencia exacta. Separa varios valores permitidos con comas.
+- **`aud`**: un string o un arreglo; basta con una coincidencia.
+
+Sin valor esperado, el claim solo se informa. Si falta `exp` es una advertencia, y un claim que
+esperas y no viene falla.
+
+## Evaluar en
+
+Déjalo vacío para usar la hora actual, o ingresa una fecha ISO o un timestamp Unix (segundos o
+milisegundos) para reproducir una decisión pasada.
+
+Esta herramienta no revisa la firma: usa el [verificador](/tletelieru/es/tools/jwt/jwt-verify/).

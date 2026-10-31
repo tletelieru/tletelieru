@@ -1,0 +1,29 @@
+---
+title: 'Claves JWT (PEM ↔ JWK)'
+description: 'Convierte claves RSA y EC entre PEM y JWK, y genera claves RSA, EC y HMAC para pruebas.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Convierte claves en ambos sentidos o crea un par para pruebas. Nada sale de esta pestaña, y las claves
+no se agregan a la URL, al historial ni a los snippets.
+
+<ToolEmbed slug="jwt-keys" />
+
+## Convertir
+
+Pega una clave PEM, un JWK o un JWKS. La herramienta muestra ambas formas y, si es privada, su parte
+pública.
+
+- **Lee**: `PUBLIC KEY`, `PRIVATE KEY`, `RSA PUBLIC KEY`, `RSA PRIVATE KEY` y `EC PRIVATE KEY`.
+- **Escribe**: SPKI para claves públicas y PKCS#8 para privadas.
+- **Curvas**: P-256, P-384 y P-521.
+
+Los PEM cifrados, certificados y claves Ed25519 se informan como no soportados. Las claves simétricas
+`oct` no tienen forma PEM.
+
+## Generar
+
+Crea claves RSA 2048/3072/4096, EC P-256/384/521 o HMAC 256/384/512 con Web Crypto al presionar el
+botón. **Son solo para pruebas**: para producción, genera las claves en tu gestor de secretos o HSM.
+RSA 4096 puede tardar unos segundos.

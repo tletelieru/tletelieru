@@ -30,7 +30,17 @@ stored in the URL, the local history or snippets.
 
 ## Signature
 
-This tool **does not verify the signature**. A token that decodes is not a trusted token; verify
-it with the issuer's key on the server.
+This tool **does not verify the signature**. A token that decodes is not a trusted token: use the
+[verifier](/tletelieru/en/tools/jwt/jwt-verify/) with the issuer's key.
 
-Encrypted tokens (JWE, five parts) cannot be decoded without the key and are reported as such.
+Encrypted tokens (JWE, five parts) cannot be decoded without the key and are reported as such: open
+them with the [JWE inspector](/tletelieru/en/tools/jwt/jwe/).
+
+## More JWT tools
+
+- [Verifier](/tletelieru/en/tools/jwt/jwt-verify/): check the signature.
+- [Claims checker](/tletelieru/en/tools/jwt/jwt-claims/): check `exp`, `aud`, `iss` and friends.
+- [Signer](/tletelieru/en/tools/jwt/jwt-sign/): create test tokens.
+- [Linter](/tletelieru/en/tools/jwt/jwt-lint/): find risks in a token.
+- [Diff](/tletelieru/en/tools/jwt/jwt-diff/): compare two tokens.
+- [Keys](/tletelieru/en/tools/jwt/jwt-keys/): convert PEM ↔ JWK and create test keys.
