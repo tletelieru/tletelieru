@@ -1,0 +1,30 @@
+---
+title: 'JWT claims checker'
+description: 'Check exp, nbf, iat, iss, aud, sub and jti against expected values, with a clock skew tolerance and a fixed evaluation time.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a token and what you expect from it. Each claim gets a result, using the current time or a
+fixed moment. The token and expected values stay in this tab; only the skew, the evaluation time and
+the zone go in the URL.
+
+<ToolEmbed slug="jwt-claims" />
+
+## Rules
+
+- **`exp`**: fails when `now >= exp + skew`. Accepted only thanks to the skew shows as a warning.
+- **`nbf`**: fails when `now < nbf - skew`.
+- **`iat`**: fails when it is more than the skew in the future.
+- **`iss`, `sub`, `jti`**: exact match. Separate several allowed values with commas.
+- **`aud`**: a string or an array; any match passes.
+
+With no expected value a claim is only reported. A missing `exp` is a warning, and a claim you do
+expect but is missing fails.
+
+## Evaluate at
+
+Leave it empty to use the current time, or enter an ISO date or a Unix timestamp (seconds or
+milliseconds) to reproduce a past decision.
+
+This tool does not check the signature: use the [verifier](/tletelieru/en/tools/jwt/jwt-verify/).

@@ -1,0 +1,18 @@
+---
+title: IVA Chile (neto ↔ bruto)
+description: Calcula el IVA chileno de facturas y boletas, con tasa configurable y redondeo exacto en CLP.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un monto por línea. La tasa por defecto es 19 % y el redondeo por defecto es a pesos enteros.
+
+<ToolEmbed slug="iva" />
+
+## Cómo calcula
+
+- **Factura**: IVA = neto × tasa, redondeado mitad hacia arriba, y total = neto + IVA.
+- **Boleta**: neto = total ÷ (1 + tasa), redondeado mitad hacia arriba, e IVA = total − neto, así que las partes siempre suman.
+- La fila **Total** recalcula el IVA sobre la base sumada, como un documento con varias líneas. Puede diferir en un peso de la suma de las filas.
+
+`1.190.000` se lee como es-CL. Un valor como `1.000` es ambiguo y se lee como mil, con una advertencia.

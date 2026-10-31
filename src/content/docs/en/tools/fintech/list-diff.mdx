@@ -1,0 +1,18 @@
+---
+title: Reconciliation list diff
+description: 'Compare two ID or id,amount lists: only in A, only in B, in both and amount mismatches.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste two lists, for example your ledger and a bank file, and see what is missing on each side and which amounts differ.
+
+<ToolEmbed slug="list-diff" />
+
+## Notes
+
+- Columns can be separated by comma, semicolon, tab or spaces.
+- Amounts are compared as exact decimals, so `10.10` equals `10.1`, and `1.234,50` works too.
+- A first row without a valid amount is treated as a header.
+- Repeated IDs are summed and listed.
+- With amounts off, the whole line is the ID.

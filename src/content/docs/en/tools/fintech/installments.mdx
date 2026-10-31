@@ -1,0 +1,18 @@
+---
+title: Installment simulator
+description: Simulate a French amortization loan with a schedule table and CAE-style annual cost.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+French amortization: same installment every month, with interest on the remaining balance.
+
+<ToolEmbed slug="installments" />
+
+## Notes
+
+- An annual rate is treated as nominal and divided by 12.
+- The last installment absorbs the rounding, so the balance ends at exactly zero.
+- **CAE-style annual cost** is the monthly IRR of the cash flows, net of the upfront fee, multiplied by 12. **Effective annual cost** compounds that IRR.
+
+This is an estimate for comparing offers. The official CAE of a Chilean loan also includes insurance and other costs under its own regulation, so it can differ from this figure.

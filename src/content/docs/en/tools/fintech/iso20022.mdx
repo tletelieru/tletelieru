@@ -1,0 +1,17 @@
+---
+title: ISO 20022 XML formatter
+description: Format or minify ISO 20022 XML, with well-formedness errors and message type detection.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a `pain.001`, `pacs.008`, `camt.053` or any other XML to indent it or compact it.
+
+<ToolEmbed slug="iso20022" />
+
+## Notes
+
+- Errors show the line and column: mismatched tags, bad attributes, unescaped `&` and more.
+- The message type comes from the `xmlns` namespace, or from the first known element if there is none.
+- Text and CDATA are kept as they are. Minify removes comments and whitespace between elements.
+- This checks that the XML is well formed. It does not validate against the ISO 20022 XSD schemas.

@@ -1,0 +1,17 @@
+---
+title: Parser SWIFT MT
+description: Interpreta mensajes MT103 y MT940 en campos con etiquetas o JSON.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un MT103 o MT940, con o sin sus bloques `{1:}…{5:}`.
+
+<ToolEmbed slug="swift-mt" />
+
+## Notas
+
+- Los montos y fechas se decodifican en `:32A:`, `:33B:`, saldos (`:60:`, `:62:`, `:64:`, `:65:`) y líneas de cartola `:61:`.
+- La coma decimal de SWIFT pasa a punto: `1234,56` → `1234.56`. Los años de dos dígitos se leen como 20AA.
+- Otros tipos de MT igual se separan en campos, con etiquetas solo para las que comparten.
+- Lee la estructura, pero no valida reglas de red ni formatos de campo.

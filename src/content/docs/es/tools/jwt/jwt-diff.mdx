@@ -1,0 +1,21 @@
+---
+title: 'Comparador JWT'
+description: 'Compara el header y el payload de dos JWT, con los cambios de exp, iat y nbf mostrados como fechas.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega dos tokens para ver qué cambió. La comparación usa el mismo motor del
+[comparador de JSON](/tletelieru/es/tools/data/json-diff/), así que cada cambio muestra su ruta y
+ambos valores. Los tokens se quedan en esta pestaña y no se verifican.
+
+<ToolEmbed slug="jwt-diff" />
+
+## Resultado
+
+- Cambios en **header** y **payload** (`+` agregado, `-` eliminado, `~` modificado).
+- **Fechas**: `exp`, `iat` y `nbf` que cambiaron, en UTC y en la zona elegida, con la diferencia en
+  segundos.
+- Si la **firma** es distinta.
+
+Compara arreglos por posición, o como conjuntos cuando el orden de `aud` o de los scopes no importa.

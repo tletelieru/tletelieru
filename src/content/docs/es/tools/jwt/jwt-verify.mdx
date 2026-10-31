@@ -1,0 +1,32 @@
+---
+title: 'Verificador JWT'
+description: 'Verifica firmas JWT HS, RS, PS y ES con un secreto compartido, clave pública PEM, JWK o un JWKS pegado. Falla cerrado si el alg o la clave no calzan.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un token y la clave que debería haberlo firmado. La herramienta deduce el tipo de clave según
+lo que pegues: secreto compartido (texto, hex o Base64), clave pública PEM, JWK o JWKS. Todo corre con
+Web Crypto en tu navegador: el token y la clave no se guardan, y el JWKS se pega, nunca se descarga.
+
+<ToolEmbed slug="jwt-verify" />
+
+## Algoritmos
+
+HS256/384/512, RS256/384/512, PS256/384/512 y ES256/384/512. En un JWKS la clave se elige por `kid`;
+sin `kid`, exactamente una clave debe calzar con el algoritmo; si no, la herramienta no adivina.
+
+## Falla cerrado
+
+El resultado solo es "válido" cuando todo calza. Esto siempre se rechaza:
+
+- `alg: none` en cualquier combinación de mayúsculas, un `alg` ausente o desconocido.
+- Un token cuyo `alg` no es el algoritmo esperado que fijaste.
+- Una clave que no corresponde al algoritmo: clave pública para HS (el clásico ataque de confusión
+  de alg), secreto para RS/PS/ES o curva EC incorrecta.
+- Una clave cuyo `alg`, `use` o `key_ops` prohíben la operación, y claves RSA de menos de 2048 bits.
+- Firmas ECDSA en DER: JWS usa la forma cruda `r||s`, con un largo fijo por curva.
+- Cualquier header `crit` desconocido y firmas en base64url no canónico.
+
+Una firma válida no dice nada de los claims: revisa `exp`, `aud` e `iss` con el
+[revisor de claims](/tletelieru/es/tools/jwt/jwt-claims/).
