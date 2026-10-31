@@ -1,0 +1,17 @@
+---
+title: Number formats by locale
+description: Format numbers for es-CL, en-US, pt-BR, de-DE and more as plain, currency, percent or compact, and parse them back.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+**Format** turns `1234.56` into `1.234,56` (es-CL), `1,234.56` (en-US) or `R$ 1.234,56` (pt-BR). **Parse** does the reverse and returns a plain decimal, ready for code or a database.
+
+<ToolEmbed slug="number-locale" />
+
+## Notes
+
+- Values reach `Intl.NumberFormat` as exact decimal strings, so digits beyond 15 are kept.
+- Percent multiplies by 100: `0.1234` shows as `12,34 %`.
+- Parsing accepts currency symbols, codes and `%`, but not compact forms such as `1,2 M`.
+- Results depend on your browser's locale data.

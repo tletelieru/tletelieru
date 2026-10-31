@@ -1,0 +1,17 @@
+---
+title: Payload de transacción Blnk
+description: Construye payloads JSON de transacciones de Blnk Finance desde un formulario.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Completa el formulario para obtener el cuerpo JSON de una llamada `POST /transactions` de [Blnk Finance](https://docs.blnkfinance.com).
+
+<ToolEmbed slug="blnk-payload" />
+
+## Notas
+
+- `amount` se escribe tal como lo ingresas, sin redondeo de flotantes.
+- `precision` convierte el monto al entero que guarda Blnk: `750.25` con `100` es `75025`. Si el monto no cabe, aparece una advertencia.
+- **Generar referencia** crea un valor `ref_` aleatorio solo cuando haces clic. Cada transacción necesita una referencia única.
+- `description` y un `meta_data` vacío se omiten.

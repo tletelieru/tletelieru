@@ -1,0 +1,18 @@
+---
+title: Bank account validator
+description: Validate IBAN (mod 97 and country length), Mexican CLABE and Argentine CBU and CVU check digits, with formatted output.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste one account per line. In **Auto**, two leading letters mean IBAN, 18 digits mean CLABE and 22 digits mean CBU or CVU.
+
+<ToolEmbed slug="bank-account" />
+
+## What gets checked
+
+- **IBAN**: ISO 13616 mod 97 and the length registered for the country. The country's internal structure (BBAN) is not checked.
+- **CLABE**: 18 digits and the check digit with weights 3, 7, 1. Shows bank, plaza and account.
+- **CBU / CVU**: 22 digits and both check digits. A number starting with `000` is treated as a CVU.
+
+A valid check digit only proves the number is well formed: it does not prove the account exists. Bank names cover a list of common institutions; an unlisted code is not an error.

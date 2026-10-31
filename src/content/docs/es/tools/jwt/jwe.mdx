@@ -1,0 +1,33 @@
+---
+title: 'Inspector y descifrador JWE'
+description: 'Inspecciona tokens JWE compactos y descifra dir, AES key wrap y RSA-OAEP con A128GCM o A256GCM. Detecta JWT anidados.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un JWE compacto (cinco partes) para ver su header y el tamaño de cada parte. Agrega la clave para
+descifrarlo con Web Crypto. Nada se guarda ni se envía.
+
+<ToolEmbed slug="jwe" />
+
+## Soportado
+
+| `alg`                      | `enc`                | Clave                                         |
+| -------------------------- | -------------------- | --------------------------------------------- |
+| `dir`                      | `A128GCM`, `A256GCM` | Clave AES como texto, hex, Base64 o JWK `oct` |
+| `A128KW`, `A256KW`         | `A128GCM`, `A256GCM` | Clave AES como texto, hex, Base64 o JWK `oct` |
+| `RSA-OAEP`, `RSA-OAEP-256` | `A128GCM`, `A256GCM` | Clave privada RSA como PEM o JWK              |
+
+En un JWKS la clave se elige por `kid`.
+
+## No soportado
+
+Todo lo demás se informa con claridad en vez de fallar en silencio: `A128CBC-HS256` y los otros modos
+CBC-HS, `RSA1_5`, `ECDH-ES`, `PBES2`, AES de 192 bits, compresión `zip: DEF` y cualquier header
+`crit`. Solo se lee la serialización compacta.
+
+## JWT anidados
+
+Un header `cty: JWT` se señala, y si el texto descifrado es un JWT se muestran su header y payload.
+Descifrar prueba que el token no fue alterado, no quién firmó el JWT interno: revísalo con el
+[verificador](/tletelieru/es/tools/jwt/jwt-verify/).

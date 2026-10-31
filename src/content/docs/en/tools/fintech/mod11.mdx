@@ -1,0 +1,19 @@
+---
+title: Mod 11 check digit
+description: Compute mod 11 check digits with configurable weights and direction, step by step.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+See how a mod 11 check digit is built: each digit times its weight, the sum, the remainder and the final digit.
+
+<ToolEmbed slug="mod11" />
+
+## Options
+
+- **Weights**: comma-separated. They repeat when the number is longer than the list.
+- **Direction**: start from the rightmost or leftmost digit.
+- **Result**: `11 − remainder`, or the remainder itself.
+- **If 10 / If 11**: the symbol for those results, like `K` and `0` in a Chilean RUT.
+
+The **RUT**, **CPF** and **ISBN-10** buttons fill in those rules. For CPF they compute the first digit; to get the second, append it and use weights starting at 11.

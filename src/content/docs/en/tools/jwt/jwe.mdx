@@ -1,0 +1,33 @@
+---
+title: 'JWE inspector & decrypter'
+description: 'Inspect compact JWE tokens and decrypt dir, AES key wrap and RSA-OAEP with A128GCM or A256GCM. Detects nested JWTs.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Paste a compact JWE (five parts) to see its header and the size of each part. Add the key to decrypt
+it with Web Crypto. Nothing is stored or sent anywhere.
+
+<ToolEmbed slug="jwe" />
+
+## Supported
+
+| `alg`                      | `enc`                | Key                                       |
+| -------------------------- | -------------------- | ----------------------------------------- |
+| `dir`                      | `A128GCM`, `A256GCM` | AES key as text, hex, Base64 or `oct` JWK |
+| `A128KW`, `A256KW`         | `A128GCM`, `A256GCM` | AES key as text, hex, Base64 or `oct` JWK |
+| `RSA-OAEP`, `RSA-OAEP-256` | `A128GCM`, `A256GCM` | RSA private key as PEM or JWK             |
+
+For a JWKS the key is chosen by `kid`.
+
+## Not supported
+
+Everything else is reported clearly instead of failing silently: `A128CBC-HS256` and the other
+CBC-HS modes, `RSA1_5`, `ECDH-ES`, `PBES2`, 192-bit AES, `zip: DEF` compression and any `crit`
+header. Only the compact serialization is read.
+
+## Nested JWTs
+
+A `cty: JWT` header is flagged, and if the plaintext is a JWT its header and payload are shown.
+Decryption proves the token was not altered, not who signed the inner JWT: check that with the
+[verifier](/tletelieru/en/tools/jwt/jwt-verify/).

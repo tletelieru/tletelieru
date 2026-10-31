@@ -1,0 +1,24 @@
+---
+title: 'Linter JWT'
+description: 'Encuentra riesgos en un token: alg none, confusión de alg y clave, expiración ausente o larga, claves débiles, claims sensibles y problemas en jku, x5u, jwk o kid.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Pega un token y, si quieres, su clave para obtener una lista de riesgos ordenada por severidad. Son
+heurísticas que ayudan a revisar; aquí no se comprueba la firma. El token y la clave se quedan en esta
+pestaña.
+
+<ToolEmbed slug="jwt-lint" />
+
+## Qué busca
+
+- **Algoritmo**: `alg: none`, un `alg` ausente o desconocido.
+- **Algoritmo y clave**: una clave pública para un token HS (confusión de alg), un secreto para RS, PS
+  o ES, y un recordatorio de fijar el algoritmo en tokens HS.
+- **Fuerza de la clave**: claves HS más cortas que el hash y claves RSA de menos de 2048 bits.
+- **Vigencia**: sin `exp`, más de 30 días, `exp` antes de `iat`, `nbf` después de `exp`, `iat` en
+  el futuro, fechas no numéricas.
+- **Claims sensibles**: nombres como `password`, `secret` o `card`.
+- **Headers riesgosos**: `jku` y `x5u` (claves desde una URL que elige el token), `jwk` y `x5c` (el
+  token trae su propia clave), `crit`, y un `kid` que parece recorrido de rutas, inyección o URL.

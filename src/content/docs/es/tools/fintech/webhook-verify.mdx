@@ -1,0 +1,21 @@
+---
+title: Verificador de firmas de webhooks
+description: Verifica firmas HMAC de webhooks de Stripe, GitHub, Svix o un esquema genérico hex o base64.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Revisa por qué falla la firma de un webhook: la herramienta muestra la firma esperada y el texto exacto que se firmó.
+
+<ToolEmbed slug="webhook-verify" />
+
+## Esquemas
+
+- **Stripe**: `Stripe-Signature` con `t=` y `v1=`. Firma `timestamp.cuerpo` con el secreto `whsec_` completo.
+- **GitHub**: `X-Hub-Signature-256` con `sha256=`. Firma el cuerpo.
+- **Svix**: `svix-id`, `svix-timestamp` y `svix-signature`. Firma `id.timestamp.cuerpo` con la parte base64 del secreto.
+- **Genérico**: HMAC del cuerpo en SHA-256, SHA-1 o SHA-512, en hex o base64.
+
+Pega el cuerpo **crudo**: reformatear el JSON cambia la firma. La revisión de tolerancia usa tu reloj y solo corre en el navegador.
+
+Los secretos y payloads se quedan en esta pestaña. No se escriben en la URL, el historial ni los snippets, y nada se envía a ningún lado.
