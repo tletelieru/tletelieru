@@ -405,3 +405,8 @@ button.favorite-star[aria-pressed='true'] svg {
     top: 0;
   }
 }
+
+:root[data-drawer-restored] .sidebar-pane,
+:root[data-drawer-restored] .sidebar-pane::backdrop {
+  transition: none;
+}
