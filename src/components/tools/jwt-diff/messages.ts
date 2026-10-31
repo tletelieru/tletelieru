@@ -1,0 +1,43 @@
+import { defineMessages } from '~/i18n/react';
+
+export const jwtDiffMessages = defineMessages({
+  en: {
+    left: 'Token A',
+    right: 'Token B',
+    arrays: 'Arrays',
+    byIndex: 'By index',
+    asSet: 'As sets',
+    zone: 'Time zone',
+    changes: 'Differences',
+    header: 'Header',
+    payload: 'Payload',
+    dates: 'Dates',
+    identical: 'Header and payload are equal.',
+    signatureChanged: 'Signature: different.',
+    signatureSame: 'Signature: identical.',
+    missing: '(not set)',
+    delta: (seconds: number) => `${seconds >= 0 ? '+' : ''}${seconds} s`,
+    side: (side: 'left' | 'right') => (side === 'left' ? 'Token A' : 'Token B'),
+    privacy: 'Tokens are compared in this tab. They are not verified, stored or sent anywhere.',
+  },
+  es: {
+    left: 'Token A',
+    right: 'Token B',
+    arrays: 'Arreglos',
+    byIndex: 'Por índice',
+    asSet: 'Como conjuntos',
+    zone: 'Zona horaria',
+    changes: 'Diferencias',
+    header: 'Header',
+    payload: 'Payload',
+    dates: 'Fechas',
+    identical: 'Header y payload son iguales.',
+    signatureChanged: 'Firma: distinta.',
+    signatureSame: 'Firma: idéntica.',
+    missing: '(sin valor)',
+    delta: (seconds: number) => `${seconds >= 0 ? '+' : ''}${seconds} s`,
+    side: (side: 'left' | 'right') => (side === 'left' ? 'Token A' : 'Token B'),
+    privacy:
+      'Los tokens se comparan en esta pestaña. No se verifican, no se guardan ni se envían a ningún lado.',
+  },
+});

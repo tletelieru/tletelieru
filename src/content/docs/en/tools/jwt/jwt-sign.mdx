@@ -1,0 +1,32 @@
+---
+title: 'JWT signer'
+description: 'Create JWTs from header and payload JSON with a secret, PEM private key or JWK. iat and exp helpers, and an explicit unsigned option.'
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Write the header and payload as JSON, pick the algorithm and paste the key. Signing runs with Web
+Crypto in this tab; the key and the token are not stored, and the signature is computed as you type.
+
+<ToolEmbed slug="jwt-sign" />
+
+## Keys
+
+- **HS256/384/512**: shared secret (text, hex or Base64) or an `oct` JWK. Secrets shorter than the
+  hash get a warning.
+- **RS, PS and ES**: PEM private key (PKCS#8, PKCS#1 or SEC1) or a private JWK. Public keys are
+  rejected, and the EC curve must match the algorithm.
+
+An empty header becomes `{"alg": ..., "typ": "JWT"}`. The selected algorithm always wins: if the
+header says something else, the tool warns and overrides it.
+
+## iat and exp
+
+The buttons write the current time into the payload JSON when you press them. Nothing changes on
+its own, so the token only changes when you ask.
+
+## Unsigned tokens
+
+`alg: none` is only available through its own switch, with a warning. Use it to test that your
+service rejects such tokens: no verifier should ever accept them, and the
+[verifier](/tletelieru/en/tools/jwt/jwt-verify/) here never does.
