@@ -1,0 +1,56 @@
+---
+import { locales, toLocale } from '~/i18n/locales';
+
+const current = toLocale(Astro.locals.starlightRoute.locale);
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+const prefix = new RegExp(`^/(${locales.join('|')})(?=/|$)`);
+const rest = Astro.url.pathname.slice(base.length).replace(prefix, '');
+const pathFor = (locale: string) => `${base}/${locale}${rest}`;
+---
+
+<div class="lang-toggle" role="group" aria-label={Astro.locals.t('languageSelect.accessibleLabel')}>
+  {locales.map((locale) => (
+    <a
+      href={pathFor(locale)}
+      hreflang={locale}
+      lang={locale}
+      aria-current={locale === current ? 'true' : undefined}
+    >
+      {locale.toUpperCase()}
+    </a>
+  ))}
+</div>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.625rem;
+  }
+
+  .lang-toggle a {
+    padding: 0.25rem 0.625rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+    transition:
+      background-color 150ms,
+      color 150ms;
+  }
+
+  .lang-toggle a + a {
+    border-inline-start: 1px solid var(--sl-color-gray-5);
+  }
+
+  .lang-toggle a:hover {
+    color: var(--sl-color-white);
+  }
+
+  .lang-toggle a[aria-current='true'] {
+    color: var(--sl-color-white);
+    background: var(--sl-color-gray-6);
+  }
+</style>
