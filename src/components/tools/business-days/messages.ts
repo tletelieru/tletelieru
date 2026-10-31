@@ -1,0 +1,108 @@
+import { defineMessages } from '~/i18n/react';
+import type { BusinessError } from '~/lib/tools/business-days';
+import { FIRST_YEAR, LAST_YEAR, type HolidayId } from '~/lib/tools/holidays';
+
+export const businessDaysMessages = defineMessages({
+  en: {
+    dates: 'Dates (YYYY-MM-DD, one per line)',
+    pairs: 'Date pairs (YYYY-MM-DD YYYY-MM-DD, one per line)',
+    mode: 'Mode',
+    modes: { add: 'Add / subtract', count: 'Count between' },
+    country: 'Country',
+    countries: { CL: 'Chile', BR: 'Brazil' },
+    days: 'Business days (+/−)',
+    includeStart: 'Count the start date',
+    businessDays: (count: number) => `${count} business ${Math.abs(count) === 1 ? 'day' : 'days'}`,
+    calendarDays: (count: number) => `${count} calendar ${Math.abs(count) === 1 ? 'day' : 'days'}`,
+    weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    error: (error: BusinessError, line: number, text: string): string => {
+      const messages: Record<BusinessError, string> = {
+        date: `"${text}" is not a valid YYYY-MM-DD date`,
+        pair: `"${text}" must be two dates`,
+        range: `"${text}" falls outside ${FIRST_YEAR}–${LAST_YEAR}`,
+      };
+      return `Line ${line}: ${messages[error]}`;
+    },
+    holidays: {
+      newYear: "New Year's Day",
+      newYearBridge: 'Monday after New Year',
+      goodFriday: 'Good Friday',
+      holySaturday: 'Holy Saturday',
+      labor: 'Labor Day',
+      navy: 'Navy Day',
+      indigenous: 'Indigenous Peoples Day',
+      peterPaul: 'Saints Peter and Paul',
+      carmen: 'Our Lady of Mount Carmel',
+      assumption: 'Assumption of Mary',
+      independenceBridge: 'Fiestas Patrias bridge day',
+      independence: 'Independence Day',
+      army: 'Army Day',
+      extraSeptember: 'Extra Fiestas Patrias holiday',
+      worlds: 'Meeting of Two Worlds',
+      evangelical: 'Evangelical Churches Day',
+      allSaints: "All Saints' Day",
+      conception: 'Immaculate Conception',
+      christmas: 'Christmas',
+      carnival: 'Carnival',
+      tiradentes: 'Tiradentes',
+      corpusChristi: 'Corpus Christi',
+      independenceBr: 'Independence Day',
+      aparecida: 'Our Lady of Aparecida',
+      allSouls: "All Souls' Day",
+      republic: 'Republic Day',
+      blackConsciousness: 'Black Consciousness Day',
+    } satisfies Record<HolidayId, string>,
+  },
+  es: {
+    dates: 'Fechas (AAAA-MM-DD, una por línea)',
+    pairs: 'Pares de fechas (AAAA-MM-DD AAAA-MM-DD, uno por línea)',
+    mode: 'Modo',
+    modes: { add: 'Sumar / restar', count: 'Contar entre fechas' },
+    country: 'País',
+    countries: { CL: 'Chile', BR: 'Brasil' },
+    days: 'Días hábiles (+/−)',
+    includeStart: 'Contar la fecha de inicio',
+    businessDays: (count: number) =>
+      `${count} ${Math.abs(count) === 1 ? 'día hábil' : 'días hábiles'}`,
+    calendarDays: (count: number) =>
+      `${count} ${Math.abs(count) === 1 ? 'día corrido' : 'días corridos'}`,
+    weekdays: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+    error: (error: BusinessError, line: number, text: string): string => {
+      const messages: Record<BusinessError, string> = {
+        date: `"${text}" no es una fecha AAAA-MM-DD válida`,
+        pair: `"${text}" debe tener dos fechas`,
+        range: `"${text}" queda fuera de ${FIRST_YEAR}–${LAST_YEAR}`,
+      };
+      return `Línea ${line}: ${messages[error]}`;
+    },
+    holidays: {
+      newYear: 'Año Nuevo',
+      newYearBridge: 'Lunes después de Año Nuevo',
+      goodFriday: 'Viernes Santo',
+      holySaturday: 'Sábado Santo',
+      labor: 'Día del Trabajo',
+      navy: 'Día de las Glorias Navales',
+      indigenous: 'Día Nacional de los Pueblos Indígenas',
+      peterPaul: 'San Pedro y San Pablo',
+      carmen: 'Virgen del Carmen',
+      assumption: 'Asunción de la Virgen',
+      independenceBridge: 'Interferiado de Fiestas Patrias',
+      independence: 'Independencia Nacional',
+      army: 'Glorias del Ejército',
+      extraSeptember: 'Feriado adicional de Fiestas Patrias',
+      worlds: 'Encuentro de Dos Mundos',
+      evangelical: 'Día de las Iglesias Evangélicas',
+      allSaints: 'Día de Todos los Santos',
+      conception: 'Inmaculada Concepción',
+      christmas: 'Navidad',
+      carnival: 'Carnaval',
+      tiradentes: 'Tiradentes',
+      corpusChristi: 'Corpus Christi',
+      independenceBr: 'Independencia de Brasil',
+      aparecida: 'Nuestra Señora Aparecida',
+      allSouls: 'Día de los Difuntos',
+      republic: 'Proclamación de la República',
+      blackConsciousness: 'Día de la Conciencia Negra',
+    } satisfies Record<HolidayId, string>,
+  },
+});
