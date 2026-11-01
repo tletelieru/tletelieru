@@ -56,3 +56,7 @@ content).
 
 <sub>This repository is the site itself (Astro + React). Development notes are in
 [CONTRIBUTING.md](./CONTRIBUTING.md).</sub>
+
+## License
+
+All rights reserved. See [LICENSE](LICENSE).
