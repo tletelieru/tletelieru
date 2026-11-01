@@ -56,3 +56,7 @@ content).
 
 <sub>This repository is the site itself (Astro + React). Development notes are in
 [CONTRIBUTING.md](./CONTRIBUTING.md).</sub>
+
+## License
+
+Code is [MIT](LICENSE). Written content and images on the site are not covered by the license; all rights reserved.
