@@ -1,10 +1,13 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
 import AstroPWA from '@vite-pwa/astro';
+import { keepSharedChunks } from './src/lib/pwa-shell.ts';
 import { categoriesWithTools } from './src/lib/tools/registry.ts';
 
 const base = '/tletelieru';
+const dist = fileURLToPath(new URL('./dist/', import.meta.url));
 
 export default defineConfig({
   site: 'https://tletelieru.github.io',
@@ -66,7 +69,27 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: null,
-        globPatterns: ['**/*.{html,js,css,svg,png,ico,webp,woff,woff2,txt}'],
+        globPatterns: ['**/*.{js,css,svg,png,ico,webp,woff,woff2}'],
+        manifestTransforms: [keepSharedChunks(dist)],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pages',
+              networkTimeoutSeconds: 3,
+              matchOptions: { ignoreSearch: true },
+            },
+          },
+          {
+            urlPattern: /\/_astro\/.+\.(?:js|css)$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'assets',
+              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+        ],
       },
     }),
   ],
