@@ -59,4 +59,4 @@ content).
 
 ## License
 
-Code is [MIT](LICENSE). Written content and images on the site are not covered by the license; all rights reserved.
+All rights reserved. See [LICENSE](LICENSE).
