@@ -12,7 +12,7 @@ I develop in React and React Native on the frontend; TypeScript, Go and Rust on 
 
 | Area                | Tools                                                                                                                                                      |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frontend            | React, TypeScript, Next.js, TanStack Query, Astro, PHP (Yii)                                                                                               |
+| Frontend            | React, TypeScript, Next.js, TanStack Query, Astro                                                                                                          |
 | Mobile              | React Native, Expo                                                                                                                                         |
 | Backend             | TypeScript (NestJS, Express), Go (Fiber), Rust (Axum, async-graphql), PHP (Yii)                                                                            |
 | Databases           | PostgreSQL, MySQL, MongoDB, DynamoDB                                                                                                                       |

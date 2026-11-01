@@ -1,8 +1,6 @@
 # tletelieru — project brief
 
-Source spec: Notion page "🐙 tletelieru (GitHub main repo)"
-(). This file distills it so work can start
-from the repo. Status: **scaffolded (M0)** — Starlight + React/MUI islands, PWA, CI, first tool (RUT).
+Status: **scaffolded (M0)** — Starlight + React/MUI islands, PWA, CI, first tool (RUT).
 
 ## Purpose
 
@@ -131,11 +129,10 @@ eslint-rules/index.js                    # local ESLint rules (prefer-logical-an
 **Site features (F1–F6):** smart paste (auto-detect input type), pipelines (chain tools),
 favorites & recent (localStorage), per-tool local history, dark mode + keyboard shortcuts, snippets.
 
-**Backlog:** large catalog in the Notion page — IDs & encoding, SQL & data, money & ledger, text,
-time, fintech/work, HTTP/cURL/auth, JWT suite, files, DevOps. Pull specifics from Notion when
-building.
+**Backlog:** IDs & encoding, SQL & data, money & ledger, text, time, fintech/work, HTTP/cURL/auth,
+JWT suite, files, DevOps.
 
-## Build prompt (from Notion, for reference)
+## Build prompt (for reference)
 
 > Build an Astro static site (TypeScript strict) with React islands and MUI, PWA via
 > `@vite-pwa/astro`, deployed to GitHub Pages with `base: '/tletelieru'`. ESLint (flat config,
