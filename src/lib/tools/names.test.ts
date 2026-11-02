@@ -171,8 +171,8 @@ describe('splitParts', () => {
       secondSurname: '',
     });
     expect(values(longName, { strategy: 'lastTwo' })).toMatchObject({
-      firstName: 'María',
-      middleName: 'de los Ángeles',
+      firstName: 'María de los Ángeles',
+      middleName: '',
       firstSurname: 'Matus',
       secondSurname: 'de la Parra',
     });
