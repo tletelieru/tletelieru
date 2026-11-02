@@ -18,4 +18,19 @@ export const collections = {
       hidden: z.boolean().default(false),
     }),
   }),
+  packages: defineCollection({
+    loader: glob({ pattern: '**/*.md', base: './src/content/packages' }),
+    schema: z.object({
+      title: z.string(),
+      package: z.string(),
+      description: z.object({ en: z.string(), es: z.string() }),
+      npm: z.url(),
+      repo: z.url().optional(),
+      demo: z.url().optional(),
+      tool: z.string().optional(),
+      tags: z.array(z.string()).default([]),
+      order: z.number().default(0),
+      hidden: z.boolean().default(false),
+    }),
+  }),
 };

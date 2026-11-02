@@ -35,10 +35,11 @@ language.
 src/
   i18n/locales.ts                        # Locale, Localized<T>, toLocale, pickLocale (no React)
   i18n/react.tsx                         # LocaleProvider, useLocale, useMessages, defineMessages
-  content/docs/<locale>/index.mdx        # home: about me, projects, stack, contact (sidebar visible)
+  content/docs/<locale>/index.mdx        # home: about me, projects, packages, stack, contact (sidebar visible)
   content/docs/<locale>/tools/index.mdx  # /tools index (ToolIndex, grouped by category)
   content/docs/<locale>/tools/<category>/<slug>.mdx  # one page per tool and locale
   content/projects/*.md                  # projects collection (description: { en, es })
+  content/packages/*.md                  # npm packages collection (npm, repo, demo, optional tool slug)
   components/ToolEmbed.astro             # preloads the tool module, mounts ToolIsland client:load + keywords
   components/starlight/Head.astro        # Head override: PWA manifest + SW, saves preferred locale,
                                          # restores collapsed sidebar before paint
