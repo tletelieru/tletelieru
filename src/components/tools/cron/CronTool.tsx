@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useLocale, useMessages } from '~/i18n/react';
 import { useHydrated } from '~/lib/hydration';
 import { clampInt } from '~/lib/tools/_shared/lines';
 import { MAX_RUNS, describeCron, formatRun, nextRuns, parseCron } from '~/lib/tools/cron';
 import { useUrlState } from '~/lib/url-state';
+import { NumberField } from '../_shared/NumberField';
 import { InputPanel } from '../_shared/InputPanel';
 import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
@@ -86,8 +86,7 @@ export default function CronTool() {
       options={
         <>
           <ZonePicker label={t.zone} value={state.zone} onChange={onZoneChange} />
-          <TextField
-            type="number"
+          <NumberField
             label={t.count}
             value={count}
             sx={{ width: 160 }}

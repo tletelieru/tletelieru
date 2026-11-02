@@ -21,6 +21,7 @@ import {
   type PasswordResult,
 } from '~/lib/tools/password';
 import { useUrlState } from '~/lib/url-state';
+import { NumberField } from '../_shared/NumberField';
 import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
 import { passwordMessages } from './messages';
@@ -133,8 +134,7 @@ export default function PasswordTool() {
             <ToggleButton value="passphrase">{t.passphrase}</ToggleButton>
           </ToggleButtonGroup>
           {!passphrase && (
-            <TextField
-              type="number"
+            <NumberField
               name="length"
               label={t.length}
               value={options.length}
@@ -165,8 +165,7 @@ export default function PasswordTool() {
             />
           )}
           {passphrase && (
-            <TextField
-              type="number"
+            <NumberField
               name="words"
               label={t.words}
               value={options.words}
@@ -198,8 +197,7 @@ export default function PasswordTool() {
               label={t.addNumber}
             />
           )}
-          <TextField
-            type="number"
+          <NumberField
             name="count"
             label={t.count}
             value={options.count}

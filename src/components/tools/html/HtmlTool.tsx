@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
@@ -18,6 +17,7 @@ import {
 } from '~/lib/tools/html';
 import { clampInt } from '~/lib/tools/_shared/lines';
 import { useUrlState } from '~/lib/url-state';
+import { NumberField } from '../_shared/NumberField';
 import { InputPanel } from '../_shared/InputPanel';
 import { CopyButton } from '../_shared/CopyButton';
 import { ToolLayout } from '../_shared/ToolLayout';
@@ -103,8 +103,7 @@ export default function HtmlTool() {
             <ToggleButton value="light">{t.light}</ToggleButton>
             <ToggleButton value="dark">{t.dark}</ToggleButton>
           </ToggleButtonGroup>
-          <TextField
-            type="number"
+          <NumberField
             label={t.height}
             value={height}
             sx={{ width: 130 }}
