@@ -1,7 +1,6 @@
 import { useCallback, type ChangeEvent } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
@@ -9,6 +8,7 @@ import { useMessages } from '~/i18n/react';
 import { clampInt } from '~/lib/tools/_shared/lines';
 import { MAX_BATCH, type SqlOptionState } from '~/lib/tools/sql/format';
 import type { ValueStats } from '~/lib/tools/sql/values';
+import { NumberField } from '../_shared/NumberField';
 import { sqlMessages } from './messages';
 
 interface SqlOptionsProps {
@@ -125,8 +125,7 @@ export function SqlOptions({
         </ToggleButtonGroup>
       )}
       {batch && (
-        <TextField
-          type="number"
+        <NumberField
           label={t.batchSize}
           value={state.batch}
           sx={{ width: 180 }}

@@ -1,12 +1,12 @@
 import { useCallback, useMemo, type ChangeEvent, type ReactNode } from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 import { useMessages } from '~/i18n/react';
 import { toFormatStyle, type FormatStyle, type IdValidation } from '~/lib/tools/ids/shared';
 import { clampInt, nonEmptyLines } from '~/lib/tools/_shared/lines';
+import { NumberField } from '../_shared/NumberField';
 import { InputPanel } from '../_shared/InputPanel';
 import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
@@ -188,8 +188,7 @@ export function IdLinesTool({
           {mode === 'generate' && (
             <>
               {generateOptions}
-              <TextField
-                type="number"
+              <NumberField
                 label={t.howMany}
                 value={state.count}
                 sx={{ width: 120 }}
