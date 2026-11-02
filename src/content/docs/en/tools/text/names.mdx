@@ -20,7 +20,7 @@ Powered by [`@tletelieru/name-formatter`](https://www.npmjs.com/package/@tleteli
   - **Letters only**: removes apostrophes and special characters, hyphens become spaces, keeps accents and `ñ`.
 - **Ñ**, **Apostrophe**, **Hyphen** and **Remove accents** override the preset. `ñ` can stay or become `n`, `ni`, `nh` or `ny`, keeping the case (`MUÑOZ` → `MUNIOZ`).
 - **Split strategy** decides where the given names end and the surnames start:
-  - **Dictionary** (default): particles attach to the next word, known compound names and surnames (`María de los Ángeles`, `de la Fuente`) stay together, and the last two units are the surnames.
+  - **Dictionary** (default): particles attach to the next word, known compound names and surnames (`María de los Ángeles`, `de la Fuente`) stay together, and the last two units are the surnames. In given names, a particle and its word always join the previous name, so `Ana de Jesús` and `María José` are one name.
   - **Particles**: the first word plus any particle chain and the next word form one unit.
   - **Last two words**: always the last two units, without the dictionary.
 - **Surname convention**: **Two surnames** (Spanish and Portuguese style) or **One surname**.
