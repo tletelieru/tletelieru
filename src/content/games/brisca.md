@@ -2,7 +2,7 @@
 title: Brisca
 description:
   en: The Spanish-deck trick game with a trump suit, against bots.
-  es: El juego de basas con triunfo y naipe español, contra bots.
+  es: El juego de bazas con triunfo y naipe español, contra bots.
 repo: https://github.com/tletelieru/brisca
 demo: https://tletelieru.github.io/brisca/
 players: 2–4
