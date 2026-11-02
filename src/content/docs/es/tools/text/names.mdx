@@ -1,0 +1,43 @@
+---
+title: Formateador de nombres
+description: Formatea nombres de personas con partículas en minúscula (de la, del), normaliza tildes, ñ, apóstrofos y guiones, y los separa en nombres y apellidos.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Escribe un nombre completo para verlo en todos los formatos y separado en sus partes, o pega varias líneas para formatearlas todas de una vez.
+
+<ToolEmbed slug="names" />
+
+Funciona con [`@tletelieru/name-formatter`](https://www.npmjs.com/package/@tletelieru/name-formatter), una librería TypeScript sin dependencias ([código en GitHub](https://github.com/tletelieru/name-formatter)).
+
+## Comportamiento
+
+- **Formatos**: MAYÚSCULAS, minúsculas, Cada Palabra Con Mayúscula y **Nombre propio**, que deja en minúscula partículas como `de`, `del`, `de la`, `de los`, `y` (salvo al inicio) y maneja `O'Higgins`, `McDonald`, `MacGregor` y `Pérez-Cotapos`.
+- **Normalizar** se aplica antes de formatear. Los espacios siempre se limpian; los presets agregan más reglas:
+  - **ASCII**: quita tildes, `ñ` → `n`, quita apóstrofos y caracteres especiales, y los guiones pasan a ser espacios.
+  - **Email**: como ASCII, pero quita los guiones y deja todo en minúsculas y sin espacios (`mariajosemunoz`).
+  - **Solo letras**: quita apóstrofos y caracteres especiales, los guiones pasan a ser espacios, y conserva tildes y `ñ`.
+- **Ñ**, **Apóstrofo**, **Guion** y **Quitar tildes** reemplazan lo que define el preset. La `ñ` se puede mantener o convertir en `n`, `ni`, `nh` o `ny`, respetando mayúsculas (`MUÑOZ` → `MUNIOZ`).
+- **Estrategia de separación** decide dónde terminan los nombres y empiezan los apellidos:
+  - **Diccionario** (por defecto): las partículas se unen a la palabra siguiente, los nombres y apellidos compuestos conocidos (`María de los Ángeles`, `de la Fuente`) se mantienen juntos, y las dos últimas unidades son los apellidos.
+  - **Partículas**: la primera palabra, más cualquier cadena de partículas y la palabra siguiente, forma una unidad.
+  - **Últimas dos palabras**: siempre las dos últimas unidades, sin diccionario.
+- **Convención de apellidos**: **Dos apellidos** (estilo hispano y portugués) o **Un apellido**.
+- **Una línea**: se listan todos los formatos y las seis partes (nombres, apellidos, primer y segundo nombre, primer y segundo apellido), cada una con su botón de copiar. **Varias líneas**: cada línea se formatea con las opciones elegidas.
+- Los nombres son ambiguos, así que la separación es aproximada: `Pedro Soto de la Vega` da `Soto` y `de la Vega` como apellidos.
+
+## Ejemplos
+
+| Entrada                                  | Nombre propio                            | Primer apellido     | Segundo apellido |
+| ---------------------------------------- | ---------------------------------------- | ------------------- | ---------------- |
+| `MARÍA DE LOS ÁNGELES MATUS DE LA PARRA` | `María de los Ángeles Matus de la Parra` | `Matus de la Parra` |                  |
+| `juan de la fuente rojas`                | `Juan de la Fuente Rojas`                | `de la Fuente`      | `Rojas`          |
+| `bernardo o'higgins riquelme`            | `Bernardo O'Higgins Riquelme`            | `O'Higgins`         | `Riquelme`       |
+| `ana maría pérez-cotapos soto`           | `Ana María Pérez-Cotapos Soto`           | `Pérez-Cotapos`     | `Soto`           |
+
+| Entrada                      | Normalizar | Resultado                     |
+| ---------------------------- | ---------- | ----------------------------- |
+| `María José Muñoz O'Higgins` | ASCII      | `Maria Jose Munoz Ohiggins`   |
+| `María José Muñoz O'Higgins` | Email      | `mariajosemunozohiggins`      |
+| `María José Muñoz O'Higgins` | Ñ → ni     | `María José Munioz O'Higgins` |

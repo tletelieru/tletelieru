@@ -16,6 +16,7 @@ export const toolLoaders: Record<string, () => Promise<ToolModule>> = {
   timezone: () => import('./timezone/TimezoneTool'),
   unix: () => import('./unix/UnixTool'),
   case: () => import('./case/CaseTool'),
+  names: () => import('./names/NamesTool'),
   json: () => import('./json/JsonTool'),
   html: () => import('./html/HtmlTool'),
   hash: () => import('./hash/HashTool'),
