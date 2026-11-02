@@ -10,7 +10,6 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
@@ -31,6 +30,7 @@ import {
   type OtpConfig,
 } from '~/lib/tools/totp';
 import { useUrlState } from '~/lib/url-state';
+import { NumberField } from '../_shared/NumberField';
 import { CopyButton } from '../_shared/CopyButton';
 import { InputPanel } from '../_shared/InputPanel';
 import { useToolContext } from '../_shared/ToolContext';
@@ -190,8 +190,7 @@ export default function TotpTool() {
             ))}
           </ToggleButtonGroup>
           {isTotp && (
-            <TextField
-              type="number"
+            <NumberField
               label={t.period}
               value={config.period}
               sx={{ width: 120 }}
@@ -200,8 +199,7 @@ export default function TotpTool() {
             />
           )}
           {!isTotp && (
-            <TextField
-              type="number"
+            <NumberField
               label={t.counter}
               value={config.counter}
               sx={{ width: 140 }}

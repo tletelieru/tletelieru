@@ -31,10 +31,10 @@
   },
   "lint-staged": {
     "*.{js,mjs,cjs,ts,tsx,astro}": [
-      "eslint --fix",
-      "prettier --write"
+      "node node_modules/eslint/bin/eslint.js --fix",
+      "node node_modules/prettier/bin/prettier.cjs --write"
     ],
-    "*.{json,md,mdx,css,yml,yaml}": "prettier --write"
+    "*.{json,md,mdx,css,yml,yaml}": "node node_modules/prettier/bin/prettier.cjs --write"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.0",

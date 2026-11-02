@@ -16,6 +16,7 @@ import {
 } from '~/lib/tools/csv-insert';
 import { MAX_BATCH, pickOption, quoteStyles } from '~/lib/tools/sql/format';
 import { useUrlState } from '~/lib/url-state';
+import { NumberField } from '../_shared/NumberField';
 import { InputPanel } from '../_shared/InputPanel';
 import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
@@ -156,8 +157,7 @@ export default function CsvInsertTool() {
             <ToggleButton value="single">{t.perRow}</ToggleButton>
           </ToggleButtonGroup>
           {options.mode === 'multi' && (
-            <TextField
-              type="number"
+            <NumberField
               label={t.rowsPerInsert}
               value={state.batch}
               sx={{ width: 200 }}

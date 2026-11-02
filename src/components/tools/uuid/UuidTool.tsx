@@ -23,6 +23,7 @@ import {
   type IdType,
 } from '~/lib/tools/uuid';
 import { useUrlState } from '~/lib/url-state';
+import { NumberField } from '../_shared/NumberField';
 import { InputPanel } from '../_shared/InputPanel';
 import { OutputPanel } from '../_shared/OutputPanel';
 import { ToolLayout } from '../_shared/ToolLayout';
@@ -206,8 +207,7 @@ export default function UuidTool() {
                   </MenuItem>
                 ))}
               </TextField>
-              <TextField
-                type="number"
+              <NumberField
                 label={t.howMany}
                 value={state.count}
                 sx={{ width: 120 }}
@@ -243,8 +243,7 @@ export default function UuidTool() {
               )}
               {type === 'nanoid' && (
                 <>
-                  <TextField
-                    type="number"
+                  <NumberField
                     label={t.size}
                     value={state.size}
                     sx={{ width: 100 }}
