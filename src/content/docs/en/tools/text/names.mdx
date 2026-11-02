@@ -1,0 +1,43 @@
+---
+title: Name formatter
+description: Format person names with lowercase particles (de la, del), normalize accents, ñ, apostrophes and hyphens, and split them into given names and surnames.
+---
+
+import ToolEmbed from '~/components/ToolEmbed.astro';
+
+Type a full name to see it in every format and split into its parts, or paste several lines to format them all at once.
+
+<ToolEmbed slug="names" />
+
+Powered by [`@tletelieru/name-formatter`](https://www.npmjs.com/package/@tletelieru/name-formatter), a zero-dependency TypeScript library ([source on GitHub](https://github.com/tletelieru/name-formatter)).
+
+## Behaviour
+
+- **Formats**: UPPER CASE, lower case, Capitalize Every Word and **Name case**, which keeps particles such as `de`, `del`, `de la`, `de los`, `y` in lowercase (except at the start) and handles `O'Higgins`, `McDonald`, `MacGregor` and `Pérez-Cotapos`.
+- **Normalize** runs before formatting. Whitespace is always cleaned; the presets add more rules:
+  - **ASCII**: removes accents, `ñ` → `n`, removes apostrophes and special characters, hyphens become spaces.
+  - **Email**: like ASCII, but hyphens are removed and the result is lowercase with no spaces (`mariajosemunoz`).
+  - **Letters only**: removes apostrophes and special characters, hyphens become spaces, keeps accents and `ñ`.
+- **Ñ**, **Apostrophe**, **Hyphen** and **Remove accents** override the preset. `ñ` can stay or become `n`, `ni`, `nh` or `ny`, keeping the case (`MUÑOZ` → `MUNIOZ`).
+- **Split strategy** decides where the given names end and the surnames start:
+  - **Dictionary** (default): particles attach to the next word, known compound names and surnames (`María de los Ángeles`, `de la Fuente`) stay together, and the last two units are the surnames.
+  - **Particles**: the first word plus any particle chain and the next word form one unit.
+  - **Last two words**: always the last two units, without the dictionary.
+- **Surname convention**: **Two surnames** (Spanish and Portuguese style) or **One surname**.
+- **Single line**: every format and the six parts (given names, surnames, first and middle name, first and second surname) are listed with their own copy button. **Multiple lines**: each line is formatted with the chosen options.
+- Names are ambiguous, so the split is a best guess: `Pedro Soto de la Vega` gives `Soto` and `de la Vega` as surnames.
+
+## Examples
+
+| Input                                    | Name case                                | First surname       | Second surname |
+| ---------------------------------------- | ---------------------------------------- | ------------------- | -------------- |
+| `MARÍA DE LOS ÁNGELES MATUS DE LA PARRA` | `María de los Ángeles Matus de la Parra` | `Matus de la Parra` |                |
+| `juan de la fuente rojas`                | `Juan de la Fuente Rojas`                | `de la Fuente`      | `Rojas`        |
+| `bernardo o'higgins riquelme`            | `Bernardo O'Higgins Riquelme`            | `O'Higgins`         | `Riquelme`     |
+| `ana maría pérez-cotapos soto`           | `Ana María Pérez-Cotapos Soto`           | `Pérez-Cotapos`     | `Soto`         |
+
+| Input                        | Normalize | Output                        |
+| ---------------------------- | --------- | ----------------------------- |
+| `María José Muñoz O'Higgins` | ASCII     | `Maria Jose Munoz Ohiggins`   |
+| `María José Muñoz O'Higgins` | Email     | `mariajosemunozohiggins`      |
+| `María José Muñoz O'Higgins` | Ñ → ni    | `María José Munioz O'Higgins` |
