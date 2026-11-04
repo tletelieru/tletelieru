@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import { Badge, Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+import { toLocale, type Localized } from '~/i18n/locales';
+
+const locale = toLocale(Astro.locals.starlightRoute.locale);
+const labels: Record<'play' | 'soon' | 'players', Localized> = {
+  play: { en: 'Play', es: 'Jugar' },
+  soon: { en: 'Coming soon', es: 'Próximamente' },
+  players: { en: 'players', es: 'jugadores' },
+};
+const games = (await getCollection('games', ({ data }) => !data.hidden)).sort(
+  (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+---
+
+<CardGrid>
+  {games.map(({ data }) => (
+    <div
+      class="game-card"
+      style={`--game-accent-light: ${data.accent.light}; --game-accent-dark: ${data.accent.dark};`}
+    >
+      <Card title={data.title}>
+        <p>{data.description[locale]}</p>
+        <div class="project-tags">
+          <Badge text={`${data.players} ${labels.players[locale]}`} variant="note" />
+          <Badge text={data.deck[locale]} variant="note" />
+          {data.status === 'soon' && <Badge text={labels.soon[locale]} variant="caution" />}
+        </div>
+        <div class="game-actions">
+          {data.status === 'live' && (
+            <LinkButton href={data.demo} icon="external">
+              {labels.play[locale]}
+            </LinkButton>
+          )}
+          <LinkButton href={data.repo} variant="minimal" icon="github">
+            Repo
+          </LinkButton>
+        </div>
+      </Card>
+    </div>
+  ))}
+</CardGrid>
+
+<style>
+  .game-card {
+    --game-accent: var(--game-accent-dark);
+    display: flex;
+  }
+
+  :global(:root[data-theme='light']) .game-card {
+    --game-accent: var(--game-accent-light);
+  }
+
+  .game-card > :global(.card) {
+    flex: 1;
+    border-inline-start: 4px solid var(--game-accent);
+  }
+
+  .game-card :global(.title) {
+    color: var(--game-accent);
+  }
+
+  .game-card :global(.sl-link-button:not(.minimal)) {
+    border-color: var(--game-accent);
+    background-color: var(--game-accent);
+    color: var(--sl-color-black);
+  }
+
+  :global(:root[data-theme='light']) .game-card :global(.sl-link-button:not(.minimal)) {
+    color: #fff;
+  }
+
+  .game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.75rem;
+  }
+</style>
