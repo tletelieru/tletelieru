@@ -7,7 +7,7 @@ repo: https://github.com/tletelieru/7-de-trebol
 demo: https://tletelieru.github.io/7-de-trebol/
 players: 3–4
 deck:
-  en: French deck (52)
+  en: Standard deck (52)
   es: Naipe inglés (52)
 accent:
   light: '#1f7a4d'

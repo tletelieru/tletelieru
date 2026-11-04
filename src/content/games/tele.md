@@ -7,7 +7,7 @@ repo: https://github.com/tletelieru/tele
 demo: https://tletelieru.github.io/tele/
 players: 2–6
 deck:
-  en: Two French decks
+  en: Two standard decks
   es: Dos naipes ingleses
 accent:
   light: '#a8481a'

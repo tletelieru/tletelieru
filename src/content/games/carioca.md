@@ -7,7 +7,7 @@ repo: https://github.com/tletelieru/carioca
 demo: https://tletelieru.github.io/carioca/
 players: 2–5
 deck:
-  en: Two French decks + jokers
+  en: Two standard decks + jokers
   es: Dos naipes ingleses y comodines
 accent:
   light: '#1f5f99'
