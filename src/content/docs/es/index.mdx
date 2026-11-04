@@ -7,6 +7,10 @@ hero:
     - text: Abrir las herramientas
       link: /tletelieru/es/tools/
       icon: right-arrow
+    - text: Jugar
+      link: /tletelieru/es/games/
+      icon: puzzle
+      variant: secondary
     - text: GitHub
       link: https://github.com/tletelieru
       icon: github
@@ -14,12 +18,17 @@ hero:
 ---
 
 import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+import GameList from '~/components/GameList.astro';
 import PackageList from '~/components/PackageList.astro';
 import ProjectList from '~/components/ProjectList.astro';
 
 ## Proyectos
 
 <ProjectList />
+
+## Juegos
+
+<GameList />
 
 ## Paquetes
 

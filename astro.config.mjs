@@ -37,6 +37,7 @@ export default defineConfig({
       },
       customCss: ['./src/styles/custom.css'],
       sidebar: [
+        { label: 'Games', translations: { es: 'Juegos' }, slug: 'games' },
         { label: 'All tools', translations: { es: 'Todas las herramientas' }, slug: 'tools' },
         { label: 'Pipelines', translations: { es: 'Pipelines' }, slug: 'tools/pipeline' },
         { label: 'Snippets', translations: { es: 'Snippets' }, slug: 'tools/snippets' },

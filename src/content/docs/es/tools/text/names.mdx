@@ -20,7 +20,7 @@ Funciona con [`@tletelieru/name-formatter`](https://www.npmjs.com/package/@tlete
   - **Solo letras**: quita apóstrofos y caracteres especiales, los guiones pasan a ser espacios, y conserva tildes y `ñ`.
 - **Ñ**, **Apóstrofo**, **Guion** y **Quitar tildes** reemplazan lo que define el preset. La `ñ` se puede mantener o convertir en `n`, `ni`, `nh` o `ny`, respetando mayúsculas (`MUÑOZ` → `MUNIOZ`).
 - **Estrategia de separación** decide dónde terminan los nombres y empiezan los apellidos:
-  - **Diccionario** (por defecto): las partículas se unen a la palabra siguiente, los nombres y apellidos compuestos conocidos (`María de los Ángeles`, `de la Fuente`) se mantienen juntos, y las dos últimas unidades son los apellidos.
+  - **Diccionario** (por defecto): las partículas se unen a la palabra siguiente, los nombres y apellidos compuestos conocidos (`María de los Ángeles`, `de la Fuente`) se mantienen juntos, y las dos últimas unidades son los apellidos. En los nombres de pila, una partícula y su palabra se unen siempre al nombre anterior, así que `Ana de Jesús` y `María José` son un solo nombre.
   - **Partículas**: la primera palabra, más cualquier cadena de partículas y la palabra siguiente, forma una unidad.
   - **Últimas dos palabras**: siempre las dos últimas unidades, sin diccionario.
 - **Convención de apellidos**: **Dos apellidos** (estilo hispano y portugués) o **Un apellido**.
