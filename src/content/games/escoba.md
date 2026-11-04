@@ -12,6 +12,6 @@ deck:
 accent:
   light: '#8a6a00'
   dark: '#e5b62e'
-status: soon
+status: live
 order: 3
 ---
